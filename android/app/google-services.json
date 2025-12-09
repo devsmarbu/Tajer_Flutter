@@ -1,0 +1,62 @@
+{
+  "project_info": {
+    "project_number": "584059993524",
+    "project_id": "tajershops-a8558",
+    "storage_bucket": "tajershops-a8558.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:584059993524:android:bc5e37a8005332baaa46e1",
+        "android_client_info": {
+          "package_name": "com.tajershops.tajer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "584059993524-p62m9ggpjk116co32fpv6lb79sce7la5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tajershops.tajer",
+            "certificate_hash": "14af9487704b24932cb0c507720af3b2a147a91b"
+          }
+        },
+        {
+          "client_id": "584059993524-r1123o62rudn9csmjdl3vefijqjmehp7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tajershops.tajer",
+            "certificate_hash": "dfe00ae8770db76c78864678dbd4b3ab51c61b05"
+          }
+        },
+        {
+          "client_id": "584059993524-m9vi5retslm94qkg28vvmsqva2u0gbcd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDTALXjcsfMR7yx49S0FzkbYil9fD3TfFc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "584059993524-m9vi5retslm94qkg28vvmsqva2u0gbcd.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "584059993524-mlinle1lfckp32is2rpn1tnn15dav80a.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "app.leza.Tajer"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

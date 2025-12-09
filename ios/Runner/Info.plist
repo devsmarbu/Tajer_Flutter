@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+    <dict>
+        <key>OneSignal_app_id</key>
+        <string>5652c9b5-8841-4a8e-8961-6e0cea0dfcf2</string>
+        <key>CADisableMinimumFrameDurationOnPhone</key>
+        <true/>
+        <key>CFBundleDevelopmentRegion</key>
+        <string>$(DEVELOPMENT_LANGUAGE)</string>
+        <key>CFBundleDisplayName</key>
+        <string>Tajer - تاجر</string>
+        <key>CFBundleExecutable</key>
+        <string>$(EXECUTABLE_NAME)</string>
+        <key>CFBundleIdentifier</key>
+        <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+        <key>CFBundleInfoDictionaryVersion</key>
+        <string>6.5.0</string>
+        <key>CFBundleName</key>
+        <string>tajer_buyer</string>
+        <key>CFBundlePackageType</key>
+        <string>APPL</string>
+        <key>CFBundleShortVersionString</key>
+        <string>$(MARKETING_VERSION)</string>
+        <key>CFBundleSignature</key>
+        <string>????</string>
+        <key>CFBundleURLTypes</key>
+        <array>
+            <dict>
+                <key>CFBundleTypeRole</key>
+                <string>Editor</string>
+                <key>CFBundleURLName</key>
+                <string>app.leza.Tajer</string>
+                <key>CFBundleURLSchemes</key>
+                <array>
+                    <string>com.googleusercontent.apps.584059993524-mlinle1lfckp32is2rpn1tnn15dav80a</string>
+                </array>
+            </dict>
+        </array>
+        <key>NSMicrophoneUsageDescription</key>
+        <string>This app needs microphone access for voice search.</string>
+        <key>NSSpeechRecognitionUsageDescription</key>
+        <string>This app uses speech recognition to convert voice to text.</string>
+        <key>CFBundleVersion</key>
+        <string>$(CURRENT_PROJECT_VERSION)</string>
+        <key>LSRequiresIPhoneOS</key>
+        <true/>
+        <key>UIApplicationSupportsIndirectInputEvents</key>
+        <true/>
+        <key>UIBackgroundModes</key>
+        <array>
+            <string>remote-notification</string>
+        </array>
+        <key>UILaunchStoryboardName</key>
+        <string>LaunchScreen</string>
+        <key>UIMainStoryboardFile</key>
+        <string>Main</string>
+        <key>UISupportedInterfaceOrientations</key>
+        <array>
+            <string>UIInterfaceOrientationPortrait</string>
+            <string>UIInterfaceOrientationLandscapeLeft</string>
+            <string>UIInterfaceOrientationLandscapeRight</string>
+        </array>
+        <key>UISupportedInterfaceOrientations~ipad</key>
+        <array>
+            <string>UIInterfaceOrientationPortrait</string>
+            <string>UIInterfaceOrientationPortraitUpsideDown</string>
+            <string>UIInterfaceOrientationLandscapeLeft</string>
+            <string>UIInterfaceOrientationLandscapeRight</string>
+        </array>
+        <key>NSAppTransportSecurity</key>
+        <dict>
+            <key>NSAllowsArbitraryLoads</key>
+            <true/>
+        </dict>
+        <key>FlutterDeepLinkingEnabled</key>
+        <false/>
+        <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+        <string>Allow Tajer - تاجر  to use Current Location for search nearby Products or Shops</string>
+        <key>NSLocationAlwaysUsageDescription</key>
+        <string>Allow Tajer - تاجر  to use Current Location for search nearby Products or Shops</string>
+        <key>NSLocationWhenInUseUsageDescription</key>
+        <string>Allow Tajer - تاجر  to use Current Location for search nearby Products or Shops</string>
+    </dict>
+</plist>
