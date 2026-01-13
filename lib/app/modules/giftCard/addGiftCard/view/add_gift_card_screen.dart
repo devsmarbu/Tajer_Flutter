@@ -10,6 +10,7 @@ class AddGiftCardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     final controller = Get.put(AddGiftCardController());
 
     return Scaffold(
@@ -18,8 +19,8 @@ class AddGiftCardScreen extends StatelessWidget {
         scrolledUnderElevation: 0,
         titleSpacing: 0,
         backgroundColor: AppColors.white,
-        title: const Text(
-          AppStrings.app_add_gift_card,
+        title: Text(
+          AppStrings.app_add_gift_card.tr,
           style: TextStyle(
             fontSize: 18,
             fontFamily: 'Nunito',
@@ -36,8 +37,8 @@ class AddGiftCardScreen extends StatelessWidget {
             Obx(
               () => CommonTextField(
                 backgroundColor: AppColors.colorAccountBackground,
-                label: AppStrings.app_enter_amount,
-                hint: AppStrings.app_error_enter_amount,
+                label: AppStrings.app_enter_amount.tr,
+                hint: AppStrings.app_error_enter_amount.tr,
                 controller: controller.amountController,
                 errorText: controller.amountError.value.isNotEmpty
                     ? controller.amountError.value
@@ -50,8 +51,8 @@ class AddGiftCardScreen extends StatelessWidget {
             Obx(
                   () => CommonTextField(
                     backgroundColor: AppColors.colorAccountBackground,
-                    label: AppStrings.app_receiver_name,
-                hint: AppStrings.app_error_enter_receiver_name,
+                    label: AppStrings.app_receiver_name.tr,
+                hint: AppStrings.app_error_enter_receiver_name.tr,
                 controller: controller.receiverNameController,
                 errorText: controller.receiverNameError.value.isNotEmpty
                     ? controller.receiverNameError.value
@@ -64,8 +65,8 @@ class AddGiftCardScreen extends StatelessWidget {
             Obx(
                   () => CommonTextField(
                     backgroundColor: AppColors.colorAccountBackground,
-                label: AppStrings.app_receiver_email,
-                hint: AppStrings.app_error_enter_receiver_email,
+                label: AppStrings.app_receiver_email.tr,
+                hint: AppStrings.app_error_enter_receiver_email.tr,
                 controller: controller.receiverEmailController,
                 errorText: controller.receiverEmailError.value.isNotEmpty
                     ? controller.receiverEmailError.value
@@ -94,8 +95,8 @@ class AddGiftCardScreen extends StatelessWidget {
                           color: Colors.white,
                           strokeWidth: 2,
                         )
-                      : const Text(
-                          AppStrings.app_save,
+                      : Text(
+                          AppStrings.app_save.tr,
                           style: TextStyle(
                             color: Colors.white,
                             fontFamily: 'Nunito',

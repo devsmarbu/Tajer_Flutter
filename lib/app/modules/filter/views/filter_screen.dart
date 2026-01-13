@@ -388,6 +388,7 @@ class _FilterScreenState extends State<FilterScreen> {
                   ),
                   onPressed: () {
                     // Apply logic here
+
                     Navigator.pop(context, {
                       "brandIds": selectedBrandIds.keys.toList(),
                       "optionvalue": selectedOptionValueIds.keys.toList(),

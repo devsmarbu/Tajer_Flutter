@@ -6,6 +6,7 @@ plugins {
     id("com.google.gms.google-services") // Firebase plugin
 }
 
+//
 android {
     namespace = "com.tajershops.tajer"
     compileSdk = flutter.compileSdkVersion
@@ -27,8 +28,8 @@ android {
         applicationId = "com.tajershops.tajer"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
-        versionCode = 145
-        versionName = "7.4.8"
+        versionCode = 155
+        versionName = "7.5.8"
     }
 
     signingConfigs {

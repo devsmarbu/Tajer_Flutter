@@ -70,8 +70,8 @@ class AddMoneyScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        AppStrings.app_add_money_to_wallet,
+                       Text(
+                        AppStrings.app_add_money_to_wallet.tr,
                         style: TextStyle(
                             fontSize: 20,
                             fontFamily: "Nunito",

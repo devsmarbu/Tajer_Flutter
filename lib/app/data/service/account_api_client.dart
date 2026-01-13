@@ -44,6 +44,12 @@ mixin AccountApiClient{
     );
   }
 
+  Future<Response> accountDeletionApi() async {
+    return await _api.dio.post(
+      AppConstants.accountDelete,
+    );
+  }
+
   Future<Response> updateBankInfoApi(
       String bankName,
       String accountHolderName,

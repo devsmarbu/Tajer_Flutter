@@ -1,12 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'app/modules/authentication/splash/view/splash_view.dart';
 import 'common/widgets/restart_widget.dart';
+import 'main_extension.dart';
 import 'translations/localization_service.dart';
 import 'app/core/routes/app_routes.dart';
 
-class MyRootApp extends StatelessWidget {
+
+class MyRootApp extends StatefulWidget {
+  @override
+  _MyRootAppState createState() => _MyRootAppState();
+}
+
+class _MyRootAppState extends State<MyRootApp> {
+
+  @override
+  void initState() {
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future.delayed(const Duration(milliseconds: 150), () {
+        AppState.isReady = true;
+      });
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+
     return Obx(() {
       final locale = LocalizationService.to.appLocale.value;
 
@@ -14,12 +35,14 @@ class MyRootApp extends StatelessWidget {
           .contains(locale.languageCode.toLowerCase());
 
       return GetMaterialApp(
-        key: Key(DateTime.now().millisecondsSinceEpoch.toString()), // ensures rebuild
+        key: UniqueKey(),
         locale: locale,
         translations: LocalizationService.to,
         fallbackLocale: const Locale("en", "US"),
         debugShowCheckedModeBanner: false,
-        initialRoute: AppRoutes.splash,
+        //  initialRoute: AppRoutes.splash,
+        home: SplashView(),
+        unknownRoute: GetPage(name: "/splash", page: ()=>SplashView()),
         getPages: AppRoutes.routes,
         builder: (context, child) {
           return Directionality(

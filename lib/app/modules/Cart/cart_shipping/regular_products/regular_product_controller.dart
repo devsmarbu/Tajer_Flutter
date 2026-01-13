@@ -7,11 +7,13 @@ import 'package:tajer/app/core/constants/app_labels.dart';
 import 'package:tajer/app/data/respository/cart_listing_repository.dart';
 import 'package:tajer/app/modules/Cart/cart_shipping/payment_summary_model/payment_summary_model.dart';
 import 'package:tajer/app/modules/Cart/choose_payment/choose_payment_view.dart';
+import 'package:tajer/utils/pref_store.dart';
 import '../../../../core/routes/app_routes.dart';
 import '../../../authentication/login/login_screen.dart';
 import '../../payment_web_view/payment_web_view.dart';
 import '../cart_listing_model/cart_listing_model.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 
 class ComboProductWithSelectedShippingMethod {
   Map<String, String>? shippingMethod;
@@ -43,6 +45,8 @@ class RegularProductController extends GetxController {
   String orderType = "1";
   String isUseWalletPayment = "1";
   String userId = "";
+  RxBool isAgreed = false.obs;
+
 
   void goToOrderSuccess({required String? orderId}) {
     Get.offAllNamed(AppRoutes.orderSuccess, arguments: {"orderId": orderId});
@@ -88,6 +92,29 @@ class RegularProductController extends GetxController {
             true) {
           getpaymentSummary(payFromWallet: "1");
         }
+        final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+        final products = cartListingModel.value?.data?.products;
+        final totalAmount =
+        (cartListingModel.value?.data?.products?.available ?? [])
+            .fold<double>(
+          0.0,
+              (sum, item) =>
+          sum +
+              ((double.tryParse(item.selprodPrice ?? '0') ?? 0.0) *
+                  item.quantity.toIntSafe()),
+        );
+        await analytics.logViewCart(
+          currency: PrefStore().loadString(AppConstants.currencySymbol),
+          value: totalAmount,
+          items: (products?.available)?.map((item) {
+            return AnalyticsEventItem(
+              itemId: item.productId,
+              itemName: item.productName,
+              quantity: item.quantity.toIntSafe(),
+              price: double.tryParse(item.selprodPrice ?? '0'),
+            );
+          }).toList(),
+        );
       }
     } catch (e) {
       isLoading(false);
@@ -290,7 +317,7 @@ class RegularProductController extends GetxController {
     }
   }
 
-  Future<void> deleteCartItem(String key, String fulfilmentType) async {
+  Future<void> deleteCartItem(String key, String fulfilmentType,Available item) async {
     isLoading(true);
     try {
       final response = await _repository.deleteCartItem(
@@ -298,6 +325,19 @@ class RegularProductController extends GetxController {
         fulfilmentType: fulfilmentType,
       );
       if (response?.status != "0") {
+
+        /// 🔥 GA4 Remove From Cart Event
+        await FirebaseAnalytics.instance.logRemoveFromCart(
+          items: [
+            AnalyticsEventItem(
+              itemId: key, // product ID
+              itemName: item.productName, // optional but recommended
+              quantity: 1,
+              price: double.tryParse(item.total ?? '0'),
+            ),
+          ],
+        );
+
         getCartListing(
           isDeliverAllTogether.value == true ? "1" : "0",
           cartTypee,
@@ -462,6 +502,7 @@ class RegularProductController extends GetxController {
     String rowAction,
     String key,
     bool removeItem,
+      Available item
   ) async {
     isLoading(true);
     try {
@@ -473,7 +514,7 @@ class RegularProductController extends GetxController {
       );
       if (response?.status != "0") {
         if (removeItem == true) {
-          deleteCartItem(key, fulfilmentType);
+          deleteCartItem(key, fulfilmentType,item);
         } else {
           getCartListing(
             isDeliverAllTogether.value == true ? "1" : "0",

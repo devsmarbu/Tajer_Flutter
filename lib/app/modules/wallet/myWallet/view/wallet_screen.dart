@@ -149,25 +149,41 @@ class WalletScreen extends StatelessWidget {
                     );
                   }
 
-                  return NotificationListener<ScrollNotification>(
-                    onNotification: (scrollInfo) {
-                      if (scrollInfo.metrics.pixels ==
-                          scrollInfo.metrics.maxScrollExtent &&
-                          !controller.isLoadingMore.value &&
-                          !controller.isLastPage.value) {
-                        controller.loadMore();
-                      }
-                      return false;
+                  return RefreshIndicator(
+                    onRefresh: () async {
+                      await controller.refreshPage();
                     },
-                    child: ListView.builder(
-                      padding: const EdgeInsets.all(10),
-                      itemCount: controller.creditsListingItem.length,
-                      itemBuilder: (context, index) {
-                        final tx = controller.creditsListingItem[index];
-                        return _transactionCard(tx);
+                    child: NotificationListener<ScrollNotification>(
+                      onNotification: (scrollInfo) {
+                        if (scrollInfo.metrics.pixels ==
+                            scrollInfo.metrics.maxScrollExtent &&
+                            !controller.isLoadingMore.value &&
+                            !controller.isLastPage.value) {
+                          controller.loadMore();
+                        }
+                        return false;
                       },
+                      child: ListView.builder(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        padding: const EdgeInsets.all(10),
+                        itemCount: controller.creditsListingItem.length +
+                            (controller.isLoadingMore.value ? 1 : 0),
+                        itemBuilder: (context, index) {
+                          if (index < controller.creditsListingItem.length) {
+                            final tx = controller.creditsListingItem[index];
+                            return _transactionCard(tx);
+                          } else {
+                            // 🔄 Loading indicator at bottom
+                            return const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 16),
+                              child: Center(child: CircularProgressIndicator()),
+                            );
+                          }
+                        },
+                      ),
                     ),
                   );
+
                 }),
               ),
             ],

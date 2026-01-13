@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import '../../../data/respository/product_list_repository.dart';
@@ -20,10 +22,14 @@ class ProductController extends GetxController {
   // ✅ API params
   Map<String, dynamic> baseParams = {};
   String prodCatId = "";
+  String keyword = "";
   String brandId = "";
   String titleHeader = "";
+  String image = "";
+  String imagePath = "";
   String productVideoAvailable = "";
   List<String> condition = [];
+  File? imageFile;
 
   @override
   void onInit() {
@@ -40,13 +46,32 @@ class ProductController extends GetxController {
       if (params['brandId'] != null && params['brandId'] != "") {
         brandId = params['brandId']!;
       }
+      if (params['imagePath'] != null && params['imagePath'] != "") {
+        imagePath = params['imagePath']!;
+        imageFile = imagePath.isNotEmpty
+            ? File(imagePath)
+            : null;
+      }
       if (params['condition'] != null && params['condition'] != "") {
         condition.add(params['condition']!);
+      }
+      if (params['image'] != null && params['image'] != "") {
+        image = params['image']!;
+      }
+      if (params['keyword'] != null && params['keyword'] != "") {
+        keyword = params['keyword']!;
       }
       titleHeader = params['titleHeader'] ?? "";
       productVideoAvailable = params['productVideoAvailable'] ?? "0";
       baseParams["prodcat"] = prodCatId;
+      if(keyword=="null"){
+        baseParams["keyword"] = "";
+      }else{
+        baseParams["keyword"] = keyword;
+      }
+
       baseParams["brand"] = brandId;
+      baseParams["image"] = image;
       baseParams["productVideoAvailable"] = productVideoAvailable;
       baseParams["condition"] = condition;
 

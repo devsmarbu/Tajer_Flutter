@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:tajer/app/data/respository/product_list_repository.dart';
+import '../../../core/routes/app_routes.dart';
 import '../../productList/models/filtered_product.dart';
 import '../home_model.dart';
 
@@ -38,6 +39,7 @@ class ReelPageController extends GetxController {
 
     baseParams["productVideoAvailable"] = productVideoAvailable;
     baseParams["pageSize"] = "5";
+    baseParams["keyword"] = "";
 
     if (productVideoAvailable == "1" && productIds.isNotEmpty) {
       baseParams["productIds"] = productIds;
@@ -155,4 +157,9 @@ class ReelPageController extends GetxController {
       isLoading(false);
     }
   }
+
+  void goToShopDetailView(String shopId, String shopUserId) => Get.toNamed(
+    AppRoutes.shopDetailView,
+    arguments: {"shopId": shopId, "shopUserId": shopUserId},
+  );
 }

@@ -219,18 +219,18 @@ class _DualHorizontalProductViewState extends State<DualHorizontalProductView> {
                                 backgroundColor: Colors.transparent,
                                 builder: (context) => SelectSizeView(
                                   price: product.selprodPrice ?? "",
-                                  productId: product.productId ?? "",
+                                  productId: firstOptionValues.first.selprodId ?? "",
                                   productOptions: firstOptionValues,
-                                  currencyCode: product.selprodPrice?.replaceAll(RegExp(r'[0-9.]'), '') ?? "\$",
+                                  currencyCode: product.selprodPrice?.replaceAll(RegExp(r'[0-9.]'), '') ?? "\$", productName: product.selprodTitle ?? '',
                                 ),
                               );
                             } else {
                               final sizeController = Get.put(SelectSizeController(product.selprodId ?? ''));
-                              sizeController.addToCart(product.selprodId ?? '');
+                              sizeController.addToCart(product.selprodId ?? '',product.selprodTitle ?? '',product.selprodPrice ?? '');
                             }
                           } else {
                             final sizeController = Get.put(SelectSizeController(product.selprodId ?? ''));
-                            sizeController.addToCart(product.selprodId ?? '');
+                            sizeController.addToCart(product.selprodId ?? '',product.selprodTitle ?? '',product.selprodPrice ?? '');
                           }
                         },
                         style: TextButton.styleFrom(

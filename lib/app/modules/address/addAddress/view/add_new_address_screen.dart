@@ -305,7 +305,7 @@ class AddNewAddressScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       CommonTextField(
-                        label: "${AppStrings.otpVerification.toUpperCase().tr}*",
+                        label: "${AppStrings.appOtpVerification.toUpperCase().tr}*",
                         hint: AppStrings.appPleaseEnterValidOtp.toUpperCase().tr,
                         controller: controller.otpController,
                         errorText: controller.otpError.value.isNotEmpty

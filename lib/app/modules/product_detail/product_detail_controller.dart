@@ -1,10 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:tajer/app/core/constants/app_constants.dart';
 import 'package:tajer/app/data/respository/wish_list_repository.dart';
+import 'package:tajer/utils/pref_store.dart';
 import '../../core/routes/app_routes.dart';
 import '../../data/respository/product_repository.dart';
 import 'product_detail_model.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:facebook_app_events/facebook_app_events.dart';
+
 
 class ProductDetailController extends GetxController {
   final ProductRepository _repository = ProductRepository();
@@ -16,6 +21,7 @@ class ProductDetailController extends GetxController {
   String productId = "";
   String selProductId = "";
   RxString productName = "".obs;
+  RxString productPrice = "".obs;
   RxString productUrl = "".obs;
   RxString productTitle = "".obs;
   RxString productDescription = "".obs;
@@ -54,7 +60,7 @@ class ProductDetailController extends GetxController {
     try {
       await _repository.fetchAllProductPages(
         productId,
-        onPageLoaded: (newSections) {
+        onPageLoaded: (newSections) async {
           productSections.addAll(newSections);
 
           // ✅ Hide loader after first page loaded
@@ -77,6 +83,9 @@ class ProductDetailController extends GetxController {
             productTitle.value =
                 productDetailSection?.content?.productDetail?.selprodTitle ??
                 "";
+            productPrice.value =
+                productDetailSection?.content?.productDetail?.selprodPrice ??
+                "";
             productDescription.value =
                 productDetailSection
                     ?.content
@@ -93,6 +102,39 @@ class ProductDetailController extends GetxController {
             debugPrint(
               "------------------------${imageURL.value}--------------------",
             );
+            if (selProductId.isNotEmpty) {
+              final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+              await analytics.logViewItem(
+                currency: PrefStore().loadString(AppConstants.currencySymbol),
+                value: double.tryParse(productDetailSection
+                    ?.content
+                    ?.productDetail?.selprodPrice ?? '0') ?? 0,
+                items: [
+                  AnalyticsEventItem(
+                    itemId: selProductId,
+                    itemName: productTitle.value,
+                    itemCategory: productDetailSection
+                        ?.content
+                        ?.productDetail?.prodcatName,
+                  ),
+                ],
+              );
+              final facebookAppEvents = FacebookAppEvents();
+
+              facebookAppEvents.logEvent(
+                name: 'ViewContent',
+                parameters: {
+                  'content_id': selProductId,
+                  'content_name': productTitle.value,
+                  'content_type': 'product',
+                  'value': double.tryParse(productDetailSection
+                      ?.content
+                      ?.productDetail?.selprodPrice ?? '0') ?? 0,
+                  'currency': PrefStore().loadString(AppConstants.currencySymbol),
+                },
+              );
+
+            }
             firstPageLoaded = true;
             isLoading(false);
           }

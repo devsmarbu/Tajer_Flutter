@@ -176,7 +176,10 @@ class AppRoutes {
     required String prodCatId,
     required String productVideoAvailable,
     required String titleHeader,
+    String? image,
     String? condition,
+    String? imagePath,
+    String? keyword,
   }) {
     Get.toNamed(
       productListPage,
@@ -185,7 +188,10 @@ class AppRoutes {
         "prodCatId": prodCatId,
         "productVideoAvailable": productVideoAvailable,
         "titleHeader": titleHeader,
-        "condition": condition ?? "",
+        "keyword": keyword.toString(),
+        "condition": condition ?? '',
+        "image": image ?? '',
+        "imagePath": imagePath ?? ''
       },
     );
   }

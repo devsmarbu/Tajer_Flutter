@@ -174,6 +174,7 @@ class _PreOrderCartPageState extends State<PreOrderCartPage> {
                         "0",
                         cartItem.key ?? "",
                         false,
+                        cartItem
                       );
                     },
                     onCancel: () {
@@ -269,7 +270,7 @@ class _PreOrderCartPageState extends State<PreOrderCartPage> {
                       .cartListingModel
                       .value
                       ?.data
-                      ?.shippingGuidelines,
+                      ?.shippingGuidelines, isAgreed: controller.isAgreed.value,
                 ),
               if (controller.paymentSummaryModel.value?.data != null)
                 SizedBox(
@@ -404,7 +405,7 @@ class _PreOrderCartPageState extends State<PreOrderCartPage> {
               title: AppLabels.APP_NAME,
               message: "Are you sure want to remove this?",
               onOk: () {
-                controller.deleteCartItem(item.key ?? "", "2");
+                controller.deleteCartItem(item.key ?? "", "2",item);
               },
               onCancel: () {},
             );
@@ -418,6 +419,7 @@ class _PreOrderCartPageState extends State<PreOrderCartPage> {
                 "1",
                 item.key ?? "",
                 true,
+                item
               );
             } else {
               showAlertMessage(
@@ -525,7 +527,7 @@ class _PreOrderCartPageState extends State<PreOrderCartPage> {
                         title: AppLabels.APP_NAME,
                         message: "Are you sure want to remove this?",
                         onOk: () {
-                          controller.deleteCartItem(item.key ?? "", "2");
+                          controller.deleteCartItem(item.key ?? "", "2",item);
                         },
                         onCancel: () {
                           debugPrint("dismissed");
@@ -544,6 +546,7 @@ class _PreOrderCartPageState extends State<PreOrderCartPage> {
                           "1",
                           item.key ?? "",
                           true,
+                          item
                         );
                       } else {
                         showAlertMessage(

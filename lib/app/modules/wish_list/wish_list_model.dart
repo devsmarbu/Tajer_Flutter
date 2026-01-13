@@ -176,6 +176,31 @@ class CommonResponseModel {
   };
 }
 
+class UploadImageModel {
+  final int? status;
+  final String? msg;
+  final int? recordId;
+
+  UploadImageModel({
+    this.status,
+    this.msg,
+    this.recordId,
+  });
+
+  factory UploadImageModel.fromJson(Map<String, dynamic> json) => UploadImageModel(
+    status: json["status"],
+    msg: json["msg"],
+    recordId: json["recordId"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "status": status,
+    "recordId": recordId,
+    "msg": msg,
+  };
+}
+
+
 class CreateWishListData {
   final String? currencySymbol;
   final String? totalFavouriteItems;

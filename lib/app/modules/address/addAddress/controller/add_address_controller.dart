@@ -171,17 +171,17 @@ class AddAddressController extends GetxController with AddressApiClient, AppLoad
     String fullPhone = selectedCountryCode.contains('-')
         ? selectedCountryCode.split('-')[0] + trimmed
         : selectedCountryCode + trimmed;
-
     // CASE 1 → Already verified → hide button
     if (verifiedNumbers.containsKey(fullPhone)) {
       isPhoneValid.value = false;  // hide/disable button
-      isOtpShow.value = false;     // hide OTP
+      isOtpShow.value = false;
+      Get.snackbar(AppConstants.appName, AppStrings.app_phone_number_already_verified.toUpperCase().tr);
       return;
     }
 
     // Show Verify button only when user typed 10 or more characters.
     // Otherwise hide/disable it.
-    if (trimmed.length >= 10) {
+    if (trimmed.length >= 7) {
       isPhoneValid.value = true;
     } else {
       isPhoneValid.value = false;

@@ -27,7 +27,7 @@ class ProductDetailModel {
             ? null
             : ProductDetailData.fromJson(json["data"]),
         msg: json["msg"],
-        status: json["status"],
+        status: json["status"].toString(),
       );
 
   Map<String, dynamic> toJson() => {
@@ -132,6 +132,7 @@ class Datum {
 enum ProductDetailType {
   productImages, // type = "2"
   productDetail, // type = "1"
+  boxContent, // type = "18"
   productOption, // type = "3"
   productSpecifications, // type = "4"
   volumeDiscount, // type = "5"
@@ -144,6 +145,7 @@ enum ProductDetailType {
   shop, // type = "13"
   reviews, // type = "9"
   previewFiles, // type = "16"
+  modelMesurement, // type = "16"
   unknown, // default
 }
 
@@ -177,12 +179,16 @@ ProductDetailType productTypeFromString(String? type) {
       return ProductDetailType.productDescription;
     case "16":
       return ProductDetailType.previewFiles;
+    case "17":
+      return ProductDetailType.modelMesurement;
+    case "18":
+      return ProductDetailType.boxContent;
     default:
       return ProductDetailType.unknown;
   }
 }
 
-class Value {
+class OptionValue {
   final String? productName;
   final String? selprodId;
   final String? optionvalueName;
@@ -196,7 +202,7 @@ class Value {
   final String? optionId;
   final String? isSelected;
 
-  Value({
+  OptionValue({
     this.productName,
     this.selprodId,
     this.optionvalueName,
@@ -211,7 +217,7 @@ class Value {
     this.isSelected,
   });
 
-  factory Value.fromJson(Map<String, dynamic> json) => Value(
+  factory OptionValue.fromJson(Map<String, dynamic> json) => OptionValue(
     productName: json["product_name"],
     selprodId: json["selprod_id"],
     optionvalueName: json["optionvalue_name"],
@@ -782,13 +788,13 @@ class ProductImages {
 
 class ProductOptions {
   final String? optionName;
-  final List<Value>? values;
+  final List<OptionValue>? values;
   final String? optionId;
   final String? optionIsColor;
   final String? optionValueName;
 
-  ProductOptions(
-     {this.optionValueName,
+  ProductOptions({
+    this.optionValueName,
     this.optionName,
     this.values,
     this.optionId,
@@ -800,7 +806,9 @@ class ProductOptions {
     optionValueName: json["optionvalue_name"],
     values: json["values"] == null
         ? []
-        : List<Value>.from(json["values"]!.map((x) => Value.fromJson(x))),
+        : List<OptionValue>.from(
+            json["values"]!.map((x) => OptionValue.fromJson(x)),
+          ),
     optionId: json["option_id"],
     optionIsColor: json["option_is_color"],
   );
@@ -916,6 +924,8 @@ class Content {
   final List<ProductPolicy>? productPolicies;
   final String? description;
   final SoldBy? shop;
+  final List<ProductContent>? modelMeasurement;
+  final List<BoxContent>? boxContent;
 
   // final List<ProductPolicies>? policies;
   // final List<Banners>? banners;
@@ -934,11 +944,13 @@ class Content {
     this.productPolicies,
     this.description,
     this.shop,
+    this.boxContent,
     // this.volumeDiscount,
     // this.policies,
     // this.banners,
     // this.similarProduct,
     this.recommendedProduct,
+    this.modelMeasurement,
     // this.buyTogether,
     // this.reviewData,
     // this.previewFilesData,
@@ -954,6 +966,10 @@ class Content {
         );
       case ProductDetailType.productDetail:
         return Content(productDetail: ProductDetail.fromJson(json["content"]));
+      case ProductDetailType.boxContent:
+        return Content(boxContent: (json["content"] as List?)
+            ?.map((e) => BoxContent.fromJson(e))
+            .toList());
       case ProductDetailType.productOption:
         return Content(
           optionRows: (json["content"] as List?)
@@ -1014,6 +1030,12 @@ class Content {
       //   return Content(
       //     previewFilesData: PreviewFilesData.fromJson(json["content"]),
       //   );
+      case ProductDetailType.modelMesurement:
+        return Content(
+          modelMeasurement: (json["content"] as List?)
+              ?.map((e) => ProductContent.fromJson(e))
+              .toList(),
+        );
       default:
         return Content();
     }
@@ -1034,5 +1056,201 @@ class Content {
     // "buyTogether": buyTogether?.map((x) => x.toJson()).toList(),
     // "reviewData": reviewData?.toJson(),
     // "previewFilesData": previewFilesData?.toJson(),
+  };
+}
+
+class ProductContent {
+  final String? title;
+  final List<Adjective>? adjectives;
+
+  ProductContent({this.title, this.adjectives});
+
+  factory ProductContent.fromJson(Map<String, dynamic> json) {
+    return ProductContent(
+      title: json['title'],
+      adjectives: (json['adjectives'] as List?)
+          ?.map((e) => Adjective.fromJson(e))
+          .toList(),
+    );
+  }
+}
+
+class Adjective {
+  final int? id;
+  final String? value;
+  final String? extra;
+
+  Adjective({this.id, this.value, this.extra});
+
+  factory Adjective.fromJson(Map<String, dynamic> json) {
+    return Adjective(
+      id: int.tryParse(json['id']?.toString() ?? ''),
+      value: json['value'],
+      extra: json['extra'],
+    );
+  }
+}
+
+class BoxContent {
+  final String? boxSelprodId;
+  final String? boxDiscountPercentage;
+  final String? selprodId;
+  final String? selprodProductId;
+  final String? selprodPrice;
+  final String? selprodStock;
+  final String? selprodMinOrderQty;
+  final String? selprodUserId;
+  final String? selprodSku;
+  final String? selprodTitle;
+  final String? productName;
+  final String? productId;
+  final String? productIdentifier;
+  final String? productType;
+  final String? specialPriceFound;
+  final String? theprice;
+  final String? inStock;
+  final String? boxDiscountedPrice;
+  final String? boxDiscountAmount;
+  final BoxContentImage? image;
+  final String? imageURL;
+
+  BoxContent({
+    this.boxSelprodId,
+    this.boxDiscountPercentage,
+    this.selprodId,
+    this.selprodProductId,
+    this.selprodPrice,
+    this.selprodStock,
+    this.selprodMinOrderQty,
+    this.selprodUserId,
+    this.selprodSku,
+    this.selprodTitle,
+    this.productName,
+    this.productId,
+    this.productIdentifier,
+    this.productType,
+    this.specialPriceFound,
+    this.theprice,
+    this.inStock,
+    this.boxDiscountedPrice,
+    this.boxDiscountAmount,
+    this.image,
+    this.imageURL
+  });
+
+  factory BoxContent.fromJson(Map<String, dynamic> json) => BoxContent(
+    boxSelprodId: json["box_selprod_id"],
+    boxDiscountPercentage: json["box_discount_percentage"],
+    selprodId: json["selprod_id"],
+    selprodProductId: json["selprod_product_id"],
+    selprodPrice: json["selprod_price"],
+    selprodStock: json["selprod_stock"],
+    selprodMinOrderQty: json["selprod_min_order_qty"],
+    selprodUserId: json["selprod_user_id"],
+    selprodSku: json["selprod_sku"],
+    selprodTitle: json["selprod_title"],
+    productName: json["product_name"],
+    productId: json["product_id"],
+    productIdentifier: json["product_identifier"],
+    productType: json["product_type"],
+    specialPriceFound: json["special_price_found"],
+    theprice: json["theprice"],
+    inStock: json["in_stock"],
+    boxDiscountedPrice: json["box_discounted_price"],
+    boxDiscountAmount: json["box_discount_amount"],
+    imageURL: json["image_url"],
+    image: json["image"] == null ? null : BoxContentImage.fromJson(json["image"]),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "box_selprod_id": boxSelprodId,
+    "box_discount_percentage": boxDiscountPercentage,
+    "selprod_id": selprodId,
+    "selprod_product_id": selprodProductId,
+    "selprod_price": selprodPrice,
+    "selprod_stock": selprodStock,
+    "selprod_min_order_qty": selprodMinOrderQty,
+    "selprod_user_id": selprodUserId,
+    "selprod_sku": selprodSku,
+    "selprod_title": selprodTitle,
+    "product_name": productName,
+    "product_id": productId,
+    "product_identifier": productIdentifier,
+    "product_type": productType,
+    "special_price_found": specialPriceFound,
+    "theprice": theprice,
+    "in_stock": inStock,
+    "box_discounted_price": boxDiscountedPrice,
+    "box_discount_amount": boxDiscountAmount,
+    "image_url": imageURL,
+    "image": image?.toJson(),
+  };
+}
+
+class BoxContentImage {
+  final String? afileId;
+  final String? afileType;
+  final String? afileRecordId;
+  final String? afileRecordSubid;
+  final String? afileLangId;
+  final String? afileScreen;
+  final String? afilePhysicalPath;
+  final String? afileName;
+  final String? afileAttributeTitle;
+  final String? afileAttributeAlt;
+  final String? afileAspectRatio;
+  final String? afileDisplayOrder;
+  final DateTime? afileUpdatedAt;
+  final String? afileDownloadedTimes;
+
+  BoxContentImage({
+    this.afileId,
+    this.afileType,
+    this.afileRecordId,
+    this.afileRecordSubid,
+    this.afileLangId,
+    this.afileScreen,
+    this.afilePhysicalPath,
+    this.afileName,
+    this.afileAttributeTitle,
+    this.afileAttributeAlt,
+    this.afileAspectRatio,
+    this.afileDisplayOrder,
+    this.afileUpdatedAt,
+    this.afileDownloadedTimes,
+  });
+
+  factory BoxContentImage.fromJson(Map<String, dynamic> json) => BoxContentImage(
+    afileId: json["afile_id"],
+    afileType: json["afile_type"],
+    afileRecordId: json["afile_record_id"],
+    afileRecordSubid: json["afile_record_subid"],
+    afileLangId: json["afile_lang_id"],
+    afileScreen: json["afile_screen"],
+    afilePhysicalPath: json["afile_physical_path"],
+    afileName: json["afile_name"],
+    afileAttributeTitle: json["afile_attribute_title"],
+    afileAttributeAlt: json["afile_attribute_alt"],
+    afileAspectRatio: json["afile_aspect_ratio"],
+    afileDisplayOrder: json["afile_display_order"],
+    afileUpdatedAt: json["afile_updated_at"] == null ? null : DateTime.parse(json["afile_updated_at"]),
+    afileDownloadedTimes: json["afile_downloaded_times"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "afile_id": afileId,
+    "afile_type": afileType,
+    "afile_record_id": afileRecordId,
+    "afile_record_subid": afileRecordSubid,
+    "afile_lang_id": afileLangId,
+    "afile_screen": afileScreen,
+    "afile_physical_path": afilePhysicalPath,
+    "afile_name": afileName,
+    "afile_attribute_title": afileAttributeTitle,
+    "afile_attribute_alt": afileAttributeAlt,
+    "afile_aspect_ratio": afileAspectRatio,
+    "afile_display_order": afileDisplayOrder,
+    "afile_updated_at": afileUpdatedAt?.toIso8601String(),
+    "afile_downloaded_times": afileDownloadedTimes,
   };
 }

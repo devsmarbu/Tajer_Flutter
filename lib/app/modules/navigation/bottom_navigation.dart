@@ -48,7 +48,17 @@ class _BottomNavigationState extends State<BottomNavigation> {
   Widget build(BuildContext context) {
     final bottomNav = Get.find<BottomNavController>();
 
-    return Obx(() =>  AdaptiveScaffold(
+    return Obx(
+            () => PopScope(
+                canPop: bottomNav.currentIndex.value == 0,
+                onPopInvokedWithResult: (didPop, result) {
+                  if (didPop) return;
+
+                  if (bottomNav.currentIndex.value != 0) {
+                    bottomNav.changeTab(0); // Navigate to Home tab
+                  }
+                },
+                child: AdaptiveScaffold(
       minimizeBehavior: TabBarMinimizeBehavior.never,
       bottomNavigationBar: AdaptiveBottomNavigationBar(
         items: [
@@ -138,7 +148,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
         useNativeBottomBar: PlatformInfo.isIOS26OrHigher(),
       ),
       body: _screens[bottomNav.currentIndex.value],
-    ));
+    )));
   }
 }
 

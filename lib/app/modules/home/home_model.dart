@@ -405,6 +405,7 @@ class HomeProduct {
   final List<ProductOption>? productOptions;
   final String? prodRating;
   final String? shopId;
+  final String? selprod_user_id;
   final String? selprodId;
   final String? splpriceDisplayListPrice;
   final String? brandName;
@@ -440,6 +441,7 @@ class HomeProduct {
     this.productOptions,
     this.prodRating,
     this.shopId,
+    this.selprod_user_id,
     this.selprodId,
     this.splpriceDisplayListPrice,
     this.brandName,
@@ -476,6 +478,7 @@ class HomeProduct {
     productOptions: json["product_options"] == null ? [] : List<ProductOption>.from(json["product_options"]!.map((x) => ProductOption.fromJson(x))),
     prodRating: json["prod_rating"],
     shopId: json["shop_id"],
+    selprod_user_id: json["selprod_user_id"],
     selprodId: json["selprod_id"],
     splpriceDisplayListPrice: json["splprice_display_list_price"],
     brandName: json["brand_name"],
@@ -512,6 +515,7 @@ class HomeProduct {
     "product_options": productOptions == null ? [] : List<dynamic>.from(productOptions!.map((x) => x.toJson())),
     "prod_rating": prodRating,
     "shop_id": shopId,
+    "selprod_user_id": selprod_user_id,
     "selprod_id": selprodId,
     "splprice_display_list_price": splpriceDisplayListPrice,
     "brand_name": brandName,

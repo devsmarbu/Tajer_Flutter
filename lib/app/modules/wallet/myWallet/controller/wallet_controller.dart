@@ -192,7 +192,8 @@ class WalletController extends GetxController with WalletApiClient, AppLoader {
         if (data.responseCode == "200" && data.status == AppConstants.SUCCESS) {
 
           Get.snackbar(AppConstants.appName, data.msg);
-          refresh();
+          refreshPage();
+          //refresh();
 
         } else {
           AppDialog.showMessage(data.msg);
@@ -206,10 +207,11 @@ class WalletController extends GetxController with WalletApiClient, AppLoader {
     }
   }
 
-  void refreshPage(){
-    selectedTab.value=0;
-    currentPage.value=1;
-    getCreditSearch(currentPage.value.toString());
+  Future<void> refreshPage() async {
+    currentPage.value = 1;
+    isLastPage.value = false;
+    creditsListingItem.clear();
+    await getCreditSearch(currentPage.value.toString());
   }
 
   /// Determine tab type for API param

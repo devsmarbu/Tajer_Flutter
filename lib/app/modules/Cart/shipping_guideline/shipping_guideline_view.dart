@@ -28,11 +28,13 @@ import 'package:tajer/utils/app_strings.dart';
 // """;
 
 class DeliveryHtmlPage extends StatefulWidget {
+  final bool isAgreed;
   final Function(bool)? onAgreeBtnTap; // Updated: Now accepts int parameter
   final ShippingGuidelines? shippingGuidelines;
 
   const DeliveryHtmlPage({
     super.key,
+    required this.isAgreed,
     this.onAgreeBtnTap,
     required this.shippingGuidelines,
   });
@@ -42,7 +44,6 @@ class DeliveryHtmlPage extends StatefulWidget {
 }
 
 class _DeliveryHtmlPageState extends State<DeliveryHtmlPage> {
-  bool _agreed = false;
 
   @override
   Widget build(BuildContext context) {
@@ -83,11 +84,10 @@ class _DeliveryHtmlPageState extends State<DeliveryHtmlPage> {
                   padding: EdgeInsets.fromLTRB(8, 0, 0, 0),
                   child: Checkbox(
                     activeColor: Colors.black,
-                    value: _agreed,
+                    value: widget.isAgreed,
                     onChanged: (bool? newValue) {
                       setState(() {
-                        _agreed = newValue ?? false; // Toggle the state
-                        widget.onAgreeBtnTap?.call(_agreed);
+                        widget.onAgreeBtnTap?.call(newValue ?? false);
                       });
                     },
                   ),

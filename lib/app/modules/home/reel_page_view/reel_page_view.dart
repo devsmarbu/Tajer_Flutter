@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 import 'package:tajer/app/modules/home/reel_page_view/reel_page_controller.dart';
+import 'package:tajer/app/modules/product_detail/shop_detail_view/shop_detail_view.dart';
 import 'package:video_player/video_player.dart';
 import '../../../core/routes/app_routes.dart';
 import '../../product_detail/select_size/select_size_controller.dart';
@@ -82,10 +83,10 @@ class _ReelPageState extends State<ReelPage> {
   }
 
   Future<void> _initializeController(
-      VideoPlayerController controller,
-      String url,
-      bool notifyOnInit,
-      ) async {
+    VideoPlayerController controller,
+    String url,
+    bool notifyOnInit,
+  ) async {
     if (_initializationFutures.containsKey(url)) {
       return _initializationFutures[url];
     }
@@ -96,19 +97,19 @@ class _ReelPageState extends State<ReelPage> {
     controller
         .initialize()
         .then((_) {
-      controller
-        ..setLooping(true)
-        ..setVolume(isMuted ? 0 : 1);
-      if (notifyOnInit && mounted) setState(() {});
-      completer.complete();
-    })
+          controller
+            ..setLooping(true)
+            ..setVolume(isMuted ? 0 : 1);
+          if (notifyOnInit && mounted) setState(() {});
+          completer.complete();
+        })
         .catchError((error) {
-      debugPrint("⚠️ Error initializing video for $url: $error");
-      if (!completer.isCompleted) completer.completeError(error);
-    })
+          debugPrint("⚠️ Error initializing video for $url: $error");
+          if (!completer.isCompleted) completer.completeError(error);
+        })
         .whenComplete(() {
-      _initializationFutures.remove(url);
-    });
+          _initializationFutures.remove(url);
+        });
 
     return completer.future;
   }
@@ -206,9 +207,7 @@ class _ReelPageState extends State<ReelPage> {
             debugPrint("hasMore value :- ${_controller.hasMore.value}");
             // debugPrint("isLoading value :- ${_controller.isLoading.value}");
             // ✅ Safe auto-load trigger
-            if (
-            _controller.hasMore.value &&
-                index >= products.length - 1) {
+            if (_controller.hasMore.value && index >= products.length - 1) {
               debugPrint("📥 Auto-loading more reels...");
               unawaited(_controller.loadMoreProducts());
             }
@@ -294,6 +293,7 @@ class _ReelCellState extends State<ReelCell> {
   @override
   Widget build(BuildContext context) {
     final product = widget.product;
+    final _controller = Get.put(ReelPageController());
 
     return GestureDetector(
       onTap: _toggleVolume, // 👈 tap anywhere on video
@@ -346,8 +346,12 @@ class _ReelCellState extends State<ReelCell> {
                   onTap: () => Navigator.pop(context),
                 ),
                 const SizedBox(width: 10),
-                Expanded(
-                  child: Center(
+              Expanded(
+                child: Center(
+                  child: InkWell(
+                    onTap: () {
+                      AppRoutes.goToProductListPage(brandId: product.brandId ?? '', productVideoAvailable: "0", titleHeader: product.brandName ?? '', prodCatId: '');
+                    },
                     child: Text(
                       product.brandName ?? "",
                       style: const TextStyle(
@@ -360,6 +364,7 @@ class _ReelCellState extends State<ReelCell> {
                     ),
                   ),
                 ),
+              ),
                 const SizedBox(width: 40),
               ],
             ),
@@ -391,28 +396,39 @@ class _ReelCellState extends State<ReelCell> {
           Positioned(
             left: 16,
             bottom: 190,
-            child: Row(
-              children: [
-                Container(
-                  height: 60,
-                  width: 60,
-                  clipBehavior: Clip.hardEdge,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
+            child: GestureDetector(
+              onTap: () {
+                _controller.goToShopDetailView(
+                  product.shopId ?? "",
+                  product.selprod_user_id ?? "",
+                );
+              },
+              child: Row(
+                children: [
+                  Container(
+                    height: 60,
+                    width: 60,
+                    clipBehavior: Clip.hardEdge,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Image.network(
+                      product.shopLogoUrl ?? "",
+                      fit: BoxFit.cover,
+                    ),
                   ),
-                  child: Image(image: NetworkImage(product.shopLogoUrl ?? "")),
-                ),
-                const SizedBox(width: 10),
-                Text(
-                  product.shopName ?? "",
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w500,
-                    fontFamily: 'Nunito',
+                  const SizedBox(width: 10),
+                  Text(
+                    product.shopName ?? "",
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                      fontFamily: 'Nunito',
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
 
@@ -435,11 +451,25 @@ class _ReelCellState extends State<ReelCell> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         GestureDetector(
-                          onTap: () {
-                            Get.toNamed(
+                          onTap: () async {
+                            if (widget.controller.value.isInitialized) {
+                              await widget.controller.pause();
+                            }
+
+                            // ➡️ Navigate
+                            await Get.toNamed(
                               AppRoutes.productDetail,
-                              arguments: {"productId": product.selprodId,"titleHeader": product.selprodTitle},
+                              arguments: {
+                                "productId": product.selprodId,
+                                "titleHeader": product.selprodTitle,
+                              },
                             );
+
+                            // ▶️ Resume when coming back (optional)
+                            if (mounted &&
+                                widget.controller.value.isInitialized) {
+                              widget.controller.play();
+                            }
                           },
                           child: Text(
                             product.productName ?? "",
@@ -448,7 +478,8 @@ class _ReelCellState extends State<ReelCell> {
                               fontSize: 13,
                               fontWeight: FontWeight.w600,
                               fontFamily: 'Nunito',
-                              decoration: TextDecoration.underline, // optional styling
+                              decoration:
+                                  TextDecoration.underline, // optional styling
                             ),
                           ),
                         ),
@@ -482,18 +513,19 @@ class _ReelCellState extends State<ReelCell> {
                     children: [
                       ClipRRect(
                         borderRadius: BorderRadius.circular(12),
-                        child: Image.asset(
-                          "assets/images/placeholder_image.png",
-                          width: 100,
-                          height: 100,
-                          fit: BoxFit.cover,
-                        ),
-                        // Image.network(
-                        //   product.imageUrl,
-                        //   width: 60,
-                        //   height: 60,
-                        //   fit: BoxFit.cover,
-                        // ),
+                        child:
+                            // Image.asset(
+                            //   "assets/images/placeholder_image.png",
+                            //   width: 100,
+                            //   height: 100,
+                            //   fit: BoxFit.cover,
+                            // ),
+                            Image.network(
+                              product.productImageUrl ?? "",
+                              width: 100,
+                              height: 100,
+                              fit: BoxFit.cover,
+                            ),
                       ),
 
                       Positioned(
@@ -519,18 +551,35 @@ class _ReelCellState extends State<ReelCell> {
                                     price: product.selprodPrice ?? "",
                                     productId: product.productId ?? "",
                                     productOptions: firstOptionValues,
-                                    currencyCode: product.selprodPrice?.replaceAll(RegExp(r'[0-9.]'), '') ?? "\$",
+                                    currencyCode:
+                                        product.selprodPrice?.replaceAll(
+                                          RegExp(r'[0-9.]'),
+                                          '',
+                                        ) ??
+                                        "\$",
+                                    productName: product.productName ?? '',
                                   ),
                                 );
                               } else {
-                                final sizeController = Get.put(SelectSizeController(product.selprodId ?? ''));
-                                sizeController.addToCart(product.selprodId ?? '');
+                                final sizeController = Get.put(
+                                  SelectSizeController(product.selprodId ?? ''),
+                                );
+                                sizeController.addToCart(
+                                  product.selprodId ?? '',
+                                  product.productName ?? '',
+                                  product.selprodPrice ?? '',
+                                );
                               }
                             } else {
-                              final sizeController = Get.put(SelectSizeController(product.selprodId ?? ''));
-                              sizeController.addToCart(product.selprodId ?? '');
+                              final sizeController = Get.put(
+                                SelectSizeController(product.selprodId ?? ''),
+                              );
+                              sizeController.addToCart(
+                                product.selprodId ?? '',
+                                product.productName ?? '',
+                                product.selprodPrice ?? '',
+                              );
                             }
-
                           },
                           child: Container(
                             decoration: BoxDecoration(
@@ -566,7 +615,7 @@ class _ReelCellState extends State<ReelCell> {
             right: 16,
             bottom: 180,
             child: GestureDetector(
-              onTap: ()  {
+              onTap: () {
                 debugPrint("Share: ${product.productDetailUrl}");
                 ShareProductUtil.shareProduct(
                   context: context,

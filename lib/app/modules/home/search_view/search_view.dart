@@ -14,7 +14,6 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // Navigate to your search results screen
         Navigator.push(
           context,
           MaterialPageRoute(

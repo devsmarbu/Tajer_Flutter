@@ -67,7 +67,7 @@ class SearchData {
 class Suggestions {
   final List<Category>? categories;
   final List<AllBrand>? brands;
-  final List<dynamic>? tags;
+  final List<Tag>? tags;
   final List<SearchProduct>? products;
 
   Suggestions({
@@ -78,19 +78,44 @@ class Suggestions {
   });
 
   factory Suggestions.fromJson(Map<String, dynamic> json) => Suggestions(
-    categories: json["categories"] == null ? [] : List<Category>.from(json["categories"]!.map((x) => Category.fromJson(x))),
-    brands: json["brands"] == null ? [] : List<AllBrand>.from(json["brands"]!.map((x) => AllBrand.fromJson(x))),
-    tags: json["tags"] == null ? [] : List<dynamic>.from(json["tags"]!.map((x) => x)),
-    products: json["products"] == null ? [] : List<SearchProduct>.from(json["products"]!.map((x) => SearchProduct.fromJson(x))),
+    categories: json["categories"] == null
+        ? []
+        : List<Category>.from(
+      json["categories"].map((x) => Category.fromJson(x)),
+    ),
+    brands: json["brands"] == null
+        ? []
+        : List<AllBrand>.from(
+      json["brands"].map((x) => AllBrand.fromJson(x)),
+    ),
+    tags: json["tags"] == null
+        ? []
+        : List<Tag>.from(
+      json["tags"].map((x) => Tag.fromJson(x)),
+    ),
+    products: json["products"] == null
+        ? []
+        : List<SearchProduct>.from(
+      json["products"].map((x) => SearchProduct.fromJson(x)),
+    ),
   );
 
   Map<String, dynamic> toJson() => {
-    "categories": categories == null ? [] : List<dynamic>.from(categories!.map((x) => x.toJson())),
-    "brands": brands == null ? [] : List<dynamic>.from(brands!.map((x) => x)),
-    "tags": tags == null ? [] : List<dynamic>.from(tags!.map((x) => x)),
-    "products": products == null ? [] : List<dynamic>.from(products!.map((x) => x.toJson())),
+    "categories": categories == null
+        ? []
+        : List<dynamic>.from(categories!.map((x) => x.toJson())),
+    "brands": brands == null
+        ? []
+        : List<dynamic>.from(brands!.map((x) => x.toJson())),
+    "tags": tags == null
+        ? []
+        : List<dynamic>.from(tags!.map((x) => x.toJson())),
+    "products": products == null
+        ? []
+        : List<dynamic>.from(products!.map((x) => x.toJson())),
   };
 }
+
 
 class Category {
   final String? categoryName;
@@ -143,3 +168,36 @@ class SearchProduct {
     "selprod_id": selprodId,
   };
 }
+
+class Tag {
+  String? tagId;
+  String? tagName;
+  String? prodCount;
+  String? level;
+
+  Tag({
+    this.tagId,
+    this.tagName,
+    this.prodCount,
+    this.level,
+  });
+
+  factory Tag.fromJson(Map<String, dynamic> json) {
+    return Tag(
+      tagId: json['tag_id'] as String?,
+      tagName: json['tag_name'] as String?,
+      prodCount: json['prodCount'] as String?,
+      level: json['level'] as String?,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'tag_id': tagId,
+      'tag_name': tagName,
+      'prodCount': prodCount,
+      'level': level,
+    };
+  }
+}
+

@@ -8,7 +8,7 @@ import '../home/search_view/search_view.dart';
 import 'category_controller.dart';
 
 class CategoriesScreen extends StatefulWidget {
-  CategoriesScreen({super.key});
+  const CategoriesScreen({super.key});
 
   @override
   State<CategoriesScreen> createState() => _CategoriesScreenState();

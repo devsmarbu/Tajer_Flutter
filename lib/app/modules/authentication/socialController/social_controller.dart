@@ -15,6 +15,10 @@ import '../../../../utils/pref_store.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/routes/app_routes.dart';
 import '../../../data/service/authentication_api_client.dart';
+import '../../Account/controller/account_controller.dart';
+import '../../categories/category_controller.dart';
+import '../../home/home_controller.dart';
+import '../../navigation/bottom_navigation.dart';
 import '../login/login_data.dart';
 
 class SocialController extends GetxController{
@@ -212,10 +216,20 @@ class SocialController extends GetxController{
         );
 
         if(common.responseCode=="200"){
-          if(common.status==AppConstants.SUCCESS){
+          if (common.status == AppConstants.SUCCESS) {
 
+            // ❌ Remove existing tab controllers
+            Get.delete<HomeController>(force: true);
+            Get.delete<CategoryController>(force: true);
+            Get.delete<AccountController>(force: true);
+            Get.delete<BottomNavController>(force: true);
+
+            // ✅ Recreate BottomNav with index 0
+            final bottomNav = Get.put(BottomNavController());
+            bottomNav.changeTab(0);
+
+            // ✅ Reset navigation stack
             Get.offAllNamed(AppRoutes.bottomNavigation);
-
           }
           // else if (common.status == AppConstants.WARNING && common.notVerified != null) {
           //
@@ -265,7 +279,7 @@ class SocialController extends GetxController{
     if(fcmToken==""){
       fcmToken= await AppFunction.saveFcmToken(pref);
     }
-    print("saveFcmTokenApi $fcmToken");
+   // print("saveFcmTokenApi $fcmToken");
     saveFcmTokenApi(fcmToken);
 
   }

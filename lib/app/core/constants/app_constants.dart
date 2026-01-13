@@ -6,17 +6,16 @@ RxString cartItemCounts = "0".obs;
 
 class AppConstants {
   // Base URL
-  // static const String baseUrl = "https://beta.tajershops.com/app-api/3.1/"; //BETA URL
-  static const String baseUrl = "https://tajershops.com/app-api/3.1/"; //LIVE URL
+ // static const String baseUrl = "https://beta.tajershops.com/app-api/3.1/"; //BETA URL
+ static const String baseUrl = "https://tajershops.com/app-api/3.1/"; //LIVE URL
 
   // static const String imageBaseURLPath = "https://beta.tajershops.com";
-  static const String imageBaseURLPath = "https://tajershops.com";
+ static const String imageBaseURLPath = "https://tajershops.com";
   //static const String baseUrl = "https://tajershops.com/";
   //https://beta.tajershops.com/app-api/3.1/social-media-auth/get-status
   static const String oneSignalAppId="5652c9b5-8841-4a8e-8961-6e0cea0dfcf2";
   static const String privacyPolicy="cms/view/3";
 
-//
   static const String LOGOUT = "-1";
   static const String SUCCESS = "1";
   static const String WARNING = "0";
@@ -96,14 +95,16 @@ class AppConstants {
   static const String appleLoginApi = "apple-login";
   static const String saveFirebaseToken = "guest-user/set-user-push-notification-token";
   static const String logoutUser = "guest-user/logout";
+  static const String accountDelete = "/dashboard/account/send-truncate-request";
   static const String verifyOtp = "guest-user/validate-otp-api/{";
   static const String home = "home";
   static const String categories = "category/structure";
   static const String brands = "brands";
   static const String shops = "shops/search";
   static const String productDetail = "/products/view/";
+  static const String productSizeGuide = "products/size-guide";
   static const String reportForm = "/products/setup-product-report";
-  static const String filteredProducts = "/products/get-filtered-products/";
+  static const String filteredProducts = "/products/get-filtered-products";
   static const String getFilters = "/products/filters";
   static const String shopDetail = "/shops/view/";
   static const String shopSendMessage = "/shops/set-up-send-message";
@@ -111,6 +112,7 @@ class AppConstants {
   static const String collectionSearch = "/collections/search/";
   static const String shopMarkHelpful = "/reviews/mark-helpful/";
   static const String autoCompleteSearch = "/products/search-producttags-autocomplete/";
+  static const String searchImageRecordId = "home/upload-search-image/";
   static const String searchFavListItems = "/dashboard/account/search-favourite-list-items";
   static const String wishlistItems = "/dashboard/account/search-wish-list-items";
   static const String wishListSearch = "/dashboard/account/wish-list-search";

@@ -26,6 +26,22 @@ class ProductDetailApiClient {
     );
   }
 
+  Future<Response> getSizeChartData({
+    required String productId,
+  }) async {
+    final url =
+        '${AppConstants.productSizeGuide}/$productId'; // ✅ Append ID to path
+
+    return await _api.dio.get(
+      url,
+      options: Options(
+        headers: {
+          'Accept': 'application/json',
+        },
+      ),
+    );
+  }
+
   Future<Response> reportForm({
     required String selprod_name,
     required String spreport_title,

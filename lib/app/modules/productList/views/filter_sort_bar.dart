@@ -7,7 +7,8 @@ import '../../filter/views/filter_screen.dart';
 
 class FilterSortBar extends StatelessWidget {
   final String categoryId;
-  const FilterSortBar({super.key, required this.categoryId});
+  final String brandId;
+  const FilterSortBar({super.key, required this.categoryId, required this.brandId});
 
   Future<Map<String, dynamic>?> _showSortBottomSheet(BuildContext context) {
     return showModalBottomSheet<Map<String, dynamic>>(
@@ -41,10 +42,13 @@ class FilterSortBar extends StatelessWidget {
                 baseParams["sortBy"] = result["sortKey"];
                 debugPrint("check the category value");
                 debugPrint(result["categoryIds"]);
+
                 if (result["categoryIds"]?.toString() == "[]" || result["categoryIds"]?.toString() == null) {
                   baseParams["prodcat"] = categoryId;
                 }
-
+                if (result["brandsIds"]?.toString() == "[]" || result["brandIds"]?.toString() == null) {
+                  baseParams["brand"] = brandId;
+                }
                 controller.loadProducts(baseParams);
               }
             },
@@ -75,7 +79,7 @@ class FilterSortBar extends StatelessWidget {
               final result = await Get.to(
                 () => FilterScreen(
                   categoryId: categoryId,
-                  brandId: '',
+                  brandId: brandId,
                   shopId: '',
                   keyword: '',
                   featured: '',

@@ -8,6 +8,7 @@ import '../../home/home_model.dart';
 class SelectSizeView extends StatefulWidget {
   final List<Value>? productOptions;
   final String price;
+  final String productName;
   final String productId;
   final String currencyCode;
 
@@ -17,6 +18,7 @@ class SelectSizeView extends StatefulWidget {
     required this.price,
     required this.productId,
     required this.currencyCode,
+    required this.productName,
   });
 
   @override
@@ -29,17 +31,25 @@ class _SelectSizeSheetState extends State<SelectSizeView> {
   String? selectedSizeProductId;
   late SelectSizeController controller;
 
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    controller = Get.put(
+      SelectSizeController(widget.productId),
+      tag: widget.productId,
+    );
     selectedSizePrice = widget.price.replaceAll(RegExp(r'[A-Za-z]'), '');
+
+    setState(() {
+      selectedSize = widget.productOptions?.first.optionvalueName ?? "";
+      selectedSizePrice = widget.productOptions?.first.theprice ?? "";
+      selectedSizeProductId = widget.productOptions?.first.selprodId ?? "";
+    });
   }
+
   @override
   Widget build(BuildContext context) {
-    controller = Get.put(SelectSizeController(widget.productId));
-
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: const BoxDecoration(
@@ -50,7 +60,7 @@ class _SelectSizeSheetState extends State<SelectSizeView> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-           Text(
+          Text(
             AppStrings.appSelectSize.toUpperCase().tr,
             style: TextStyle(
               fontSize: 16,
@@ -75,6 +85,8 @@ class _SelectSizeSheetState extends State<SelectSizeView> {
                         selectedSizePrice = size.theprice ?? "";
                         selectedSizeProductId = size.selprodId ?? "";
                       });
+                      controller.productId = size.selprodId ?? "";
+                      controller.fetchProductDetail();
                     },
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 150),
@@ -129,30 +141,48 @@ class _SelectSizeSheetState extends State<SelectSizeView> {
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                child: Obx(() {
+                  return ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.black,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 20),
                     ),
-                    padding: const EdgeInsets.symmetric(vertical: 20),
-                  ),
-                  onPressed: selectedSize == null
-                      ? null
-                      : () {
-                          controller.addToCart(selectedSizeProductId ?? "");
-                          Navigator.pop(context, selectedSize);
-                        },
-                  child: Text(
-                    AppStrings.appAddToCart.tr,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontFamily: "Nunito",
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
+                    onPressed: controller.isLoading.value || controller.inStock.value != "1"
+                        ? null
+                        : () {
+                      controller.addToCart(
+                        selectedSizeProductId ?? "",
+                        widget.productName,
+                        selectedSizePrice ?? widget.price,
+                      );
+                    },
+                    child: controller.isLoading.value
+                        ? const SizedBox(
+                            height: 22,
+                            width: 22,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
+                        : Obx(
+                            () => Text(
+                              controller.inStock.value == "1"
+                                  ? AppStrings.appAddToCart.tr
+                                  : AppStrings.appSoldOut.tr,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontFamily: "Nunito",
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                  );
+                }),
               ),
             ],
           ),
@@ -160,5 +190,11 @@ class _SelectSizeSheetState extends State<SelectSizeView> {
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    Get.delete<SelectSizeController>(tag: widget.productId);
+    super.dispose();
   }
 }

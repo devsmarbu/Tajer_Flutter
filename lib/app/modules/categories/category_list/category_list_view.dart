@@ -128,6 +128,7 @@ class _CategoryListViewState extends State<CategoryListView> {
                           AppRoutes.productListPage,
                           parameters: {
                             "prodCatId": subCat.prodcatId ?? "",
+                          //  "brandId": subCat. ?? "",
                             "productVideoAvailable": "0",
                             "titleHeader": subCat.prodcatName ?? "",
                           },

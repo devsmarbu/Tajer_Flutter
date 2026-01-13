@@ -5,6 +5,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:tajer/app/core/constants/app_constants.dart';
 import 'package:tajer/app/modules/bankInfo/view/bank_info_view.dart';
 import 'package:tajer/common/widgets/common_loader.dart';
+import 'package:tajer/utils/pref_store.dart';
 import '../../../utils/app_params.dart';
 import '../../core/routes/app_routes.dart';
 import '../../modules/Account/sections/account_quick_actions.dart';
@@ -18,15 +19,59 @@ import 'controller/account_controller.dart';
 import 'models/section.dart';
 import 'models/section_item.dart';
 
-class AccountScreen extends StatelessWidget {
+class AccountScreen extends StatefulWidget {
   final VoidCallback? onCartTap;
 
   const AccountScreen({super.key, this.onCartTap});
 
+  Widget logoutButton(BuildContext context, AccountController controller) {
+    return ListTile(
+      leading: SvgPicture.asset(
+        "assets/icons/ic_logout.svg",
+        width: 24,
+        height: 24,
+      ),
+      title: Text(
+        AppStrings.appLogout.toUpperCase().tr,
+        style: const TextStyle(
+          fontSize: 14,
+          color: AppColors.redColor1,
+          fontFamily: 'Nunito',
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+      trailing: const Icon(Icons.chevron_right),
+      onTap: () {
+        controller.showLogoutDialog(context);
+      },
+    );
+  }
+
+  @override
+  State<AccountScreen> createState() => _AccountScreenState();
+}
+
+class _AccountScreenState extends State<AccountScreen> {
+  final AccountController controller = Get.put(AccountController());
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    controller.token= PrefStore().loadString(AppConstants.sessionToken)??"";
+    if(controller.token==""){
+      controller.isLogin.value=false;
+      controller.getAgreementUrl();
+    }else{
+      controller.isLogin.value=true;
+      controller.getProfileInfo();
+    }
+
+  }
+
 
   @override
   Widget build(BuildContext context) {
-    final AccountController controller = Get.put(AccountController());
     return Stack(
       children: [
         Scaffold(
@@ -60,15 +105,22 @@ class AccountScreen extends StatelessWidget {
                       return Column(
                         children: [
                           if (isLogin) ...[
-                            HeaderNameEmail(email:controller.emailId.value,name: controller.userName.value),
+                            HeaderNameEmail(
+                              email: controller.emailId.value,
+                              name: controller.userName.value,
+                            ),
                             // const SizedBox(height: 20),
-                            AccountQuickActions(onCartTap: onCartTap,accountController: controller,),
+                            AccountQuickActions(
+                              onCartTap: widget.onCartTap,
+                              accountController: controller,
+                            ),
                           ] else ...[
                             _SignInButton(onPressed: controller.login),
                           ],
                           const SizedBox(height: 20),
-                          ...sections
-                              .map((section) => SectionList(section: section)),
+                          ...sections.map(
+                            (section) => SectionList(section: section),
+                          ),
                           ReachOutSection(controller: controller),
                           const SizedBox(height: 20),
                           if (isLogin) ...[
@@ -77,7 +129,7 @@ class AccountScreen extends StatelessWidget {
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(12),
                               ),
-                              child: logoutButton(context, controller),
+                              child: widget.logoutButton(context, controller),
                             ),
                           ],
                           const SizedBox(height: 20),
@@ -93,29 +145,6 @@ class AccountScreen extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-
-  Widget logoutButton(BuildContext context, AccountController controller) {
-    return ListTile(
-      leading: SvgPicture.asset(
-        "assets/icons/ic_logout.svg",
-        width: 24,
-        height: 24,
-      ),
-      title: Text(
-        AppStrings.appLogout.toUpperCase().tr,
-        style: const TextStyle(
-          fontSize: 14,
-          color: AppColors.redColor1,
-          fontFamily: 'Nunito',
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-      trailing: const Icon(Icons.chevron_right),
-      onTap: () {
-        controller.showLogoutDialog(context);
-      },
     );
   }
 }
@@ -235,7 +264,7 @@ class SectionList extends StatelessWidget {
 
       case AppStrings.appCurrency:
         controller.getCurrency();
-       // controller.showCurrencyBottomSheet(context);
+        // controller.showCurrencyBottomSheet(context);
         break;
       case 'APP_REQUEST_MY_DATA':
         Get.toNamed(AppRoutes.requestMyDataScreen);
@@ -246,17 +275,23 @@ class SectionList extends StatelessWidget {
         break;
 
       case 'APP_UPDATE_PHONE':
-        Get.toNamed(AppRoutes.updatePhoneNumber,arguments: {
-          AppParams.title:AppStrings.appUpdatePhone.toUpperCase().tr,
-          AppParams.isUpdate:true
-        });
+        Get.toNamed(
+          AppRoutes.updatePhoneNumber,
+          arguments: {
+            AppParams.title: AppStrings.appUpdatePhone.toUpperCase().tr,
+            AppParams.isUpdate: true,
+          },
+        );
         break;
 
       case 'APP_CHANGE_PHONE':
-        Get.toNamed(AppRoutes.updatePhoneNumber,arguments: {
-          AppParams.title:AppStrings.appChangePhone.toUpperCase().tr,
-          AppParams.isUpdate:false
-        });
+        Get.toNamed(
+          AppRoutes.updatePhoneNumber,
+          arguments: {
+            AppParams.title: AppStrings.appChangePhone.toUpperCase().tr,
+            AppParams.isUpdate: false,
+          },
+        );
         break;
 
       case 'APP_BANK_INFO':
@@ -294,8 +329,11 @@ class SectionList extends StatelessWidget {
         Get.toNamed(AppRoutes.changePassword);
         break;
 
-        case 'APP_MAKE_SUGGESTION':
-        controller.navigateToWebView('APP_MAKE_SUGGESTION'.tr, controller.suggestionLink);
+      case 'APP_MAKE_SUGGESTION':
+        controller.navigateToWebView(
+          'APP_MAKE_SUGGESTION'.tr,
+          controller.suggestionLink,
+        );
         break;
 
       case AppStrings.appMessage:

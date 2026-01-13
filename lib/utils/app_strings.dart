@@ -193,7 +193,7 @@ class AppStrings {
   static const appUnitNo = "app_unit_no";
   static const appErrorUnitNo = "app_error_unit_no";
   static const verifyNow = "verify_now";
-  static const otpVerification = "otp_verification";
+  static const appOtpVerification = "app_otp_verification";
   static const appPleaseEnterValidOtp = "app_please_enter_valid_otp";
   static const appAddressLabel = "app_address_label";
   static const appHome = "app_home";
@@ -362,6 +362,7 @@ class AppStrings {
 
   static const appNoRewardFound= "app_no_reward_found";
   static const app_earned_reward_points= "app_earned_reward_points";
+  static const app_phone_number_already_verified= "app_phone_number_already_verified";
 
 
 

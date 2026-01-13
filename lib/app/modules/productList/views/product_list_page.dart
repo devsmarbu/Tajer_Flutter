@@ -10,6 +10,7 @@ import '../../../core/constants/app_constants.dart';
 import '../../../core/routes/app_routes.dart';
 import '../../Cart/MainCartView.dart';
 import '../../home/home_controller.dart';
+import '../../product_detail/search_view/search_view.dart';
 import '../../product_detail/select_size/select_size_controller.dart';
 import '../../product_detail/select_size/select_size_view.dart';
 import '../controllers/product_controller.dart';
@@ -54,15 +55,38 @@ class _ProductListPageState extends State<ProductListPage> {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              controller.titleHeader,
-              style: const TextStyle(
-                fontSize: 18,
-                color: AppColors.black1,
-                fontFamily: "Nunito",
-                fontWeight: FontWeight.w600,
+            Row(spacing: 10,children: [
+              Text(
+                controller.titleHeader,
+                style: const TextStyle(
+                  fontSize: 18,
+                  color: AppColors.black1,
+                  fontFamily: "Nunito",
+                  fontWeight: FontWeight.w600,
+                ),
               ),
-            ),
+              // RIGHT SIDE: Small image thumbnail (only when available)
+              if (Get.parameters["imagePath"] != null &&
+                  Get.parameters["imagePath"]!.isNotEmpty)
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.black, // borderColor
+                      width: 1,            // borderWidth
+                    ),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(6),
+                    child: Image.file(
+                      File(Get.parameters["imagePath"]!),
+                      width: 24,
+                      height: 24,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                )
+            ]),
             Obx(
               () => Text(
                 '${controller.productData.value?.recordCount ?? "0"} ${AppStrings.app_items.tr}',
@@ -76,9 +100,18 @@ class _ProductListPageState extends State<ProductListPage> {
           ],
         ),
         actions: [
-          const Icon(Icons.search, size: 30),
+          IconButton(
+            icon: const Icon(Icons.search, size: 30),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SearchView(), // Your dynamic search page
+                ),
+              );
+            },
+          ),
           const SizedBox(width: 16),
-
           /// CART ICON WITH COUNT
           Padding(
             padding: const EdgeInsetsDirectional.only(end: 15),
@@ -196,13 +229,13 @@ class _ProductListPageState extends State<ProductListPage> {
                             productOptions: options.first.values!,
                             currencyCode:
                                 controller.productData.value?.currencySymbol ??
-                                "\$",
+                                "\$", productName: product.productName ?? "",
                           ),
                         );
                       } else {
                         Get.put(
                           SelectSizeController(product.selprodId ?? ""),
-                        ).addToCart(product.selprodId ?? "");
+                        ).addToCart(product.selprodId ?? "",product.productName ?? '',product.selprodPrice ?? '');
                       }
                     },
                   );
@@ -217,7 +250,7 @@ class _ProductListPageState extends State<ProductListPage> {
             right: 0,
             bottom: 20,
             child: Center(
-              child: FilterSortBar(categoryId: controller.prodCatId),
+              child: FilterSortBar(categoryId: controller.prodCatId, brandId: controller.brandId),
             ),
           ),
         ],

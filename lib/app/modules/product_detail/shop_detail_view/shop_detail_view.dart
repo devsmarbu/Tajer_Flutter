@@ -366,16 +366,16 @@ class _ShopDetailPageState extends State<ShopDetailPage>
                         price: controller.products[index].selprodPrice ?? "",
                         productId: controller.products[index].productId ?? "",
                         productOptions: firstOptionValues,
-                        currencyCode: controller.products[index].selprodPrice?.replaceAll(RegExp(r'[0-9.]'), '') ?? "\$",
+                        currencyCode: controller.products[index].selprodPrice?.replaceAll(RegExp(r'[0-9.]'), '') ?? "\$", productName: controller.products[index].selprodTitle ?? "",
                       ),
                     );
                   } else {
                     final sizeController = Get.put(SelectSizeController(controller.products[index].selprodId ?? ''));
-                    sizeController.addToCart(controller.products[index].selprodId ?? '');
+                    sizeController.addToCart(controller.products[index].selprodId ?? '',controller.products[index].selprodTitle ?? "",controller.products[index].selprodPrice ?? "");
                   }
                 } else {
                   final sizeController = Get.put(SelectSizeController(controller.products[index].selprodId ?? ''));
-                  sizeController.addToCart(controller.products[index].selprodId ?? '');
+                  sizeController.addToCart(controller.products[index].selprodId ?? '',controller.products[index].selprodTitle ?? "",controller.products[index].selprodPrice ?? "");
                 }
               },
             );

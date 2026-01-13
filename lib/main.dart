@@ -1,19 +1,16 @@
+
 import 'dart:async';
 import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:tajer/app/firebase/one_signal_notification.dart';
 import 'package:tajer/common/functions/app_function.dart';
 import 'package:tajer/translations/localization_service.dart';
 import 'package:tajer/utils/pref_store.dart';
-import 'package:webview_flutter/webview_flutter.dart';
-
-import 'app/Extensions/NavigatorObserver.dart';
-import 'app/core/constants/app_constants.dart';
-import 'app/core/routes/app_routes.dart';
 
 import 'app/modules/authentication/splash/controller/splash_controller.dart';
 import 'app/modules/navigation/bottom_navigation.dart';
@@ -36,14 +33,14 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 // 🔔 Local Notification Plugin
 // --------------------------------------------------
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
+FlutterLocalNotificationsPlugin();
 
 // --------------------------------------------------
 // LOCAL NOTIFICATION INITIALIZATION
 // --------------------------------------------------
 Future<void> _initLocalNotifications() async {
   const AndroidInitializationSettings androidSettings =
-      AndroidInitializationSettings('@mipmap/ic_launcher');
+  AndroidInitializationSettings('@mipmap/ic_launcher');
 
   const DarwinInitializationSettings iosSettings = DarwinInitializationSettings(
     requestAlertPermission: true,
@@ -70,27 +67,35 @@ Future<void> _initLocalNotifications() async {
 // --------------------------------------------------
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]);
+
   await PrefStore.init();
-  Get.put(BottomNavController(), permanent: true);
-  WebViewPlatform.instance;
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   await Firebase.initializeApp();
+
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   await _initLocalNotifications();
   await _initializeFirebaseAsync();
   await OneSignalNotification.init();
-  // Init localization service and register permanently
+
+  // INIT LOCALIZATION FIRST
   final localization = LocalizationService();
   await localization.init();
   Get.put(localization, permanent: true);
-  Get.put(SplashController(), permanent: true);
 
+  // REGISTER CONTROLLERS BEFORE UI BUILDS
+  Get.put(SplashController(), permanent: true);
+  Get.put(BottomNavController(), permanent: true);
+
+  DeepLinkService.instance.init();
   runApp(RestartWidget(child: MyRootApp()));
 
-  /// Finally (AFTER UI), start deep links
-  Future.microtask(() {
-    DeepLinkService.instance.init();
-  });
+
+
 }
+
+
 
 // --------------------------------------------------
 // FCM INITIALIZATION (PERMISSIONS + TOKEN + HANDLERS)
@@ -160,22 +165,4 @@ Future<void> _showLocalNotification(RemoteMessage message) async {
     details,
     payload: message.data['payload'] ?? "",
   );
-}
-
-// --------------------------------------------------
-// ROOT APP
-// --------------------------------------------------
-class MyApp extends StatelessWidget {
-  final RouteObserverWidget routeObserver = RouteObserverWidget();
-
-  @override
-  Widget build(BuildContext context) {
-    return GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: AppConstants.appName,
-      initialRoute: AppRoutes.splash,
-      getPages: AppRoutes.routes,
-      navigatorObservers: [routeObserver],
-    );
-  }
 }

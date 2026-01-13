@@ -168,8 +168,8 @@ class ChatScreen extends StatelessWidget {
                             fontWeight: FontWeight.w600,
                             fontSize: 14,
                           ),
-                          decoration: const InputDecoration(
-                            hintText: AppStrings.app_type_message_here,
+                          decoration: InputDecoration(
+                            hintText: AppStrings.app_type_message_here.tr,
                             border: InputBorder.none,
                           ),
                         ),

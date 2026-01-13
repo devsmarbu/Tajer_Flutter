@@ -232,6 +232,7 @@ class SplashController extends GetxController with AppLoader {
   }
 
   void goToHomeScreen() {
+  //  debugPrint("checkloginHandle......YES");
     Future.delayed(Duration(seconds: 2), () {
       AppState.isReady = true;   // 👈 App ready!
       Get.offAllNamed(AppRoutes.bottomNavigation);

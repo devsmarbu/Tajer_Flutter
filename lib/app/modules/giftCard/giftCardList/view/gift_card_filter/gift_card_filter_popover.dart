@@ -137,7 +137,7 @@ class _GiftCardFilterPopoverState extends State<GiftCardFilterPopover> {
                               "paymentStatus": "",
                             });
                           },
-                          child: Text(AppStrings.app_clear_all,
+                          child: Text(AppStrings.app_clear_all.tr,
                               style: TextStyle(color: AppColors.black1,
                               fontFamily: "Nunito",
                               fontWeight: FontWeight.w600)),

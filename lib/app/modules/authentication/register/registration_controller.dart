@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:facebook_app_events/facebook_app_events.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../../utils/app_strings.dart';
@@ -12,6 +13,8 @@ import '../../../core/routes/app_routes.dart';
 import '../../../data/service/authentication_api_client.dart';
 import '../login/login_data.dart';
 import '../socialController/social_controller.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+
 
 class RegistrationController extends GetxController {
   final pref = PrefStore();
@@ -232,6 +235,9 @@ class RegistrationController extends GetxController {
           if (common.status == AppConstants.SUCCESS) {
             final loginData = common.data!;
             controllerSocial.saveLoginData(loginData);
+            final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+            await analytics.logSignUp(signUpMethod: 'email');
+            final facebookAppEvents = FacebookAppEvents();
 
             // if (loginData.userId != null && loginData.token==null || loginData.token=="") {
             //   Get.toNamed(AppRoutes.updatePhoneNumber);

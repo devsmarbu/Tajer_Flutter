@@ -140,7 +140,7 @@ class _PerfumeCellViewState extends State<PerfumeCellView> {
                                             productId: product.productId ?? "",
                                             productOptions: firstOptionValues,
                                             currencyCode:
-                                                widget.currencyCode,
+                                                widget.currencyCode, productName: product.productName ?? '',
                                           ),
                                         );
                                       } else {
@@ -148,7 +148,7 @@ class _PerfumeCellViewState extends State<PerfumeCellView> {
                                       }
                                     } else {
                                       final sizeController = Get.put(SelectSizeController(product.selprodId ?? ""));
-                                      sizeController.addToCart(product.selprodId ?? "");
+                                      sizeController.addToCart(product.selprodId ?? "",product.productName ?? '',product.selprodPrice ?? '');
                                     }
                                   },
                                   style: TextButton.styleFrom(

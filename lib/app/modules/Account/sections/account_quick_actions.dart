@@ -41,7 +41,12 @@ class AccountQuickActions extends StatelessWidget {
         title: 'APP_TAJER_CREDITS'.tr,
         subtitle: accountController?.userBalance.value ?? "",
         icon: "assets/icons/ic_credits.svg",
-        onTap: () => Get.toNamed(AppRoutes.walletScreen),
+        onTap: () async {
+          await Get.toNamed(AppRoutes.walletScreen);
+
+          // 🔄 Refresh Tajer credits after coming back
+          accountController?.getProfileInfo();
+        },
       ),
       _QuickActionItem(
         title: 'APP_WISHLIST'.tr,
@@ -54,35 +59,38 @@ class AccountQuickActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final actions = _buildActionItems();
-
     return Padding(
       padding: const EdgeInsets.fromLTRB(8, 16, 8, 0),
-      child: GridView.builder(
-        padding: EdgeInsets.zero,
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),  // important
-        itemCount: actions.length,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,            // 2 columns
-          mainAxisSpacing: 12,
-          crossAxisSpacing: 12,
-          childAspectRatio: 2.7,         // height fix → prevents overflow
-        ),
-        itemBuilder: (context, index) {
-          final item = actions[index];
-          return GestureDetector(
-            onTap: item.onTap,
-            child: QuickActionCard(
-              title: item.title,
-              subtitle: item.subtitle,
-              icon: item.icon,
-            ),
-          );
-        },
-      ),
+      child: Obx(() { // ✅ LISTEN TO RX CHANGES
+        final actions = _buildActionItems();
+
+        return GridView.builder(
+          padding: EdgeInsets.zero,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: actions.length,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            mainAxisSpacing: 12,
+            crossAxisSpacing: 12,
+            childAspectRatio: 2.7,
+          ),
+          itemBuilder: (context, index) {
+            final item = actions[index];
+            return GestureDetector(
+              onTap: item.onTap,
+              child: QuickActionCard(
+                title: item.title,
+                subtitle: item.subtitle,
+                icon: item.icon,
+              ),
+            );
+          },
+        );
+      }),
     );
   }
+
 }
 
 class _QuickActionItem {

@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart' hide FormData;
 import 'package:tajer/app/core/constants/app_constants.dart';
 import 'package:tajer/app/modules/navigation/bottom_navigation.dart';
+import 'package:tajer/utils/app_loader.dart';
 import 'package:tajer/utils/pref_store.dart';
 import 'app/core/routes/app_routes.dart';
 import 'package:app_links/app_links.dart';
@@ -30,11 +31,11 @@ class UrlHandling {
       final formData = FormData.fromMap({"url": linkUrl});
 
       final response = await _dio.post(
-        "${AppConstants.baseUrl}home/get-url-segments-detail",
-        data: formData,
-        options: Options(
-          contentType: Headers.multipartFormDataContentType
-        )
+          "${AppConstants.baseUrl}home/get-url-segments-detail",
+          data: formData,
+          options: Options(
+              contentType: Headers.multipartFormDataContentType
+          )
       );
 
       debugPrint("📥 API Response received");
@@ -124,7 +125,7 @@ class UrlHandling {
 
       case "4":
         debugPrint("📂 Opening CATEGORY PRODUCTS page");
-         Get.toNamed(AppRoutes.productListPage, arguments: {"prodCatId": id});
+        Get.toNamed(AppRoutes.productListPage, arguments: {"prodCatId": id});
         AppRoutes.goToProductListPage(brandId: '', prodCatId: id, productVideoAvailable: '0', titleHeader: '');
         break;
 
@@ -257,12 +258,22 @@ class DeepLinkService {
   Future<void> init() async {
     debugPrint("🔗 DeepLinkService.init()");
 
+    // Initialize required controllers
+    if (!Get.isRegistered<AccountController>()) {
+      Get.put(AccountController());
+    }
+    if (!Get.isRegistered<BottomNavController>()) {
+      Get.put(BottomNavController());
+    }
+
     // 1) Handle initial link (cold start)
     try {
       final initialUri = await _appLinks.getInitialAppLink();
       if (initialUri != null) {
-        debugPrint("🚀 Initial deep link: $initialUri");
-        _handleUri(initialUri);
+        debugPrint("🚀 Initial deep link (cold start): $initialUri");
+
+        // Delay slightly to allow GetX initialization
+        Future.microtask(() => _handleUri(initialUri));
       } else {
         debugPrint("ℹ️ No initial deep link");
       }
@@ -270,7 +281,7 @@ class DeepLinkService {
       debugPrint("❌ Error getting initial app link: $e");
     }
 
-    // 2) Listen for new links while app is running
+    // 2) Listen for new links while app is running (foreground/background)
     _sub = _appLinks.uriLinkStream.listen(
           (uri) {
         debugPrint("📥 Deep link received (stream): $uri");
@@ -286,7 +297,7 @@ class DeepLinkService {
     while (!AppState.isReady) {
       await Future.delayed(const Duration(milliseconds: 200));
     }
-
+    await Future.delayed(const Duration(milliseconds: 100)); // ← ADD THIS
     _handleUri(uri);
   }
 
@@ -294,7 +305,9 @@ class DeepLinkService {
     final url = uri.toString();
     debugPrint("🎯 Handling deep link URL: $url");
 
-    _handleDeepLink(url);
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _handleDeepLink(url);
+    });
   }
 
   void dispose() {
@@ -302,42 +315,61 @@ class DeepLinkService {
   }
 
 
-  void _handleDeepLink(String url) async {
-    print("🔥 Universal Link Received: $url");
+  Future<void> _handleDeepLink(String url) async {
+    print("🔥 Handle DeepLink → $url");
 
+    // ensure BottomNavController exists
+    final BottomNavController nav =
+    Get.isRegistered<BottomNavController>() ? Get.find() : Get.put(BottomNavController());
+
+    // EMAIL VERIFICATION
     if (url.contains("guest-user/user-check-email-verification")) {
+      nav.changeTab(4); // account tab
 
-      final controller = Get.find<BottomNavController>();
-      controller.changeTab(4);
-
-      final verifier = UserVerifier();
-
-      final token = await verifier.verify(url);
-
+      final token = await UserVerifier().verify(url);
       if (token != null) {
         PrefStore().saveString(AppConstants.sessionToken, token);
-        debugPrint("Token extracted: $token");
 
-        // ⭐⭐ IMPORTANT: REFRESH ACCOUNT DATA ⭐⭐
         final accountCtrl = Get.find<AccountController>();
         accountCtrl.token = token;
         accountCtrl.isLogin.value = true;
+        await accountCtrl.getProfileInfo();
 
-        await accountCtrl.getProfileInfo();   // 🔥 Call API again
-      }
-      else {
-        debugPrint("No token found.");
-      }
+        AppState.isReady = true;
 
-    } else {
-      final controller = Get.find<BottomNavController>();
-      controller.changeTab(0);
-      UrlHandling.shared.universalUrlDetailsAPI(url);
+        // go directly to account tab
+        Get.offAllNamed(AppRoutes.bottomNavigation, arguments: {"tab": 4});
+      }
+      return;
     }
+
+    // normal deeplinks
+    nav.changeTab(0);
+    await UrlHandling.shared.universalUrlDetailsAPI(url);
   }
+
+
+
+
+
+
+
+
+  Future<void> _ensureBottomNavReady() async {
+    if (Get.currentRoute != AppRoutes.bottomNavigation) {
+      await Get.offAllNamed(AppRoutes.bottomNavigation);
+    }
+
+    // while (Get.currentRoute != AppRoutes.bottomNavigation) {
+    //   await Future.delayed(const Duration(milliseconds: 150));
+    // }
+  }
+
 }
 
 
 class AppState {
   static bool isReady = false;
 }
+
+

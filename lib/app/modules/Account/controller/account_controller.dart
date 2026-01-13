@@ -34,7 +34,7 @@ import '../../share_and_earn/share_and_earn.dart';
 import '../models/section.dart';
 import '../models/section_item.dart';
 
-class AccountController extends GetxController with AccountApiClient,AppLoader {
+class AccountController extends GetxController with AccountApiClient, AppLoader, WidgetsBindingObserver {
   var isLogin = true.obs;
   var emailId = ''.obs;
   var userName = ''.obs;
@@ -58,18 +58,48 @@ class AccountController extends GetxController with AccountApiClient,AppLoader {
   @override
   void onInit() {
     super.onInit();
-    token=pref.loadString(AppConstants.sessionToken)??"";
-    if(token==""){
-      isLogin.value=false;
-      getAgreementUrl();
-    }else{
-      isLogin.value=true;
-      getProfileInfo();
-    }
-
+    token = pref.loadString(AppConstants.sessionToken) ?? "";
+    isLogin.value = token.isNotEmpty;
   }
 
+  @override
+  void onClose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.onClose();
+  }
 
+  /// 🔄 Called when app/page comes to foreground
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      refreshAccount();
+    }
+  }
+
+  /// 🔁 Central refresh method
+  void refreshAccount() {
+    token = pref.loadString(AppConstants.sessionToken) ?? "";
+    isLogin.value = token.isNotEmpty;
+
+    if (isLogin.value) {
+      getProfileInfoApi(token);
+    } else {
+      getAgreementUrlApi();
+    }
+  }
+
+    @override
+  void onReady() {
+    super.onReady();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (isLogin.value) {
+        getProfileInfoApi(token);
+      } else {
+        getAgreementUrlApi();
+      }
+    });
+  }
 
   List<Section> get currentSections => isLogin.value
       ? [
@@ -175,7 +205,8 @@ class AccountController extends GetxController with AccountApiClient,AppLoader {
               onPressed: () {
                 Navigator.pop(context);
                 // Handle delete action here
-                debugPrint("Account deleted");
+                deleteAccount();
+                debugPrint("Account Deletion");
               },
               textStyle: const TextStyle(
                 color: AppColors.redColor1, // Red text for OK
@@ -342,13 +373,62 @@ class AccountController extends GetxController with AccountApiClient,AppLoader {
           AppDialog.showMessage(common.msg);
         }
       } catch (e) {
-        print('❌ Exception in fetchSplashScreenData: $e');
+        print('❌ Exception in logout user: $e');
         // errorMessage.value = e.toString();
       } finally {
         hideLoader(Get.context!);
       }
     }
   }
+
+  Future<void> deleteAccount() async {
+    if (await AppFunction.isInternetAvailable()) {
+      try {
+        showLoader(Get.context!);
+
+        final response = await accountDeletionApi();
+
+
+        dynamic body = response.data;
+        if (body is String) body = json.decode(body);
+
+        final common = BaseResponse<LoginData>.fromJson(
+          body,
+          fromJsonT: (data) => LoginData.fromJson(data),
+        );
+
+        if (common.responseCode == "200") {
+          if (common.status == AppConstants.SUCCESS) {
+            pref.saveString(AppConstants.sessionToken, "");
+            pref.saveString(AppConstants.fcmToken, "");
+            pref.saveString(AppConstants.userPhone, "");
+            pref.saveString(AppConstants.userEmail, "");
+            pref.saveBoolean(AppConstants.skipForNow, false);
+            Get.deleteAll(force: true);     // delete everything
+            Get.put(SplashController());    // restore required
+            Get.put(BottomNavController());
+            Get.put(LocalizationService());
+            Future.delayed(const Duration(milliseconds: 30), () {
+              Get.offAllNamed(AppRoutes.login);
+            });
+          } else {
+            hideLoader(Get.context!);
+            AppDialog.showMessage(common.msg);
+          }
+        } else {
+          hideLoader(Get.context!);
+          AppDialog.showMessage(common.msg);
+        }
+      } catch (e) {
+        print('❌ Exception in delete account: $e');
+        // errorMessage.value = e.toString();
+      } finally {
+        hideLoader(Get.context!);
+      }
+    }
+  }
+
+
 
 
   Future<void> getProfileInfo() async {
@@ -381,7 +461,7 @@ class AccountController extends GetxController with AccountApiClient,AppLoader {
 
 
       } catch (e) {
-        print('❌ Exception in fetchSplashScreenData: $e');
+        print('❌ Exception in get profile: $e');
         // errorMessage.value = e.toString();
       }
     }

@@ -1,5 +1,12 @@
+import 'dart:convert';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:tajer/app/modules/product_detail/GetFiltersModel.dart';
+import 'package:tajer/app/modules/product_detail/productSizeInfo/size_chart_model.dart';
+import 'package:tajer/common/functions/app_function.dart';
+import 'package:tajer/utils/app_dialog.dart';
+import '../../../common/widgets/app_dialog.dart';
 import '../../modules/product_detail/product_detail_model.dart';
 import '../../modules/wish_list/wish_list_model.dart';
 import '../service/product_detail_api_client.dart';
@@ -9,24 +16,65 @@ class ProductRepository {
 
   /// Fetch one page of product detail
   Future<ProductDetailModel?> fetchProductDetail(
-    String productId,
-    int page,
-  ) async {
+      String productId,
+      int page,
+      ) async {
     try {
       final response = await _apiClient.getProductDetailData(
         productId: productId,
         page: page,
       );
 
+      debugPrint("✅ HTTP ${response.statusCode}");
+      debugPrint("✅ RAW DATA: ${response.data}");
+
       if (response.statusCode == 200) {
-        final model = ProductDetailModel.fromJson(response.data);
-        return model;
+        return ProductDetailModel.fromJson(response.data);
+      }
+      return null;
+    } on DioException catch (e, s) {
+      debugPrint("❌ DIO ERROR (page $page)");
+      debugPrint("TYPE: ${e.type}");
+      debugPrint("STATUS: ${e.response?.statusCode}");
+      debugPrint("DATA: ${e.response?.data}");
+      debugPrint("MESSAGE: ${e.message}");
+      debugPrint("$s");
+      return null;
+    } catch (e, s) {
+      debugPrint("❌ UNKNOWN ERROR (page $page): $e");
+      debugPrint("$s");
+      return null;
+    }
+  }
+
+  Future<SizeChartModel?> fetchSizeChartGuide(
+    String productId,
+    int page,
+  ) async {
+    try {
+      final response = await _apiClient.getSizeChartData(
+        productId: productId,
+      );
+
+      if (response.statusCode == 200) {
+        final decoded = response.data is String
+            ? json.decode(response.data)
+            : response.data;
+
+
+        if (decoded is Map<String, dynamic>) {
+          return SizeChartModel.fromJson(decoded);
+        }
+        final apiResponse = SizeChartModel.fromJson(response.data);
+        return apiResponse;
+
+
       } else {
-        debugPrint("⚠️ Failed to load product detail: ${response.statusCode}");
+        debugPrint("⚠️ Failed to load size chart detail: ${response.statusCode}");
         return null;
       }
     } catch (e, s) {
-      debugPrint("❌ Error in repository vfd (page $page): $e");
+      debugPrint("❌ Error in repository: $e");
       debugPrint("$s");
       return null;
     }
@@ -103,9 +151,10 @@ class ProductRepository {
     int currentPage = 1;
     int firstPageSize = 0;
     bool keepLoading = true;
+    ProductDetailModel? model;
 
     while (keepLoading) {
-      final model = await fetchProductDetail(productId, currentPage);
+      model = await fetchProductDetail(productId, currentPage);
 
       final newSections = model?.data?.data ?? [];
 
@@ -124,10 +173,15 @@ class ProductRepository {
       if (newSections.length < firstPageSize || newSections.isEmpty) {
         debugPrint("🏁 No more product detail pages available");
         keepLoading = false;
-      } else {
+      }
+      else {
         currentPage++;
         await Future.delayed(const Duration(milliseconds: 250));
       }
+    }
+
+    if(model?.status.toString()=="0"){
+      AppDialog.showMessage(model?.msg??"No more product detail pages available");
     }
 
     debugPrint("✅ Total sections combined: ${allSections.length}");

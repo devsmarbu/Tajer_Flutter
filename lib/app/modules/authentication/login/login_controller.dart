@@ -18,6 +18,8 @@ import '../../../core/routes/app_routes.dart';
 import '../../../data/service/authentication_api_client.dart';
 import '../../otp_verification_screen/view/otp_verification_screen.dart';
 import 'login_data.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+
 
 class LoginController extends GetxController {
 
@@ -106,7 +108,7 @@ class LoginController extends GetxController {
   }
 
   void goToRegister() {
-    Get.offAllNamed(AppRoutes.signUp);
+    Get.toNamed(AppRoutes.signUp);
   }
 
   /// 🔹 Check all fields manually on login button
@@ -165,6 +167,8 @@ class LoginController extends GetxController {
         if(common.responseCode=="200"){
           if(common.status==AppConstants.SUCCESS){
             controllerSocial.saveLoginData(common.data);
+            final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+            await analytics.logLogin(loginMethod: 'email');
            // await saveLoginData(common.data);
           }
           // else if (common.status == AppConstants.WARNING && common.notVerified != null) {

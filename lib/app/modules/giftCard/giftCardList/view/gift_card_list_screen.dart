@@ -104,8 +104,8 @@ class GiftCardListScreen extends StatelessWidget {
                   [
                     AppStrings.appLabelStatus.toUpperCase().tr,
                     giftCard.ogcardsStatus == "1"
-                        ? AppStrings.app_paid
-                        : AppStrings.app_pending
+                        ? AppStrings.app_paid.tr
+                        : AppStrings.app_pending.tr
                   ],
                 ],
               );

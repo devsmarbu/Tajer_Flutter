@@ -16,7 +16,19 @@
         android:label="Tajer -تاجر"
         android:name="${applicationName}"
         android:usesCleartextTraffic="true"
+        android:hardwareAccelerated="false"
+        android:allowBackup="false"
+        android:fullBackupContent="false"
         android:icon="@mipmap/launcher_icon">
+        <!-- Meta / Facebook -->
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id"/>
+
+        <meta-data
+            android:name="com.facebook.sdk.ClientToken"
+            android:value="@string/facebook_client_token"/>
+
         <meta-data
                 android:name="flutter_deeplinking_enabled"
                 android:value="true" />
