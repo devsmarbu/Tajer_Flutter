@@ -15,6 +15,7 @@ class WishListItemController extends GetxController {
   var products = <HomeProduct>[].obs;
   var listId = "";
   var wishlistTitle = "";
+  var currencySymbol = "\$".obs;
 
   @override
   void onInit() {
@@ -48,6 +49,7 @@ class WishListItemController extends GetxController {
       final response = await _repository.fetchWishListItemData(listId);
       if (response != null) {
         products.assignAll(response.data?.products ?? []);
+        currencySymbol.value=response.data?.currencySymbol??"";
       }
     } catch (e) {
       print("❌ fetch wishlist items error: $e");

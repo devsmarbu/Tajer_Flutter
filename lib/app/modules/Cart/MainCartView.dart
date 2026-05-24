@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tajer/app/core/constants/app_constants.dart';
 import 'package:tajer/app/modules/Cart/cart_shipping/preorder_products/preorder_product_view.dart';
+import 'package:tajer/marque_label.dart';
 import 'package:tajer/utils/app_strings.dart';
 import '../../../utils/pref_store.dart';
 import '../../modules/Cart/cart_shipping/regular_products/regular_product_view.dart';
@@ -60,6 +61,7 @@ class _MainCartViewState extends State<MainCartView> {
           alignment: Alignment.centerLeft, // 👈 left align
           child: Obx(
             () => Text(
+                (cartItemCounts.value == '' || cartItemCounts.value == '0') ? AppStrings.appMyBag.toUpperCase().tr :
               "${AppStrings.appMyBag.toUpperCase().tr}(${cartItemCounts.value})",
               style: TextStyle(
                 fontSize: 16,
@@ -70,197 +72,14 @@ class _MainCartViewState extends State<MainCartView> {
             ),
           ),
         ),
-        // bottom: PreferredSize(
-        //   preferredSize: const Size.fromHeight(45),
-        //   child: Container(
-        //     decoration: const BoxDecoration(
-        //       border: Border(
-        //         top: BorderSide(color: Color(0xFFE7E7E7), width: 1),
-        //         bottom: BorderSide(color: Color(0xFFE7E7E7), width: 1),
-        //       ),
-        //     ),
-        //     child: Column(
-        //       children: [
-        //         Row(
-        //           mainAxisAlignment: MainAxisAlignment.center,
-        //           crossAxisAlignment: CrossAxisAlignment.center,
-        //           children: [
-        //             SizedBox(
-        //               width: 170, // 👈 set fixed width
-        //               child: _buildTopPillButton(
-        //                 Text(
-        //                   AppStrings.appShipMyOrder.toUpperCase().tr,
-        //                   textAlign: TextAlign.center,
-        //                   style: TextStyle(
-        //                     fontWeight: pillTopToggleIndex == 0
-        //                         ? FontWeight.w600
-        //                         : FontWeight.w400,
-        //                     fontSize: 14,
-        //                     fontFamily: 'Nunito',
-        //                     color: pillTopToggleIndex == 0
-        //                         ? Colors.black
-        //                         : Colors.black54,
-        //                   ),
-        //                 ),
-        //                 0,
-        //                 pillTopToggleIndex == 0,
-        //               ),
-        //             ),
-        //             Container(
-        //               width: 1,
-        //               height: 30,
-        //               color: const Color(0xFFE7E7E7),
-        //               margin: const EdgeInsets.symmetric(horizontal: 12),
-        //             ),
-        //             SizedBox(
-        //               width: 170,
-        //               child: _buildTopPillButton(
-        //                 Text(
-        //                   AppStrings.appPickupMyOrder.toUpperCase().tr,
-        //                   textAlign: TextAlign.center,
-        //                   style: TextStyle(
-        //                     fontWeight: pillTopToggleIndex == 1
-        //                         ? FontWeight.w600
-        //                         : FontWeight.w400,
-        //                     fontSize: 14,
-        //                     fontFamily: 'Nunito',
-        //                     color: pillTopToggleIndex == 1
-        //                         ? Colors.black
-        //                         : Colors.black54,
-        //                   ),
-        //                 ),
-        //                 1,
-        //                 pillTopToggleIndex == 1,
-        //               ),
-        //             ),
-        //           ],
-        //         ),
-        //       ],
-        //     ),
-        //   ),
-        // ),
-        // bottom: PreferredSize(
-        //   preferredSize: const Size.fromHeight(45),
-        //   child: Container(
-        //     decoration: const BoxDecoration(
-        //       border: Border(
-        //         top: BorderSide(color: Color(0xFFE7E7E7), width: 1),
-        //         bottom: BorderSide(color: Color(0xFFE7E7E7), width: 1),
-        //       ),
-        //     ),
-        //     child:
-        //     Column(
-        //       children: [
-        //       Row(
-        //       mainAxisAlignment: MainAxisAlignment.center,
-        //       crossAxisAlignment: CrossAxisAlignment.center,
-        //       children: [
-        //         SizedBox(
-        //           width: 170, // 👈 set fixed width
-        //           child: _buildTopPillButton(
-        //             Text(
-        //               'Ship My Order',
-        //               textAlign: TextAlign.center,
-        //               style: TextStyle(
-        //                 fontWeight: pillTopToggleIndex == 0 ? FontWeight.w600 : FontWeight.w400,
-        //                 fontSize: 14,
-        //                 fontFamily: 'Nunito',
-        //                 color: pillTopToggleIndex == 0 ? Colors.black : Colors.black54,
-        //               ),
-        //             ),
-        //             0,
-        //             pillTopToggleIndex == 0,
-        //           ),
-        //         ),
-        //         Container(
-        //           width: 1,
-        //           height: 30,
-        //           color: const Color(0xFFE7E7E7),
-        //           margin: const EdgeInsets.symmetric(horizontal: 12),
-        //         ),
-        //         SizedBox(
-        //           width: 170,
-        //           child: _buildTopPillButton(
-        //             Text(
-        //               'Pickup My Order',
-        //               textAlign: TextAlign.center,
-        //               style: TextStyle(
-        //                 fontWeight: pillTopToggleIndex == 1 ? FontWeight.w600 : FontWeight.w400,
-        //                 fontSize: 14,
-        //                 fontFamily: 'Nunito',
-        //                 color: pillTopToggleIndex == 1 ? Colors.black : Colors.black54,
-        //               ),
-        //             ),
-        //             1,
-        //             pillTopToggleIndex == 1,
-        //           ),
-        //         ),
-        //       ],
-        //     )
-        //       ],
-        //     )
-        //   ),
-        // ),
       ),
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+        padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
         child: Column(
           children: [
-            Align(
-              alignment: Alignment.center,
-              child: Container(
-                padding: const EdgeInsets.all(4),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(40),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    _buildPillButton(
-                      Text(
-                        AppStrings.appPreOrderProducts.toUpperCase().tr,
-                        style: TextStyle(
-                          fontFamily: 'Nunito',
-                          fontWeight: pillToggleIndex == 0
-                              ? FontWeight.w600
-                              : FontWeight.w400,
-                          fontSize: 13,
-                          color: pillToggleIndex == 0
-                              ? Colors.white
-                              : Colors.black54,
-                        ),
-                      ),
-                      0,
-                      pillToggleIndex == 0, // pass true if selected
-                    ),
-                    _buildPillButton(
-                      Text(
-                        AppStrings.appRegularProducts.toUpperCase().tr,
-                        style: TextStyle(
-                          fontFamily: 'Nunito',
-                          fontWeight: pillToggleIndex == 1
-                              ? FontWeight.w600
-                              : FontWeight.w400,
-                          fontSize: 13,
-                          color: pillToggleIndex == 1
-                              ? Colors.white
-                              : Colors.black54,
-                        ),
-                      ),
-                      1,
-                      pillToggleIndex == 1, // pass true if selected
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            // const Expanded(
-            //   child: Center(
-            //     child: EmptyCartWidget(),
-            //   ),
-            // ),
-            // 👇 Main content (expanded so ListView can scroll)
+            /// 🔥 Marquee Label
+            (PrefStore().loadString(AppConstants.promoBannerText)??'').marqueeLabel(),
+
             SizedBox(height: 10),
             Expanded(
               child: pillToggleIndex == 0

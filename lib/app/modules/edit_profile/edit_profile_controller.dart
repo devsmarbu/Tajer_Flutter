@@ -20,17 +20,31 @@ import '../address/address_api_client.dart';
 
 class EditProfileController extends GetxController
     with AddressApiClient, AppLoader, AccountApiClient {
-  late ProfileData profileData;
+
   final pref = PrefStore();
 
+  // ---------------- Controllers ----------------
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final phoneController = TextEditingController();
   final dobController = TextEditingController();
+  // Initial values snapshot
+  late String initialName;
+  late String initialEmail;
+  late String initialPhone;
+  late String initialDob;
+  String? initialCountryId;
+  String? initialStateId;
 
-  var selectedCountryCode = "+91".obs;
+  var isChanged = false.obs;
+  var isDataLoaded = false;
+
+  // ---------------- Reactive Variables ----------------
+  var selectedCountryCode = "+974".obs;
   var phoneError = "".obs;
+
   var profileImage = Rx<File?>(null);
+  String? networkImage; // for API image
 
   var countryList = <CountryItem>[].obs;
   var stateList = <StateItem>[].obs;
@@ -38,147 +52,242 @@ class EditProfileController extends GetxController
   var selectedCountry = Rxn<CountryItem>();
   var selectedState = Rxn<StateItem>();
 
-  var isStateLoading = false.obs;
+  ProfileData? profileData;
+
+  // =====================================================
+  // INIT
+  // =====================================================
 
   @override
   void onInit() {
     super.onInit();
-    getProfileInfo(); // fetch data first
-    getCountryList(); // load countries
+
+    nameController.addListener(checkIfChanged);
+    emailController.addListener(checkIfChanged);
+    phoneController.addListener(checkIfChanged);
+    dobController.addListener(checkIfChanged);
+
+    ever(selectedCountry, (_) => checkIfChanged());
+    ever(selectedState, (_) => checkIfChanged());
+    loadInitialData();
   }
 
-  /// -------------------- Get Country List --------------------
-  Future<void> getCountryList() async {
-    if (!await AppFunction.isInternetAvailable()) return;
-    try {
-      final response = await getCountryListApi();
-      dynamic body = response.data;
-      if (body is String) body = json.decode(body);
+  void checkIfChanged() {
+    if (!isDataLoaded) return;
 
-      final data = BaseResponse<CountryData>.fromJson(
-        body,
-        fromJsonT: (data) => CountryData.fromJson(data),
-      );
-
-      if (data.responseCode == "200") {
-        countryList.assignAll(data.data?.countries ?? []);
-
-        final countryName = profileData.personalInfo?.countryName ?? '';
-        if (countryName.isNotEmpty) {
-          selectedCountry.value = countryList.firstWhereOrNull(
-                (c) => c.name?.toLowerCase() == countryName.toLowerCase(),
-          );
-        }
-
-        if (selectedCountry.value != null) {
-          await getStateList(selectedCountry.value!.id ?? "");
-        }
-      } else {
-        AppDialog.showMessage(data.msg);
-      }
-    } catch (e) {
-      print('❌ Exception in getCountryList: $e');
-    }
+    isChanged.value =
+        nameController.text != initialName ||
+            emailController.text != initialEmail ||
+            phoneController.text != initialPhone ||
+            dobController.text != initialDob ||
+            selectedCountry.value?.id != initialCountryId ||
+            selectedState.value?.id != initialStateId;
   }
 
-  /// -------------------- Get State List --------------------
-  Future<void> getStateList(String id) async {
+  // =====================================================
+  // LOAD PROFILE + COUNTRY + STATE
+  // =====================================================
+
+  Future<void> loadInitialData() async {
     if (!await AppFunction.isInternetAvailable()) return;
+
     try {
       showLoader(Get.context!);
-      final response = await getStateListApi(id);
 
-      dynamic body = response.data;
-      if (body is String) body = json.decode(body);
+      await getProfileInfo();
+      await getCountryList();
 
-      final data = BaseResponse<CountryData>.fromJson(
-        body,
-        fromJsonT: (data) => CountryData.fromJson(data),
-      );
-
-      if (data.responseCode == "200") {
-        stateList.assignAll(data.data?.states ?? []);
-
-        final stateName = profileData.personalInfo?.stateName ?? '';
-        if (stateName.isNotEmpty) {
-          selectedState.value = stateList.firstWhereOrNull(
-                (s) => s.name?.toLowerCase() == stateName.toLowerCase(),
-          );
-        }
-      } else {
-        AppDialog.showMessage(data.msg);
-      }
     } catch (e) {
-      print('❌ Exception in getStateList: $e');
+      print("❌ loadInitialData error: $e");
     } finally {
       hideLoader(Get.context!);
     }
   }
 
-  /// -------------------- Pick Image --------------------
+  // =====================================================
+  // GET PROFILE
+  // =====================================================
+
+  Future<void> getProfileInfo() async {
+    final token = await pref.loadString(AppConstants.sessionToken);
+    final response = await getProfileInfoApi(token ?? "");
+
+    dynamic body = response.data;
+    if (body is String) body = json.decode(body);
+
+    final baseResponse = BaseResponse<ProfileData>.fromJson(
+      body,
+      fromJsonT: (data) => ProfileData.fromJson(data),
+    );
+
+    if (baseResponse.responseCode == "200") {
+      profileData = baseResponse.data;
+
+      final personal = profileData?.personalInfo;
+
+      // ---- Prefill Text Fields ----
+      nameController.text = personal?.userName ?? '';
+      emailController.text = personal?.credentialEmail ?? '';
+      phoneController.text = personal?.userPhone ?? '';
+      dobController.text = personal?.userDob ?? '';
+
+      initialName = nameController.text;
+      initialEmail = emailController.text;
+      initialPhone = phoneController.text;
+      initialDob = dobController.text;
+
+      // ---- Prefill Country Code ----
+      if (personal?.userPhoneDcode != null &&
+          personal!.userPhoneDcode.isNotEmpty) {
+
+        final fullCode = personal.userPhoneDcode;
+
+        // Split by '-' and take first part
+        selectedCountryCode.value = fullCode.split('-').first;
+
+      } else {
+        selectedCountryCode.value = "+91";
+      }
+
+      // ---- Prefill Image ----
+      networkImage = personal?.userImage;
+
+    } else {
+      AppDialog.showMessage(baseResponse.msg);
+    }
+  }
+
+  // =====================================================
+  // COUNTRY LIST
+  // =====================================================
+
+  Future<void> getCountryList() async {
+    final response = await getCountryListApi();
+
+    dynamic body = response.data;
+    if (body is String) body = json.decode(body);
+
+    final data = BaseResponse<CountryData>.fromJson(
+      body,
+      fromJsonT: (data) => CountryData.fromJson(data),
+    );
+
+    if (data.responseCode == "200") {
+      countryList.assignAll(data.data?.countries ?? []);
+
+      final savedCountryName =
+      profileData?.personalInfo?.countryName?.toLowerCase();
+
+      if (savedCountryName != null) {
+        selectedCountry.value = countryList.firstWhereOrNull(
+              (c) => c.name?.toLowerCase() == savedCountryName,
+        );
+      }else {
+        selectedCountry.value = null; // ✅ IMPORTANT
+      }
+
+      if (selectedCountry.value != null) {
+        await getStateList(selectedCountry.value!.id ?? "");
+      }
+
+      initialCountryId = selectedCountry.value?.id;
+      isDataLoaded = true;
+      checkIfChanged();
+
+    } else {
+      AppDialog.showMessage(data.msg);
+    }
+  }
+
+  // =====================================================
+  // STATE LIST
+  // =====================================================
+
+  Future<void> getStateList(String countryId) async {
+    final response = await getStateListApi(countryId);
+
+    dynamic body = response.data;
+    if (body is String) body = json.decode(body);
+
+    final data = BaseResponse<CountryData>.fromJson(
+      body,
+      fromJsonT: (data) => CountryData.fromJson(data),
+    );
+
+    if (data.responseCode == "200") {
+      stateList.assignAll(data.data?.states ?? []);
+
+      final savedStateName =
+      profileData?.personalInfo?.stateName?.toLowerCase();
+
+      if (savedStateName != null) {
+        selectedState.value = stateList.firstWhereOrNull(
+              (s) => s.name?.toLowerCase() == savedStateName,
+        );
+      }else {
+        selectedState.value = null; // ✅ IMPORTANT
+      }
+
+      initialStateId = selectedState.value?.id;
+
+    } else {
+      AppDialog.showMessage(data.msg);
+    }
+  }
+
+  // =====================================================
+  // PICK IMAGE
+  // =====================================================
+
   Future<void> pickImage(ImageSource source) async {
     final picked = await ImagePicker().pickImage(source: source);
+
     if (picked != null) {
       profileImage.value = File(picked.path);
       await uploadImage();
     }
   }
 
-  /// -------------------- Pick Date --------------------
-  Future<void> pickDate(BuildContext context) async {
-    final picked = await showDatePicker(
-      context: context,
-      initialDate:
-      DateTime.tryParse(dobController.text) ?? DateTime(2000, 1, 1),
-      firstDate: DateTime(1900),
-      lastDate: DateTime.now(),
-      builder: (context, child) => Theme(
-        data: Theme.of(context).copyWith(
-          colorScheme: const ColorScheme.light(
-            primary: AppColors.black1,
-            onPrimary: Colors.white,
-            onSurface: AppColors.black1,
-          ),
-        ),
-        child: child!,
-      ),
-    );
-    if (picked != null) {
-      dobController.text =
-      "${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}";
-    }
-  }
+  // =====================================================
+  // UPDATE PROFILE
+  // =====================================================
 
-  /// -------------------- Validate and Update Profile --------------------
   void updateProfile() {
     if (nameController.text.trim().isEmpty) {
       Get.snackbar("Error", "Name cannot be empty");
       return;
     }
-    if (emailController.text.trim().isEmpty ||
-        !GetUtils.isEmail(emailController.text.trim())) {
-      Get.snackbar("Error", "Enter a valid email address");
+
+    if (!GetUtils.isEmail(emailController.text.trim())) {
+      Get.snackbar("Error", "Enter valid email");
       return;
     }
-    if (dobController.text.trim().isEmpty) {
-      Get.snackbar("Error", "Please select your date of birth");
+
+    if (dobController.text.isEmpty) {
+      Get.snackbar("Error", "Select Date of Birth");
       return;
     }
+
     if (selectedCountry.value == null) {
-      Get.snackbar("Error", "Please select a country");
+      Get.snackbar("Error", "Select Country");
       return;
     }
+
     if (selectedState.value == null) {
-      Get.snackbar("Error", "Please select a state");
+      Get.snackbar("Error", "Select State");
       return;
     }
 
     editProfile();
   }
 
-  /// -------------------- Edit Profile API --------------------
+  // =====================================================
+  // EDIT PROFILE API
+  // =====================================================
+
   Future<void> editProfile() async {
     if (!await AppFunction.isInternetAvailable()) return;
+
     try {
       showLoader(Get.context!);
 
@@ -202,26 +311,40 @@ class EditProfileController extends GetxController
         body,
         fromJsonT: (data) => CommonData.fromJson(data),
       );
+
       hideLoader(Get.context!);
-      AppDialog.showMessage(data.msg);
+
+      if (data.responseCode == "200") {
+        AppDialog.showMessage(data.msg ?? "Profile Updated");
+      } else {
+        AppDialog.showMessage(data.msg ?? "Something went wrong");
+      }
+
     } catch (e) {
-      print('❌ Exception in editProfile: $e');
-    } finally {
       hideLoader(Get.context!);
+      print("❌ editProfile error: $e");
+      AppDialog.showMessage("Something went wrong");
     }
   }
 
-  /// -------------------- Upload Image API --------------------
+
+  // =====================================================
+  // UPLOAD IMAGE
+  // =====================================================
+
   Future<void> uploadImage() async {
     if (!await AppFunction.isInternetAvailable()) return;
     if (profileImage.value == null) return;
 
     try {
       showLoader(Get.context!);
+
       final token = await pref.loadString(AppConstants.sessionToken);
 
-      final response =
-      await uploadProfilePic(file: profileImage.value!, token: token ?? "");
+      final response = await uploadProfilePic(
+        file: profileImage.value!,
+        token: token ?? "",
+      );
 
       dynamic body = response.data;
       if (body is String) body = json.decode(body);
@@ -230,21 +353,26 @@ class EditProfileController extends GetxController
         body,
         fromJsonT: (data) => CommonData.fromJson(data),
       );
-      hideLoader(Get.context!);
+
       AppDialog.showMessage(data.msg);
+
     } catch (e) {
-      print('❌ Exception in uploadImage: $e');
+      print("❌ uploadImage error: $e");
     } finally {
       hideLoader(Get.context!);
     }
   }
 
-  /// -------------------- Remove Image API --------------------
+  // =====================================================
+// REMOVE PROFILE IMAGE
+// =====================================================
+
   Future<void> removePic() async {
     if (!await AppFunction.isInternetAvailable()) return;
 
     try {
       showLoader(Get.context!);
+
       final response = await removeProfilePic();
 
       dynamic body = response.data;
@@ -255,57 +383,66 @@ class EditProfileController extends GetxController
         fromJsonT: (data) => CommonData.fromJson(data),
       );
 
-      hideLoader(Get.context!);
       if (data.responseCode == "200") {
+        // Clear both local + network image
         profileImage.value = null;
+        networkImage = null;
       }
 
       AppDialog.showMessage(data.msg);
+
     } catch (e) {
-      print('❌ Exception in removePic: $e');
+      print("❌ removePic error: $e");
     } finally {
       hideLoader(Get.context!);
     }
   }
 
-  /// -------------------- Get Profile Info API --------------------
-  Future<void> getProfileInfo() async {
-    if (!await AppFunction.isInternetAvailable()) return;
 
-    try {
-      showLoader(Get.context!);
-      final token = await pref.loadString(AppConstants.sessionToken);
+  // =====================================================
+// PICK DATE
+// =====================================================
 
-      final response = await getProfileInfoApi(token ?? "");
-      dynamic body = response.data;
-      if (body is String) body = json.decode(body);
+  Future<void> pickDate(BuildContext context) async {
+    DateTime initialDate;
+    if (dobController.text.isNotEmpty &&
+        dobController.text != "0000-00-00") {
+      initialDate = DateTime.tryParse(dobController.text) ??
+          DateTime(2000, 1, 1);
+    } else {
+      initialDate = DateTime(2000, 1, 1); // fallback
+    }
 
-      final baseResponse = BaseResponse<ProfileData>.fromJson(
-        body,
-        fromJsonT: (data) => ProfileData.fromJson(data),
-      );
 
-      if (baseResponse.responseCode == "200" &&
-          baseResponse.status == AppConstants.SUCCESS) {
-        profileData = baseResponse.data!;
-        nameController.text = profileData.personalInfo?.userName ?? '';
-        emailController.text = profileData.personalInfo?.credentialEmail ?? '';
-        phoneController.text = profileData.personalInfo?.userPhone ?? '';
-        dobController.text = profileData.personalInfo?.userDob ?? '';
+    final pickedDate = await showDatePicker(
+      context: context,
+      initialDate: initialDate,
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: AppColors.black1,
+              onPrimary: Colors.white,
+              onSurface: AppColors.black1,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
 
-        final userImage = profileData.personalInfo?.userImage;
-        if (userImage != null && userImage.isNotEmpty) {
-          profileImage.value = File(userImage);
-        }
-      } else {
-        AppDialog.showMessage(baseResponse.msg);
-      }
-    } catch (e) {
-      print('❌ Exception in getProfileInfo: $e');
-    } finally {
-      hideLoader(Get.context!);
+    if (pickedDate != null) {
+      dobController.text =
+      "${pickedDate.year}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.day.toString().padLeft(2, '0')}";
     }
   }
+
+
+  // =====================================================
+  // CLEANUP
+  // =====================================================
 
   @override
   void onClose() {
@@ -316,3 +453,4 @@ class EditProfileController extends GetxController
     super.onClose();
   }
 }
+

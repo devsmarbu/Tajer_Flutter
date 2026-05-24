@@ -13,10 +13,13 @@ class ShopDetailController extends GetxController {
   final Rxn<ShopDetailModel> shopDetail = Rxn<ShopDetailModel>();
   var products = <HomeProduct>[].obs;
   var reviews = <ReviewsList>[].obs;
+  var pageCount = 1;
   var hasMore = true.obs;
 
   String shopId = "";
   String shopUserId = "";
+  String productName = "";
+  String selProdId = "";
   Map<String, dynamic> baseParams = {};
 
   @override
@@ -26,6 +29,8 @@ class ShopDetailController extends GetxController {
     if (args != null && args['shopId'] != null) {
       shopId = args['shopId'].toString();
       shopUserId = args['shopUserId'].toString();
+      selProdId = args['productId'].toString();
+      productName = args['productName'].toString();
       baseParams = {"shop_id": shopId, "page": 1};
       _loadAllData();
     } else {
@@ -54,12 +59,57 @@ class ShopDetailController extends GetxController {
     }
   }
 
+  Future<void> loadMoreProducts() async {
+    if (isLoading.value || !hasMore.value) return;
+
+    try {
+      isLoading(true);
+
+      page++;
+
+      final response = await _repository.fetchProductListData({
+        "shop_id": shopId,
+        "page": page,
+      });
+
+      final data = response?.data;
+
+      products.addAll(data?.products ?? []);
+
+      pageCount = int.tryParse(data?.pageCount ?? "1") ?? 1;
+
+      hasMore.value = page < pageCount;
+
+    } catch (e) {
+      debugPrint("❌ loadMoreProducts error: $e");
+    } finally {
+      isLoading(false);
+    }
+  }
+
   Future<void> getShopProducts() async {
     try {
-      final response = await _repository.fetchProductListData(baseParams);
-      products.assignAll(response?.data?.products ?? []);
+      isLoading(true);
+
+      page = 1;
+      hasMore(true);
+
+      final response = await _repository.fetchProductListData({
+        "shop_id": shopId,
+        "page": page,
+      });
+
+      final data = response?.data;
+
+      products.assignAll(data?.products ?? []);
+      pageCount = int.tryParse(data?.pageCount ?? "1") ?? 1;
+
+      hasMore.value = page < pageCount;
+
     } catch (e) {
       debugPrint("❌ getShopProducts error: $e");
+    } finally {
+      isLoading(false);
     }
   }
 
@@ -104,7 +154,9 @@ class ShopDetailController extends GetxController {
         "thread_subject": threadSubject,
         "message_text": messageText,
         "shop_id": shopId,
+        "product_id": selProdId
       });
+      Get.back();
       Get.snackbar("",response?.msg ?? "",backgroundColor: Colors.green, colorText: Colors.white);
 
     } catch (e) {
@@ -113,5 +165,20 @@ class ShopDetailController extends GetxController {
     finally {
       isLoading(false);
     }
+  }
+
+  void updateFav(
+      String isInAnyWishlist,
+      String productIndex,
+      ) {
+    // 🔁 toggle value
+    String newValue = isInAnyWishlist == '0' ? '0' : '1';
+    int pIndex = int.parse(productIndex);
+
+    // ✅ update inside posts
+    products[pIndex] = products[pIndex]
+        .copyWith(is_in_any_wishlist: newValue);
+
+    products.refresh(); // 🔥 important for UI update
   }
 }

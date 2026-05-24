@@ -139,3 +139,10 @@ class AppColors {
   static const Color colorDisableItem = Color(0x26000000);
   static const Color colorButtonLoginSignup = Color(0xE6FFFFFF);
 }
+
+extension HexColorExtension on String {
+  Color get hexToColor {
+    final hex = replaceAll('#', '');
+    return Color(int.parse('FF$hex', radix: 16));
+  }
+}

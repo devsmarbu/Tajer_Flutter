@@ -1,13 +1,18 @@
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:get/get.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
+import 'package:tajer/app/core/routes/app_routes.dart';
 import 'package:tajer/app/modules/home/change_location_view/country_model.dart';
 import 'package:tajer/app/modules/product_detail/product_detail_model.dart';
 import 'package:tajer/utils/pref_store.dart';
+import '../../../common/widgets/app_dialog.dart';
 import '../../core/constants/app_constants.dart';
 import '../../modules/home/home_model.dart';
 import '../../modules/product_detail/add_to_cart_model/add_to_cart_model.dart';
+import '../../modules/wish_list/wish_list_model.dart';
 import '../service/home_api_client.dart';
 
 class HomeRepository {
@@ -15,6 +20,11 @@ class HomeRepository {
   RxInt cartCount = 0.obs;
   String currencyCode = "";
   bool cancelPagination = false;
+  var isFirstTimeBannerImage = "1";
+  var firstTimeBannerImageURL = "";
+  var bannerRedirectURL = "";
+  var promoBannerText = "";
+  var promoBannerEnabled = "0";
 
   void resetPagination() {
     cancelPagination = true;
@@ -29,7 +39,15 @@ class HomeRepository {
     final response = await _apiClient.getHomeData(page: page);
     final homeModel = setupHomeModelFromJson(response.data);
     currencyCode = homeModel.data?.currencySymbol ?? "\$";
+    firstTimeBannerImageURL = homeModel.data?.home_promotion_popup_image_url ?? "";
+    isFirstTimeBannerImage = homeModel.data?.home_promotion_popup_available ?? "1";
+    bannerRedirectURL = homeModel.data?.home_promotion_popup_redirect_url ?? "1";
+    promoBannerEnabled = homeModel.data?.promo_banner_enabled ?? "0";
+    promoBannerText = homeModel.data?.promo_banner_text ?? "";
     cartItemCounts.value = homeModel.data?.cartItemsCount ?? "0";
+
+    PrefStore().saveString(AppConstants.promoBannerText, promoBannerText);
+    PrefStore().saveString(AppConstants.promoBannerEnabled, promoBannerEnabled);
     return homeModel.data?.collections ?? [];
   }
 
@@ -47,19 +65,26 @@ class HomeRepository {
         debugPrint("⚠️ Failed to load product detail: ${response.statusCode}");
         return null;
       }
-    } catch (e, s) {
-      debugPrint("❌ Error in repository $e");
-      debugPrint("$s");
-      return null;
+    } on DioException catch (e, s) {
+      if (e.type == DioExceptionType.connectionError) {
+        Get.snackbar(AppConstants.appName, "APP_ERROR_INTERNET_CONNECTION".tr);
+        return null;
+      }
+      else {
+        debugPrint("❌ Error in repository: $e");
+        debugPrint("$s");
+        return null;
+      }
     }
   }
 
   //add to cart
-  Future<AddToCartModel?> addToCart(String productId, String quantity) async {
+  Future<AddToCartModel?> addToCart(String productId, String quantity,{List<String>? selProdIdsForBoxContent}) async {
     try {
       final response = await _apiClient.addToCart(
         productId: productId,
         quantity: quantity,
+        selProdIdsForBoxContent: selProdIdsForBoxContent
       );
 
       if (response.statusCode == 200) {
@@ -91,10 +116,16 @@ class HomeRepository {
         debugPrint("⚠️ add to cart failed: ${response.statusCode}");
         return null;
       }
-    } catch (e, s) {
-      debugPrint("❌ Error in repository $e");
-      debugPrint("$s");
-      return null;
+    } on DioException catch (e, s) {
+      if (e.type == DioExceptionType.connectionError) {
+        Get.snackbar(AppConstants.appName, "APP_ERROR_INTERNET_CONNECTION".tr);
+        return null;
+      }
+      else {
+        debugPrint("❌ Error in repository: $e");
+        debugPrint("$s");
+        return null;
+      }
     }
   }
 
@@ -122,10 +153,16 @@ class HomeRepository {
         debugPrint("⚠️ API failed: ${response.statusCode}");
         return null;
       }
-    } catch (e, s) {
-      debugPrint("❌ Error in repository $e");
-      debugPrint("$s");
-      return null;
+    } on DioException catch (e, s) {
+      if (e.type == DioExceptionType.connectionError) {
+        Get.snackbar(AppConstants.appName, "APP_ERROR_INTERNET_CONNECTION".tr);
+        return null;
+      }
+      else {
+        debugPrint("❌ Error in repository: $e");
+        debugPrint("$s");
+        return null;
+      }
     }
   }
 
@@ -183,10 +220,48 @@ class HomeRepository {
         debugPrint("⚠️ API failed: ${response.statusCode}");
         return null;
       }
+    } on DioException catch (e, s) {
+      if (e.type == DioExceptionType.connectionError) {
+        Get.snackbar(AppConstants.appName, "APP_ERROR_INTERNET_CONNECTION".tr);
+        return null;
+      }
+      else {
+        debugPrint("❌ Error in repository: $e");
+        debugPrint("$s");
+        return null;
+      }
+    }
+  }
+
+  /// ✅ add to wish list
+  Future<CommonResponseModel?> addRemoveToWishList(String productId,String wishlistId,String isInAnyWishlist) async {
+    try {
+      final response = await _apiClient.addRemoveToWishList(productId,wishlistId,isInAnyWishlist);
+
+      if (response.statusCode == 200 && response.data != null) {
+        final data = CommonResponseModel.fromJson(response.data);
+        debugPrint("🟢 item added to wishlist successfully");
+        return data;
+      } else if (response.statusCode == 404) {
+        return CommonResponseModel(data: null); // ✅ safe empty response
+      } else {
+        debugPrint("⚠️ Unexpected status: ${response.statusCode}");
+        return null;
+      }
+    } on DioException catch (e, s) {
+      if (e.type == DioExceptionType.connectionError) {
+        Get.snackbar(AppConstants.appName, "APP_ERROR_INTERNET_CONNECTION".tr);
+        return null;
+      }
+      else {
+        debugPrint("❌ Error in repository: $e");
+        debugPrint("$s");
+        return null;
+      }
     } catch (e, s) {
-      debugPrint("❌ Error in repository $e");
+      debugPrint("❌ Unknown error in CreateWishListModel: $e");
       debugPrint("$s");
-      return null;
+      rethrow;
     }
   }
 }

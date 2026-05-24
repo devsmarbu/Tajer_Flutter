@@ -48,7 +48,7 @@ class _AskQuestionPageViewState extends State<AskQuestionPageView> {
     shopName = params["shopName"];
     userToken = PrefStore().loadString(AppConstants.sessionToken);
     profile = await PrefStore.getProfile();
-
+    subjectController.text = (controller.productName != 'null' ? controller.productName : '');
     setState(() {
       isLoading = false;
     });
@@ -152,7 +152,7 @@ class _AskQuestionPageViewState extends State<AskQuestionPageView> {
   // QUESTION FORM UI
   // -------------------------
   Widget _buildFormUI() {
-    return SingleChildScrollView(
+   return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Container(
@@ -168,7 +168,7 @@ class _AskQuestionPageViewState extends State<AskQuestionPageView> {
                 "APP_YOUR_CONTACT_INFORMATION_WILL_NOT_BE_SHARED_WITH_THE_MERCHANT".tr,
                 style: const TextStyle(
                   fontFamily: "Nunito",
-                  color: Colors.grey,
+                  color: Colors.black54,
                   fontSize: 14,
                 ),
               ),
@@ -186,10 +186,10 @@ class _AskQuestionPageViewState extends State<AskQuestionPageView> {
                     ),
                   ),
                   Text(
-                    profile?.personalInfo?.userName ?? "N/A",
+                    PrefStore().loadString(AppConstants.userName)??'N/A',
                     style: const TextStyle(
                       fontFamily: "Nunito",
-                      color: Colors.grey,
+                      color: Colors.black54,
                     ),
                   ),
                 ],
@@ -201,7 +201,7 @@ class _AskQuestionPageViewState extends State<AskQuestionPageView> {
               Row(
                 children: [
                   Text(
-                    "${"APP_TO".tr}: $shopName",
+                    "${"APP_TO".tr}: ",
                     style: const TextStyle(
                       fontFamily: "Nunito",
                       fontWeight: FontWeight.w500,
@@ -209,10 +209,10 @@ class _AskQuestionPageViewState extends State<AskQuestionPageView> {
                     ),
                   ),
                   Text(
-                    widget.shopName ?? "",
+                    widget.shopName ?? shopName ?? "",
                     style: const TextStyle(
                       fontFamily: "Nunito",
-                      color: Colors.grey,
+                      color: Colors.black54,
                     ),
                   ),
                 ],
@@ -223,7 +223,7 @@ class _AskQuestionPageViewState extends State<AskQuestionPageView> {
               Obx(() =>
               CommonTextField(
                 controller: subjectController,
-                label: "",
+                label: '',
                 errorText: subjectError?.value,
                 hint: "APP_SUBJECT".tr,
               )),
@@ -232,7 +232,7 @@ class _AskQuestionPageViewState extends State<AskQuestionPageView> {
           Obx(() =>
               CommonTextField(
                 controller: commentController,
-                label: "",
+                label: '',
                 hint: "APP_WRITE_YOUR_MESSAGE".tr,
                 errorText: messageError?.value,
                 maxLines: 4,

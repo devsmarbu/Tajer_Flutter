@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:get/get.dart';
 import 'package:tajer/app/data/service/CartListingApiClient.dart';
 import 'package:tajer/app/data/service/category_api_client.dart';
 import 'package:tajer/app/data/service/product_list_api_client.dart';
@@ -14,6 +16,7 @@ import 'package:tajer/app/modules/categories/models/category.dart';
 import 'package:tajer/app/modules/home/home_model.dart';
 import 'package:tajer/app/modules/productList/models/filtered_product.dart';
 import 'package:tajer/app/modules/wish_list/wish_list_model.dart';
+import '../../../common/widgets/app_dialog.dart';
 import '../../../utils/pref_store.dart';
 import '../../core/constants/app_constants.dart';
 import '../../modules/product_detail/add_to_cart_model/add_to_cart_model.dart';
@@ -65,10 +68,16 @@ class CartListingRepository {
         debugPrint("⚠️ Failed to load product list: ${response.statusCode}");
         return null;
       }
-    } catch (e, s) {
-      debugPrint("❌ Error in repository with params $cartType: $e");
-      debugPrint("$s");
-      return null;
+    } on DioException catch (e, s) {
+      if (e.type == DioExceptionType.connectionError) {
+        Get.snackbar(AppConstants.appName, "APP_ERROR_INTERNET_CONNECTION".tr);
+        return null;
+      }
+      else {
+        debugPrint("❌ Error in repository: $e");
+        debugPrint("$s");
+        return null;
+      }
     }
   }
 
@@ -82,6 +91,7 @@ class CartListingRepository {
   }) async {
     try {
       debugPrint("tried to api call");
+      debugPrint('before get payment summary api call ${PrefStore().loadString(AppConstants.sessionId)}');
       final response = await _apiClient.getPaymentSummary(
         orderId: orderId,
         redeemPoints: redeemPoints,
@@ -91,6 +101,7 @@ class CartListingRepository {
       );
 
       if (response.statusCode == 200) {
+        debugPrint('after get payment summary api call ${PrefStore().loadString(AppConstants.sessionId)}');
         final decoded = response.data is String
             ? json.decode(response.data)
             : response.data;
@@ -104,10 +115,16 @@ class CartListingRepository {
         debugPrint("⚠️ Failed to load payment summary: ${response.statusCode}");
         return null;
       }
-    } catch (e, s) {
-      debugPrint("❌ Error in repository with params $shippingMethods: $e");
-      debugPrint("$s");
-      return null;
+    } on DioException catch (e, s) {
+      if (e.type == DioExceptionType.connectionError) {
+        Get.snackbar(AppConstants.appName, "APP_ERROR_INTERNET_CONNECTION".tr);
+        return null;
+      }
+      else {
+        debugPrint("❌ Error in repository: $e");
+        debugPrint("$s");
+        return null;
+      }
     }
   }
 
@@ -133,10 +150,16 @@ class CartListingRepository {
         debugPrint("⚠️ Failed to remove reward: ${response.statusCode}");
         return null;
       }
-    } catch (e, s) {
-      debugPrint("❌ Error in repository : $e");
-      debugPrint("$s");
-      return null;
+    } on DioException catch (e, s) {
+      if (e.type == DioExceptionType.connectionError) {
+        Get.snackbar(AppConstants.appName, "APP_ERROR_INTERNET_CONNECTION".tr);
+        return null;
+      }
+      else {
+        debugPrint("❌ Error in repository: $e");
+        debugPrint("$s");
+        return null;
+      }
     }
   }
 
@@ -170,10 +193,16 @@ class CartListingRepository {
         debugPrint("⚠️ Failed to confirm order: ${response.statusCode}");
         return null;
       }
-    } catch (e, s) {
-      debugPrint("❌ Error in repository : $e");
-      debugPrint("$s");
-      return null;
+    } on DioException catch (e, s) {
+      if (e.type == DioExceptionType.connectionError) {
+        Get.snackbar(AppConstants.appName, "APP_ERROR_INTERNET_CONNECTION".tr);
+        return null;
+      }
+      else {
+        debugPrint("❌ Error in repository: $e");
+        debugPrint("$s");
+        return null;
+      }
     }
   }
 
@@ -203,10 +232,16 @@ class CartListingRepository {
         debugPrint("⚠️ Failed to payment from wallet : ${response.statusCode}");
         return null;
       }
-    } catch (e, s) {
-      debugPrint("❌ Error in repository : $e");
-      debugPrint("$s");
-      return null;
+    } on DioException catch (e, s) {
+      if (e.type == DioExceptionType.connectionError) {
+        Get.snackbar(AppConstants.appName, "APP_ERROR_INTERNET_CONNECTION".tr);
+        return null;
+      }
+      else {
+        debugPrint("❌ Error in repository: $e");
+        debugPrint("$s");
+        return null;
+      }
     }
   }
 
@@ -232,12 +267,16 @@ class CartListingRepository {
         );
         return null;
       }
-    } catch (e, s) {
-      debugPrint(
-        "❌ Error in repository with params $fulfilmentType $selproductId: $e",
-      );
-      debugPrint("$s");
-      return null;
+    } on DioException catch (e, s) {
+      if (e.type == DioExceptionType.connectionError) {
+        Get.snackbar(AppConstants.appName, "APP_ERROR_INTERNET_CONNECTION".tr);
+        return null;
+      }
+      else {
+        debugPrint("❌ Error in repository: $e");
+        debugPrint("$s");
+        return null;
+      }
     }
   }
 
@@ -270,12 +309,16 @@ class CartListingRepository {
         debugPrint("⚠️ Failed to add product to cart: ${response.statusCode}");
         return null;
       }
-    } catch (e, s) {
-      debugPrint(
-        "❌ Error in repository with params $selproductId $quantity: $e",
-      );
-      debugPrint("$s");
-      return null;
+    } on DioException catch (e, s) {
+      if (e.type == DioExceptionType.connectionError) {
+        Get.snackbar(AppConstants.appName, "APP_ERROR_INTERNET_CONNECTION".tr);
+        return null;
+      }
+      else {
+        debugPrint("❌ Error in repository: $e");
+        debugPrint("$s");
+        return null;
+      }
     }
   }
 
@@ -305,12 +348,19 @@ class CartListingRepository {
       // ⚠️ Non-200 response
       debugPrint("⚠️ Failed: HTTP ${response.statusCode}");
       return CartUpdateModel(status: "0", msg: "Something went wrong");
-    } catch (e, stack) {
-      debugPrint("❌ Exception in updateCartQuantity: $e");
-      debugPrint("$stack");
+    }
+    on DioException catch (e, stack) {
+      if (e.type == DioExceptionType.connectionError) {
+        Get.snackbar(AppConstants.appName, "APP_ERROR_INTERNET_CONNECTION".tr);
+        return CartUpdateModel(status: "0", msg: e.toString());
+      }
+      else {
+        debugPrint("❌ Exception in updateCartQuantity: $e");
+        debugPrint("$stack");
 
-      // ✅ Return model with error msg so UI can show toast/snackbar
-      return CartUpdateModel(status: "0", msg: e.toString());
+        // ✅ Return model with error msg so UI can show toast/snackbar
+        return CartUpdateModel(status: "0", msg: e.toString());
+      }
     }
   }
 
@@ -340,12 +390,18 @@ class CartListingRepository {
       // ⚠️ Non-200 response
       debugPrint("⚠️ Failed: HTTP ${response.statusCode}");
       return CartUpdateModel(status: "0", msg: "Something went wrong");
-    } catch (e, stack) {
-      debugPrint("❌ Exception in delete cart item: $e");
-      debugPrint("$stack");
+    } on DioException catch (e, stack) {
+      if (e.type == DioExceptionType.connectionError) {
+        Get.snackbar(AppConstants.appName, "APP_ERROR_INTERNET_CONNECTION".tr);
+        return CartUpdateModel(status: "0", msg: e.toString());
+      }
+      else {
+        debugPrint("❌ Exception in updateCartQuantity: $e");
+        debugPrint("$stack");
 
-      // ✅ Return model with error msg so UI can show toast/snackbar
-      return CartUpdateModel(status: "0", msg: e.toString());
+        // ✅ Return model with error msg so UI can show toast/snackbar
+        return CartUpdateModel(status: "0", msg: e.toString());
+      }
     }
   }
 
@@ -394,12 +450,18 @@ class CartListingRepository {
       // ⚠️ Non-200 response
       debugPrint("⚠️ Failed: HTTP ${response.statusCode}");
       return ApplyCouponModel(status: "0", msg: "Something went wrong");
-    } catch (e, stack) {
-      debugPrint("❌ Exception in applying coupon to cart items: $e");
-      debugPrint("$stack");
-
-      // ✅ Return model with error msg so UI can show toast/snackbar
-      return ApplyCouponModel(status: "0", msg: e.toString());
+    }
+    on DioException catch (e, stack) {
+      if (e.type == DioExceptionType.connectionError) {
+        Get.snackbar(AppConstants.appName, "APP_ERROR_INTERNET_CONNECTION".tr);
+        return ApplyCouponModel(status: "0", msg: e.toString());
+      }
+      else {
+        debugPrint("❌ Exception in applying coupon to cart items: $e");
+        debugPrint("$stack");
+        // ✅ Return model with error msg so UI can show toast/snackbar
+        return ApplyCouponModel(status: "0", msg: e.toString());
+      }
     }
   }
 
@@ -446,12 +508,67 @@ class CartListingRepository {
       // ⚠️ Non-200 response
       debugPrint("⚠️ Failed: HTTP ${response.statusCode}");
       return ApplyCouponModel(status: "0", msg: "Something went wrong");
-    } catch (e, stack) {
-      debugPrint("❌ Exception in removing coupon to cart items: $e");
-      debugPrint("$stack");
+    }
 
-      // ✅ Return model with error msg so UI can show toast/snackbar
-      return ApplyCouponModel(status: "0", msg: e.toString());
+    on DioException catch (e, stack) {
+      if (e.type == DioExceptionType.connectionError) {
+        Get.snackbar(AppConstants.appName, "APP_ERROR_INTERNET_CONNECTION".tr);
+        return ApplyCouponModel(status: "0", msg: e.toString());
+      }
+      else {
+        debugPrint("❌ Exception in removing coupon to cart items: $e");
+        debugPrint("$stack");
+
+        // ✅ Return model with error msg so UI can show toast/snackbar
+        return ApplyCouponModel(status: "0", msg: e.toString());
+      }
+    }
+  }
+
+  /// remove card item
+  Future<CommonResponseModel?> removeCardItem({
+    required String fulfilmentType,
+    required String tokenId,
+  }) async {
+    try {
+      debugPrint("📦 removing saved card items...");
+
+      final response = await _apiClient.removeCardItem(
+        fullfilmentType: fulfilmentType,
+        tokenId: tokenId,
+      );
+
+      debugPrint("📥 API RESPONSE: ${response.data}");
+
+      if (response.statusCode == 200) {
+        final decoded = response.data is String
+            ? json.decode(response.data)
+            : response.data;
+
+        if (decoded is List) {
+          debugPrint("⚠️ API returned List instead of Map");
+          return CommonResponseModel(
+            status: "0",
+            msg: "Empty or invalid response",
+          );
+        }
+
+        if (decoded is Map<String, dynamic>) {
+          /// 🔥 IMPORTANT FIX
+          decoded['status'] = decoded['status']?.toString();
+
+          return CommonResponseModel.fromJson(decoded);
+        }
+
+        debugPrint("⚠️ Unexpected response type: ${decoded.runtimeType}");
+        return null;
+      }
+
+      debugPrint("⚠️ Failed: HTTP ${response.statusCode}");
+      return CommonResponseModel(status: "0", msg: "Something went wrong");
+    } catch (e) {
+      debugPrint("❌ removeCardItem error: $e");
+      return CommonResponseModel(status: "0", msg: "Exception occurred");
     }
   }
 
@@ -485,12 +602,18 @@ class CartListingRepository {
       // ⚠️ Non-200 response
       debugPrint("⚠️ Failed: HTTP ${response.statusCode}");
       return CartUpdateModel(status: "0", msg: "Something went wrong");
-    } catch (e, stack) {
-      debugPrint("❌ Exception in removing save for later cart item: $e");
-      debugPrint("$stack");
-
-      // ✅ Return model with error msg so UI can show toast/snackbar
-      return CartUpdateModel(status: "0", msg: e.toString());
+    }
+    on DioException catch (e, stack) {
+      if (e.type == DioExceptionType.connectionError) {
+        Get.snackbar(AppConstants.appName, "APP_ERROR_INTERNET_CONNECTION".tr);
+        return CartUpdateModel(status: "0", msg: e.toString());
+      }
+      else {
+        debugPrint("❌ Exception in removing save for later cart item: $e");
+        debugPrint("$stack");
+        // ✅ Return model with error msg so UI can show toast/snackbar
+        return CartUpdateModel(status: "0", msg: e.toString());
+      }
     }
   }
 }

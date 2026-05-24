@@ -1,4 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:tajer/utils/pref_store.dart';
 import 'api_service/api_service.dart';
 import '../../core/constants/app_constants.dart';
 
@@ -7,7 +9,7 @@ class AuthenticationApiClient {
 
   Future<Response> getSignUpUser(
       String userName,
-      String userUsername,
+      // String userUsername,
       String userEmail,
       String userPassword,
       String confirmPassword,
@@ -23,7 +25,7 @@ class AuthenticationApiClient {
       AppConstants.signUpApi,
       data: FormData.fromMap({
         'user_name': userName,
-        'user_username': userUsername,
+        // 'user_username': userUsername,
         'user_email': userEmail,
         'user_password': userPassword,
         'password1': confirmPassword,
@@ -44,6 +46,8 @@ class AuthenticationApiClient {
       String userType,
       String dialCode,
       ) async {
+    debugPrint('this is our session id saved');
+    debugPrint(PrefStore().loadString(AppConstants.sessionId) ?? "");
     return await _api.dio.post(
       AppConstants.loginUser,
       data: FormData.fromMap({
@@ -52,6 +56,11 @@ class AuthenticationApiClient {
         'userType': userType,
         'username_dcode': dialCode,
       }),
+      options: Options(
+        headers: {
+          'X-APP-SESSION-ID': PrefStore().loadString(AppConstants.sessionId) ?? "",
+        },
+      ),
     );
   }
 
@@ -82,6 +91,11 @@ class AuthenticationApiClient {
         'deviceOs': deviceOs,
         'userType': userType,
       }),
+      options: Options(
+        headers: {
+          'X-TOKEN': PrefStore().loadString(AppConstants.sessionToken), // if needed
+        },
+      ),
     );
   }
 
@@ -151,11 +165,32 @@ class AuthenticationApiClient {
     );
   }
 
+  Future<Response> saveProfilePhoneNumber(
+      String phoneDCode,
+      String userPhone,
+      String phoneOtp,
+      ) async {
+    return await _api.dio.post(
+      AppConstants.saveProfilePhoneNumber,
+      data: FormData.fromMap({
+        'user_phone_dcode': phoneDCode,
+        'user_phone': userPhone,
+        'user_phone_otp': phoneOtp
+      }),
+    );
+  }
+
   Future<Response> resendOtp(
       String userId,
       ) async {
     return await _api.dio.get(
       "${AppConstants.resendOtp}$userId",
+    );
+  }
+
+  Future<Response> getVerifiedNumbers() async {
+    return await _api.dio.get(
+      AppConstants.getVerifiedNumbers,
     );
   }
 

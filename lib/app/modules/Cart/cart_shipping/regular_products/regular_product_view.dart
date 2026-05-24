@@ -1,10 +1,13 @@
+import 'package:adaptive_platform_ui/adaptive_platform_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tajer/app/Extensions/convert_extension.dart';
 import 'package:tajer/app/modules/Cart/MainCartView.dart';
 import 'package:tajer/app/modules/Cart/cart_shipping/regular_products/regular_product_controller.dart';
+import 'package:tajer/utils/app_loader.dart';
 import 'package:tajer/utils/pref_store.dart';
 import 'package:tajer/utils/app_strings.dart';
+import '../../../../../utils/app_params.dart';
 import '../../../../Extensions/alert.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/app_labels.dart';
@@ -23,6 +26,7 @@ import '../../shipping_guideline/shipping_guideline_view.dart';
 import '../cart_listing_model/cart_listing_model.dart';
 import '../cart_listing_model/product_card.dart';
 import 'add_comment/add_comment.dart';
+import 'package:flutter/gestures.dart';
 
 class CartPage extends StatefulWidget {
   final List<Map<String, dynamic>> cartItems;
@@ -33,19 +37,23 @@ class CartPage extends StatefulWidget {
   State<CartPage> createState() => _CartPageState();
 }
 
-class _CartPageState extends State<CartPage> {
+class _CartPageState extends State<CartPage> with AppLoader {
+  final controller = Get.put(RegularProductController());
+  final ScrollController _scrollController = ScrollController();
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    controller.getCartListing(
-      (controller.isDeliverAllTogether.value == true ? "1" : "0"),
-      "5",
-    );
-  }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.resetVariables();
 
-  final ScrollController _scrollController = ScrollController();
-  final controller = Get.put(RegularProductController());
+      controller.getCartListing(
+        (controller.isDeliverAllTogether.value ? "1" : "0"),
+        "5",
+      );
+    });
+  }
 
   bool get isGuestUser {
     final rates = controller.cartListingModel.value?.data?.rates?.rates;
@@ -55,18 +63,24 @@ class _CartPageState extends State<CartPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+       key: Key("regular_product_view"),
       backgroundColor: Colors.transparent,
       body: Obx(() {
         if (controller.isLoading.value) {
           return SizedBox(
+             key: Key("size_chart_loading_view"),
             height: Get.height,
-            child: const Center(child: CircularProgressIndicator()),
+            child: const Center(
+              child: CircularProgressIndicator(color: Colors.black),
+            ),
           );
         }
 
-        if (controller.cartListingModel.value?.status == "0") {
+        if ((controller.cartListingModel.value?.status == "0") ||
+            (controller.cartListingModel.value == null)) {
           return Center(
             child: EmptyCartWidget(
+               key: Key("empty_cart_widget"),
               imagePath: 'assets/images/shopping_cart.png',
               // message: AppStrings.appYourCartIsEmpty.toUpperCase().tr,
               message: AppStrings.appYourCartIsEmpty.tr,
@@ -83,8 +97,9 @@ class _CartPageState extends State<CartPage> {
                   ?.available
                   ?.isEmpty ==
               true) {
-            return  Center(
+            return Center(
               child: EmptyCartWidget(
+                 key: Key("empty_cart_widget2"),
                 imagePath: 'assets/images/shopping_cart.png',
                 message: AppStrings.appYourCartIsEmpty.tr,
               ),
@@ -94,6 +109,7 @@ class _CartPageState extends State<CartPage> {
           if (controller.groupedCombo.isEmpty) {
             return Center(
               child: EmptyCartWidget(
+                 key: Key("empty_cart_widget3"),
                 imagePath: 'assets/images/shopping_cart.png',
                 message: AppStrings.appYourCartIsEmpty.tr,
               ),
@@ -101,8 +117,10 @@ class _CartPageState extends State<CartPage> {
           }
         }
         return SingleChildScrollView(
+           key: Key("single_child_scroll_view"),
           controller: _scrollController, // Attached here
           child: Column(
+             key: Key("single_child_scroll_column"),
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (controller.cartListingModel.value?.data?.isDTVisible == "1")
@@ -111,6 +129,7 @@ class _CartPageState extends State<CartPage> {
                     Padding(
                       padding: EdgeInsets.fromLTRB(8, 0, 0, 0),
                       child: Checkbox(
+                         key: Key("single_child_scroll_check_box"),
                         activeColor: Colors.black,
                         value: controller.isDeliverAllTogether.value,
                         onChanged: (bool? newValue) {
@@ -157,9 +176,21 @@ class _CartPageState extends State<CartPage> {
                         ?.products
                         ?.saveForLater ??
                     [],
-                onSelected: (selProductId, quantity) {
-                  debugPrint(selProductId);
-                  controller.moveItemToCart(selProductId, "1");
+                onSelected: (cartItem, quantity) async {
+                  await controller.moveItemToCart(
+                    cartItem.selprodId ?? '',
+                    "1",
+                    isRemovingSaveForLater: '1',
+                  );
+                  controller.addRemoveSaveForLaterItem(
+                    cartItem.fulfillmentType ?? "2",
+                    cartItem.selprodId ?? "",
+                    cartItem.uwlpUwlistId ?? "",
+                    "0",
+                    cartItem.key ?? "",
+                    false,
+                    cartItem,
+                  );
                 },
                 removeItem: (cartItem) {
                   showAlertMessage(
@@ -174,7 +205,7 @@ class _CartPageState extends State<CartPage> {
                         "0",
                         cartItem.key ?? "",
                         false,
-                        cartItem
+                        cartItem,
                       );
                     },
                     onCancel: () {
@@ -202,8 +233,12 @@ class _CartPageState extends State<CartPage> {
                                 ?.cartSelectedShippingAddress,
                             isSelected: true,
                             onEdit: () async {
-                              final result = await Get.to(
-                                () => AddressListScreen(),
+                              // final result = await Get.to(
+                              //   () => AddressListScreen(),
+                              //   arguments: {"comeFromCart": "1"},
+                              // );
+                              final result = await Get.toNamed(
+                                AppRoutes.shippingAddress,
                                 arguments: {"comeFromCart": "1"},
                               );
                               debugPrint(result);
@@ -225,39 +260,46 @@ class _CartPageState extends State<CartPage> {
                               horizontal: 12,
                               vertical: 20,
                             ),
-                            child: ElevatedButton.icon(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.black,
-                                foregroundColor: Colors.white,
-                                minimumSize: const Size(double.infinity, 50),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(14),
-                                ),
-                              ),
-                              onPressed: () async {
-                                final result = await Get.to(
-                                  () => AddressListScreen(),
-                                  arguments: {"comeFromCart": "1"},
-                                );
-                                if (result == "1") {
-                                  controller.getCartListing(
-                                    (controller.isDeliverAllTogether.value ==
-                                            true
-                                        ? "1"
-                                        : "0"),
-                                    "5",
-                                  );
-                                }
-                              },
-                              icon: const Icon(Icons.add),
-                              label: const Text(
-                                'Add Address',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ),
+                            child: controller.isLoggedIn.value == true
+                                ? ElevatedButton.icon(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.black,
+                                      foregroundColor: Colors.white,
+                                      minimumSize: const Size(
+                                        double.infinity,
+                                        50,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(14),
+                                      ),
+                                    ),
+                                    onPressed: () async {
+                                      final result = await Get.to(
+                                        () => AddressListScreen(),
+                                        arguments: {"comeFromCart": "1"},
+                                      );
+                                      if (result == "1") {
+                                        controller.getCartListing(
+                                          (controller
+                                                      .isDeliverAllTogether
+                                                      .value ==
+                                                  true
+                                              ? "1"
+                                              : "0"),
+                                          "5",
+                                        );
+                                      }
+                                    },
+                                    icon: const Icon(Icons.add),
+                                    label: Text(
+                                      'APP_ADD_ADDRESS'.tr,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  )
+                                : Container(),
                           )
                         : Padding(
                             padding: const EdgeInsets.fromLTRB(15, 20, 15, 12),
@@ -286,39 +328,50 @@ class _CartPageState extends State<CartPage> {
               ),
               SizedBox(height: 10),
               if (controller.paymentSummaryModel.value?.data != null)
-                SizedBox(
-                  height: 120,
-                  child: CouponInput(
-                    couponCode: controller.appliedCouponCode,
-                    onApplyingCoupon: (coupon) {
-                      controller.applyCouponCode(coupon, "2");
-                    },
-                    onRemovingCoupon: () {
-                      controller.removeCoupon("2");
-                    },
+                Obx(
+                  () => AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+
+                    height: controller.couponErrorMessage.value.isNotEmpty
+                        ? 130
+                        : 110,
+
+                    child: CouponInput(
+                      couponCode: controller.appliedCouponCode,
+                      errorMessage: controller.couponErrorMessage.value,
+                      onTextChanged: () {
+                        controller.couponErrorMessage.value = "";
+                      },
+                      onApplyingCoupon: (coupon) {
+                        controller.applyCouponCode(coupon, "2");
+                      },
+                      onRemovingCoupon: () {
+                        controller.removeCoupon("2");
+                      }, isLoading: controller.isCouponLoading.value,
+                    ),
                   ),
                 ),
               SizedBox(height: 10),
               if (controller.paymentSummaryModel.value?.data != null)
-                DeliveryHtmlPage(
-                  onAgreeBtnTap: (agree) {
-                    setState(() {
-                      controller.isAgreed.value = agree;
-                      debugPrint("${controller.isAgreed.value}");
-                    });
-                  },
-                  shippingGuidelines: controller
-                      .cartListingModel
-                      .value
-                      ?.data
-                      ?.shippingGuidelines, isAgreed: controller.isAgreed.value,
-                ),
-              if (controller.paymentSummaryModel.value?.data != null)
-                SizedBox(
-                  child: OrderPriceDetailView(
-                    paymentSummaryModel: controller.paymentSummaryModel.value,
+                // DeliveryHtmlPage(
+                //   onAgreeBtnTap: (agree) {
+                //     setState(() {
+                //       controller.isAgreed.value = agree;
+                //       debugPrint("${controller.isAgreed.value}");
+                //     });
+                //   },
+                //   shippingGuidelines: controller
+                //       .cartListingModel
+                //       .value
+                //       ?.data
+                //       ?.shippingGuidelines, isAgreed: controller.isAgreed.value,
+                // ),
+                if (controller.paymentSummaryModel.value?.data != null)
+                  SizedBox(
+                    child: OrderPriceDetailView(
+                      paymentSummaryModel: controller.paymentSummaryModel.value,
+                    ),
                   ),
-                ),
               if ((controller.paymentSummaryModel.value?.data != null) &&
                   (controller.paymentSummaryModel.value?.data?.rewardPoints !=
                       "0"))
@@ -353,22 +406,39 @@ class _CartPageState extends State<CartPage> {
               if (controller.paymentSummaryModel.value?.data != null)
                 PaymentSelectionPage(
                   cards: controller.cardTokens ?? [],
-                  onRadioSelected: (cards, selectedCardIndex) {
+                  onRadioSelected: (cards, selectedCardIndex) async {
                     print("radio button tap");
-                    controller.getpaymentSummary(
-                      redeemPoints: controller.usedRewardPoints,
-                      orderId: controller.cartOrderId,
-                      payFromWallet: "0",
-                    );
                     controller.selectedPlugin = selectedCardIndex;
-                    _scrollToBottom(cards);
+                    showLoader(context);
+                    if (controller.selectedMethod == "both" ||
+                        controller.selectedMethod == "WALLET") {
+                      /// Only call API when wallet fully used (rare case)
+                      await controller.getpaymentSummary(
+                        redeemPoints: controller.usedRewardPoints,
+                        orderId: controller.cartOrderId,
+                        payFromWallet: "1",
+                      );
+                    } else {
+                      await controller.getpaymentSummary(
+                        redeemPoints: controller.usedRewardPoints,
+                        orderId: controller.cartOrderId,
+                        payFromWallet: "0",
+                      );
+                    }
+
+                    hideLoader(context);
+
+                    // _scrollToBottom(cards);
                   },
                   paymentSummaryModel: controller.paymentSummaryModel.value,
-                  walletMethodSelected: () {
-                    controller.getpaymentSummary(
+                  walletMethodSelected: () async {
+                    final payFromWallet = controller.useWallet.value
+                        ? "1"
+                        : "0";
+                    await controller.getpaymentSummary(
                       redeemPoints: controller.usedRewardPoints,
                       orderId: controller.cartOrderId,
-                      payFromWallet: "1",
+                      payFromWallet: payFromWallet,
                     );
                   },
                   selectedPaymentMethod: controller.selectedPaymentMethod,
@@ -376,17 +446,28 @@ class _CartPageState extends State<CartPage> {
               if (controller.paymentSummaryModel.value?.data != null)
                 NotesView(),
               if (controller.paymentSummaryModel.value?.data != null)
-                Obx(() => PlaceOrderView(
-                  isAgreed: controller.isAgreed.value,
-                  paymentSummaryModel: controller.paymentSummaryModel.value,
-                  orderId: controller.cartOrderId,
-                  usedRewardPoint: controller.usedRewardPoints,
-                )),
-              SizedBox(height: 80)
+                Obx(
+                  () => PlaceOrderView(
+                    isAgreed: controller.isAgreed.value,
+                    paymentSummaryModel: controller.paymentSummaryModel.value,
+                    orderId: controller.cartOrderId,
+                    usedRewardPoint: controller.usedRewardPoints,
+                  ),
+                ),
+              PlatformInfo.isIOS26OrHigher()
+                  ? SizedBox(height: 90)
+                  : SizedBox.shrink(),
             ],
           ),
         );
       }),
+    );
+  }
+
+  void navigateToWebView(String title, String url) {
+    Get.toNamed(
+      AppRoutes.webViewScreen,
+      arguments: {AppParams.title: title, AppParams.webViewUrl: url},
     );
   }
 
@@ -410,6 +491,7 @@ class _CartPageState extends State<CartPage> {
       final item = entry.value;
 
       return Padding(
+        // key: Key("build_guest_user_item"),
         padding: EdgeInsets.only(top: index == 0 ? 0 : 10, bottom: 10),
         child: CartItemCard(
           item: item,
@@ -447,7 +529,7 @@ class _CartPageState extends State<CartPage> {
               title: AppLabels.APP_NAME,
               message: "Are you sure want to remove this?",
               onOk: () {
-                controller.deleteCartItem(item.key ?? "", "2",item);
+                controller.deleteCartItem(item.key ?? "", "2", item);
               },
               onCancel: () {},
             );
@@ -461,7 +543,7 @@ class _CartPageState extends State<CartPage> {
                 "1",
                 item.key ?? "",
                 true,
-                item
+                item,
               );
             } else {
               showAlertMessage(
@@ -494,6 +576,7 @@ class _CartPageState extends State<CartPage> {
           : <ShippingMethod>[];
 
       return Container(
+        // key: Key("build_registered_user_combo"),
         margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         decoration: BoxDecoration(
           color: Colors.white,
@@ -534,6 +617,7 @@ class _CartPageState extends State<CartPage> {
                   ),
                   child: CartItemCard(
                     item: item,
+                    controller: controller,
                     onComment: () async {
                       final comment = await showCommentDialog(context);
                       if (comment != null) {
@@ -569,7 +653,7 @@ class _CartPageState extends State<CartPage> {
                         title: AppLabels.APP_NAME,
                         message: "Are you sure want to remove this?",
                         onOk: () {
-                          controller.deleteCartItem(item.key ?? "", "2",item);
+                          controller.deleteCartItem(item.key ?? "", "2", item);
                         },
                         onCancel: () {
                           debugPrint("dismissed");
@@ -588,7 +672,7 @@ class _CartPageState extends State<CartPage> {
                           "1",
                           item.key ?? "",
                           true,
-                          item
+                          item,
                         );
                       } else {
                         showAlertMessage(

@@ -5,9 +5,12 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:tajer/app/Extensions/image_color_utils.dart';
 import 'package:tajer/app/modules/product_detail/shop_detail_view/reviews_view/review_list_view.dart';
 import 'package:tajer/app/modules/product_detail/shop_detail_view/shop_detail_controller.dart';
+import 'package:tajer/marque_label.dart';
 import 'package:tajer/utils/app_strings.dart';
 
 import '../../../../../utils/app_colors.dart';
+import '../../../../utils/pref_store.dart';
+import '../../../core/constants/app_constants.dart';
 import '../../Cart/MainCartView.dart';
 import '../../home/dual_horizontal_product_view/dual_horizontal_product_view.dart';
 import '../../productList/controllers/product_controller.dart';
@@ -36,11 +39,17 @@ class _ShopDetailPageState extends State<ShopDetailPage>
     _tabController = TabController(length: 5, vsync: this);
     controller.loadShopDetail();
 
+    // _scrollController.addListener(() {
+    //   if (_scrollController.offset > 200 && !showFloatingBar) {
+    //     setState(() => showFloatingBar = true);
+    //   } else if (_scrollController.offset < 200 && showFloatingBar) {
+    //     setState(() => showFloatingBar = false);
+    //   }
+    // });
     _scrollController.addListener(() {
-      if (_scrollController.offset > 200 && !showFloatingBar) {
-        setState(() => showFloatingBar = true);
-      } else if (_scrollController.offset < 200 && showFloatingBar) {
-        setState(() => showFloatingBar = false);
+      if (_scrollController.position.pixels >=
+          _scrollController.position.maxScrollExtent - 200) {
+        controller.loadMoreProducts();
       }
     });
   }
@@ -49,129 +58,166 @@ class _ShopDetailPageState extends State<ShopDetailPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(scrolledUnderElevation: 0, backgroundColor: Colors.white),
-      body: NestedScrollView(
-        controller: _scrollController,
-        headerSliverBuilder: (context, innerBoxIsScrolled) {
-          return [
-            // ---- Collapsing Shop Header ----
-            Obx(() {
-              return SliverAppBar(
-                automaticallyImplyLeading: false,
-                pinned: false,
-                floating: false,
-                snap: false,
-                toolbarHeight: 0,
-                expandedHeight:
-                (controller
-                    .shopDetail
-                    .value
-                    ?.data
-                    ?.shop
-                    ?.badges
-                    ?.isNotEmpty ??
-                    false)
-                    ? 340
-                    : 285,
-                // full height when expanded
-                collapsedHeight: 0,
-                // folds to zero height
-                backgroundColor: AppColors.white,
-                flexibleSpace: FlexibleSpaceBar(
-                  collapseMode: CollapseMode.parallax,
-                  background: _buildShopHeader(),
-                ),
-              );
-            }),
-            // ---- Pinned TabBar ----
-            SliverPersistentHeader(
-              pinned: true,
-              delegate: _SliverAppBarDelegate(
-                TabBar(
-                  controller: _tabController,
-                  labelColor: Colors.black,
-                  unselectedLabelColor: Colors.grey,
-                  indicatorColor: Colors.black,
-                  indicator: const UnderlineTabIndicator(
-                    borderSide: BorderSide(width: 2.0, color: Colors.black87),
-                    // 👈 thickness
-                    insets: EdgeInsets.symmetric(
-                      horizontal: 40.0,
-                    ), // 👈 controls width
+      body: Column(
+        children: [
+          /// 🔥 PROMO MARQUEE (FIXED – NOT SCROLLABLE)
+          if (PrefStore().loadString(AppConstants.promoBannerEnabled) == "1")
+            SizedBox(
+              height: 30,
+              width: double.infinity,
+              child:
+                  (PrefStore().loadString(AppConstants.promoBannerText) ?? '')
+                      .marqueeLabel(),
+            ),
+          Expanded(
+            child: Stack(
+              children: [
+                NestedScrollView(
+                  //  controller: _scrollController,
+                  headerSliverBuilder: (context, innerBoxIsScrolled) {
+                    return [
+                      // ---- Collapsing Shop Header ----
+                      Obx(() {
+                        return SliverAppBar(
+                          automaticallyImplyLeading: false,
+                          pinned: false,
+                          floating: false,
+                          snap: false,
+                          toolbarHeight: 0,
+                          expandedHeight:
+                              (controller
+                                      .shopDetail
+                                      .value
+                                      ?.data
+                                      ?.shop
+                                      ?.badges
+                                      ?.isNotEmpty ??
+                                  false)
+                              ? 340
+                              : 285,
+                          // full height when expanded
+                          collapsedHeight: 0,
+                          // folds to zero height
+                          backgroundColor: AppColors.white,
+                          flexibleSpace: FlexibleSpaceBar(
+                            collapseMode: CollapseMode.parallax,
+                            background: _buildShopHeader(),
+                          ),
+                        );
+                      }),
+                      // ---- Pinned TabBar ----
+                      SliverPersistentHeader(
+                        pinned: true,
+                        delegate: _SliverAppBarDelegate(
+                          TabBar(
+                            controller: _tabController,
+                            labelColor: Colors.black,
+                            unselectedLabelColor: Colors.grey,
+                            indicatorColor: Colors.black,
+                            indicator: const UnderlineTabIndicator(
+                              borderSide: BorderSide(
+                                width: 2.0,
+                                color: Colors.black87,
+                              ),
+                              // 👈 thickness
+                              insets: EdgeInsets.symmetric(
+                                horizontal: 40.0,
+                              ), // 👈 controls width
+                            ),
+                            tabs: [
+                              Tab(
+                                icon: Image.asset("assets/images/menu.png"),
+                                height: 25,
+                              ),
+                              Tab(
+                                icon: Image.asset("assets/images/sale.png"),
+                                height: 25,
+                              ),
+                              Tab(
+                                icon: Image.asset(
+                                  "assets/images/shop_star.png",
+                                  height: 30,
+                                ),
+                              ),
+                              Tab(
+                                icon: Image.asset(
+                                  "assets/images/mail.png",
+                                  height: 20,
+                                ),
+                              ),
+                              Tab(
+                                icon: Image.asset(
+                                  "assets/images/shop_policy.png",
+                                  height: 25,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ];
+                  },
+                  body: TabBarView(
+                    controller: _tabController,
+                    children: [
+                      _buildProductTab(),
+                      // const Center(child: Text("About Section")),
+                      const Center(
+                        child: EmptyCartWidget(
+                          imagePath: "assets/images/no_data_image.png",
+                          message: "No data found",
+                          imageSize: 200,
+                        ),
+                      ),
+                      ReviewListView(reviewList: controller.reviews),
+                      Obx(() {
+                        return AskQuestionPageView(
+                          showAppBar: false,
+                          shopId:
+                              controller.shopDetail.value?.data?.shop?.shopId ??
+                              "",
+                          shopName:
+                              controller
+                                  .shopDetail
+                                  .value
+                                  ?.data
+                                  ?.shop
+                                  ?.shopName ??
+                              "",
+                        );
+                      }),
+                      const Center(
+                        child: EmptyCartWidget(
+                          imagePath: "assets/images/no_data_image.png",
+                          message: "No data found",
+                          imageSize: 200,
+                        ),
+                      ),
+                    ],
                   ),
-                  tabs: [
-                    Tab(
-                      icon: Image.asset("assets/images/menu.png"),
-                      height: 25,
-                    ),
-                    Tab(
-                      icon: Image.asset("assets/images/sale.png"),
-                      height: 25,
-                    ),
-                    Tab(
-                      icon: Image.asset(
-                        "assets/images/shop_star.png",
-                        height: 30,
-                      ),
-                    ),
-                    Tab(
-                      icon: Image.asset("assets/images/mail.png", height: 20),
-                    ),
-                    Tab(
-                      icon: Image.asset(
-                        "assets/images/shop_policy.png",
-                        height: 25,
-                      ),
-                    ),
-                  ],
                 ),
-              ),
+              ],
             ),
-          ];
-        },
-        body: TabBarView(
-          controller: _tabController,
-          children: [
-            _buildProductTab(),
-            // const Center(child: Text("About Section")),
-            const Center(
-              child: EmptyCartWidget(
-                imagePath: "assets/images/no_data_image.png",
-                message: "No data found",
-                imageSize: 200,
-              ),
-            ),
-            ReviewListView(reviewList: controller.reviews),
-            Obx(() {
-              return AskQuestionPageView(
-                showAppBar: false,
-                shopId: controller.shopDetail.value?.data?.shop?.shopId ?? "",
-                shopName: controller.shopDetail.value?.data?.shop?.shopName ??
-                    "",
-              );
-            }
-            ),
-            const Center(
-              child: EmptyCartWidget(
-                imagePath: "assets/images/no_data_image.png",
-                message: "No data found",
-                imageSize: 200,
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
+
       floatingActionButton: showFloatingBar
           ? FloatingActionButton.small(
-        backgroundColor: Colors.black,
-        onPressed: () {
-          _scrollController.animateTo(
-            0,
-            duration: const Duration(milliseconds: 500),
-            curve: Curves.easeOut,
-          );
-        },
-        child: const Icon(Icons.arrow_upward, color: Colors.white,size: 18,),
-      )
+              backgroundColor: Colors.black,
+              onPressed: () {
+                _scrollController.animateTo(
+                  0,
+                  duration: const Duration(milliseconds: 500),
+                  curve: Curves.easeOut,
+                );
+              },
+              child: const Icon(
+                Icons.arrow_upward,
+                color: Colors.white,
+                size: 18,
+              ),
+            )
           : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
@@ -200,15 +246,14 @@ class _ShopDetailPageState extends State<ShopDetailPage>
                       child: Image.network(
                         shopDetail?.shop?.shopLogo ?? "",
                         fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) =>
-                            Container(
-                              color: Colors.grey[200],
-                              child: const Icon(
-                                Icons.store_mall_directory,
-                                color: Colors.grey,
-                                size: 30,
-                              ),
-                            ),
+                        errorBuilder: (_, __, ___) => Container(
+                          color: Colors.grey[200],
+                          child: const Icon(
+                            Icons.store_mall_directory,
+                            color: Colors.grey,
+                            size: 30,
+                          ),
+                        ),
                       ).withDefaultError(),
                     ),
                   ),
@@ -245,8 +290,7 @@ class _ShopDetailPageState extends State<ShopDetailPage>
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        "${shopDetail?.shop?.shopStateName ?? ""},${shopDetail
-                            ?.shop?.shopCountryName ?? ""}",
+                        "${shopDetail?.shop?.shopStateName ?? ""},${shopDetail?.shop?.shopCountryName ?? ""}",
                         style: TextStyle(
                           fontSize: 13,
                           color: Colors.black54,
@@ -322,65 +366,137 @@ class _ShopDetailPageState extends State<ShopDetailPage>
       //   );
       // }
 
-      return GridView.builder(
-        // ✅ Don't use shrinkWrap with large lists (hurts performance)
-        physics: const AlwaysScrollableScrollPhysics(),
-        cacheExtent: 200,
-        scrollDirection: Axis.vertical,
-        padding: const EdgeInsets.fromLTRB(10, 12, 10, 80),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          childAspectRatio: 0.61,
-          crossAxisSpacing: 12.0,
-          mainAxisSpacing: 12.0,
-        ),
-        itemCount: controller.products.length + 1,
-        // ✅ Add +1 for loader
-        itemBuilder: (context, index) {
-          // ✅ Show loader when last index is reached
-          if (index == controller.products.length) {
-            return controller.isLoading.value
-                ? const Center(
-              child: Padding(
-                padding: EdgeInsets.all(16.0),
-                child: CircularProgressIndicator(),
-              ),
-            )
-                : const SizedBox.shrink();
+      final width = MediaQuery.of(context).size.width;
+
+      final bool isFolded = width <= 400;
+
+      return NotificationListener<ScrollNotification>(
+        onNotification: (scrollInfo) {
+          if (scrollInfo.metrics.pixels >=
+                  scrollInfo.metrics.maxScrollExtent - 200 &&
+              !controller.isLoading.value &&
+              controller.hasMore.value) {
+            controller.loadMoreProducts();
           }
-          return Obx(() {
-            return ProductCard(
-              product: controller.products[index],
-              isVertical: true,
-              onAddToCart: ()  {
-                final options = controller.products[index].productOptions;
-                if (options != null && options.isNotEmpty) {
-                  final firstOptionValues =
-                      options.first.values ?? [];
-                  if (firstOptionValues.isNotEmpty) {
-                    showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      backgroundColor: Colors.transparent,
-                      builder: (context) => SelectSizeView(
-                        price: controller.products[index].selprodPrice ?? "",
-                        productId: controller.products[index].productId ?? "",
-                        productOptions: firstOptionValues,
-                        currencyCode: controller.products[index].selprodPrice?.replaceAll(RegExp(r'[0-9.]'), '') ?? "\$", productName: controller.products[index].selprodTitle ?? "",
+          return false;
+        },
+        child: GridView.builder(
+          // ✅ Don't use shrinkWrap with large lists (hurts performance)
+          physics: const AlwaysScrollableScrollPhysics(),
+          // controller: _scrollController,   // ✅ attach here
+          // controller: _scrollController,
+          cacheExtent: 200,
+          scrollDirection: Axis.vertical,
+          padding: const EdgeInsets.fromLTRB(10, 12, 10, 80),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 12,
+            mainAxisSpacing: 12,
+            // height > width
+            childAspectRatio: isFolded ? 0.62 : 0.68,
+          ),
+          itemCount:
+              controller.products.length + (controller.hasMore.value ? 1 : 0),
+          itemBuilder: (context, index) {
+            // ✅ Show loader when last index is reached
+            if (index == controller.products.length) {
+              return controller.isLoading.value
+                  ? const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: CircularProgressIndicator(color: Colors.black),
+                      ),
+                    )
+                  : const SizedBox.shrink();
+            }
+
+            // 👇 Extract colors for THIS product only
+            List<Color> colorList = [];
+
+            if (controller.products[index].productOptions != null) {
+              for (var option in controller.products[index].productOptions!) {
+                if (option.optionIsColor == "1") {
+                  for (var value in option.values ?? []) {
+                    final hexCode = value.optionvalueColorCode;
+
+                    if (hexCode != null && hexCode.isNotEmpty) {
+                      try {
+                        final cleanedHex = hexCode.replaceAll("#", "");
+
+                        // Add full opacity if only 6 characters
+                        final formattedHex = cleanedHex.length == 6
+                            ? "FF$cleanedHex"
+                            : cleanedHex;
+
+                        final color = Color(int.parse(formattedHex, radix: 16));
+
+                        colorList.add(color);
+                      } catch (e) {
+                        debugPrint("Invalid color code: $hexCode");
+                      }
+                    }
+                  }
+                }
+              }
+            }
+            return Obx(() {
+              return ProductCard(
+                product: controller.products[index],
+                isVertical: true,
+                colorList: colorList,
+                onAddToCart: () {
+                  final options = controller.products[index].productOptions;
+                  if (options != null && options.isNotEmpty) {
+                    final firstOptionValues = options.first.values ?? [];
+                    if (firstOptionValues.isNotEmpty) {
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        backgroundColor: Colors.transparent,
+                        builder: (context) => SelectSizeView(
+                          price: controller.products[index].selprodPrice ?? "",
+                          productId: firstOptionValues.first.selprodId ?? "",
+                          productOptions: options,
+                          currencyCode:
+                              controller.products[index].selprodPrice
+                                  ?.replaceAll(RegExp(r'[0-9.]'), '') ??
+                              "\$",
+                          productName:
+                              controller.products[index].selprodTitle ?? "",
+                          isSizeChartAvailable: '',
+                        ),
+                      );
+                    } else {
+                      final sizeController = Get.put(
+                        SelectSizeController(
+                          controller.products[index].selprodId ?? '',
+                        ),
+                      );
+                      sizeController.addToCart(
+                        controller.products[index].selprodId ?? '',
+                        controller.products[index].selprodTitle ?? "",
+                        controller.products[index].selprodPrice ?? "",
+                        directAddedToCart: '1',
+                      );
+                    }
+                  } else {
+                    final sizeController = Get.put(
+                      SelectSizeController(
+                        controller.products[index].selprodId ?? '',
                       ),
                     );
-                  } else {
-                    final sizeController = Get.put(SelectSizeController(controller.products[index].selprodId ?? ''));
-                    sizeController.addToCart(controller.products[index].selprodId ?? '',controller.products[index].selprodTitle ?? "",controller.products[index].selprodPrice ?? "");
+                    sizeController.addToCart(
+                      controller.products[index].selprodId ?? '',
+                      controller.products[index].selprodTitle ?? "",
+                      controller.products[index].selprodPrice ?? "",
+                      directAddedToCart: '1',
+                    );
                   }
-                } else {
-                  final sizeController = Get.put(SelectSizeController(controller.products[index].selprodId ?? ''));
-                  sizeController.addToCart(controller.products[index].selprodId ?? '',controller.products[index].selprodTitle ?? "",controller.products[index].selprodPrice ?? "");
-                }
-              },
-            );
-          });
-        },
+                }, productIndex: index.toString(),
+              );
+            });
+          },
+        ),
       );
     });
   }
@@ -399,9 +515,11 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   double get maxExtent => _tabBar.preferredSize.height;
 
   @override
-  Widget build(BuildContext context,
-      double shrinkOffset,
-      bool overlapsContent,) {
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
     return Container(color: Colors.white, child: _tabBar);
   }
 

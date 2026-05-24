@@ -1,9 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:get/get.dart';
 import 'package:tajer/app/data/service/shop_api_client.dart';
 import 'package:tajer/app/modules/product_detail/shop_detail_view/shop_model.dart';
 import 'package:tajer/app/modules/wish_list/wish_list_model.dart';
 
+import '../../../common/widgets/app_dialog.dart';
+import '../../core/constants/app_constants.dart';
 import '../../modules/home/home_model.dart';
 import '../../modules/productList/models/filtered_product.dart';
 import '../../modules/product_detail/shop_detail_view/reviews_view/shop_review_model.dart';
@@ -24,9 +27,16 @@ class ShopRepository {
         debugPrint("⚠️ Unexpected response for shopId: $shopId");
         return null;
       }
-    } on DioException catch (e) {
-      debugPrint("❌ Dio Error in fetchShopDetail: ${e.message}");
-      return null;
+    } on DioException catch (e, s) {
+      if (e.type == DioExceptionType.connectionError) {
+        Get.snackbar(AppConstants.appName, "APP_ERROR_INTERNET_CONNECTION".tr);
+        return null;
+      }
+      else {
+        debugPrint("❌ Error in repository: $e");
+        debugPrint("$s");
+        return null;
+      }
     } catch (e, s) {
       debugPrint("❌ Unknown error in fetchShopDetail: $e");
       debugPrint("$s");
@@ -46,10 +56,16 @@ class ShopRepository {
         debugPrint("⚠️ Failed to load product list: ${response.statusCode}");
         return null;
       }
-    } catch (e, s) {
-      debugPrint("❌ Error in repository with params $params: $e");
-      debugPrint("$s");
-      return null;
+    } on DioException catch (e, s) {
+      if (e.type == DioExceptionType.connectionError) {
+        Get.snackbar(AppConstants.appName, "APP_ERROR_INTERNET_CONNECTION".tr);
+        return null;
+      }
+      else {
+        debugPrint("❌ Error in repository: $e");
+        debugPrint("$s");
+        return null;
+      }
     }
   }
 
@@ -65,10 +81,16 @@ class ShopRepository {
         debugPrint("⚠️ Failed to load shop review list: ${response.statusCode}");
         return null;
       }
-    } catch (e, s) {
-      debugPrint("❌ Error in repository with params $params: $e");
-      debugPrint("$s");
-      return null;
+    } on DioException catch (e, s) {
+      if (e.type == DioExceptionType.connectionError) {
+        Get.snackbar(AppConstants.appName, "APP_ERROR_INTERNET_CONNECTION".tr);
+        return null;
+      }
+      else {
+        debugPrint("❌ Error in repository: $e");
+        debugPrint("$s");
+        return null;
+      }
     }
   }
 
@@ -84,10 +106,16 @@ class ShopRepository {
         debugPrint("⚠️ Failed to load shop review list: ${response.statusCode}");
         return null;
       }
-    } catch (e, s) {
-      debugPrint("❌ Error in repository with params $params: $e");
-      debugPrint("$s");
-      return null;
+    } on DioException catch (e, s) {
+      if (e.type == DioExceptionType.connectionError) {
+        Get.snackbar(AppConstants.appName, "APP_ERROR_INTERNET_CONNECTION".tr);
+        return null;
+      }
+      else {
+        debugPrint("❌ Error in repository: $e");
+        debugPrint("$s");
+        return null;
+      }
     }
   }
 
@@ -103,10 +131,16 @@ class ShopRepository {
         debugPrint("⚠️ Failed to send message to  shop: ${response.statusCode}");
         return null;
       }
-    } catch (e, s) {
-      debugPrint("❌ Error in repository with params $params: $e");
-      debugPrint("$s");
-      return null;
+    } on DioException catch (e, s) {
+      if (e.type == DioExceptionType.connectionError) {
+        Get.snackbar(AppConstants.appName, "APP_ERROR_INTERNET_CONNECTION".tr);
+        return null;
+      }
+      else {
+        debugPrint("❌ Error in repository: $e");
+        debugPrint("$s");
+        return null;
+      }
     }
   }
 

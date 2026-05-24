@@ -14,6 +14,9 @@ pluginManagement {
         google()
         mavenCentral()
         gradlePluginPortal()
+
+        // ✅ ADD THIS
+        maven("https://jitpack.io")
     }
 }
 

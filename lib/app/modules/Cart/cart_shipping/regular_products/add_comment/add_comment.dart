@@ -20,8 +20,8 @@ Future<String?> showCommentDialog(BuildContext context) async {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                "Comment",
+               Text(
+                AppStrings.appAddComment.toUpperCase().tr,
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
@@ -31,7 +31,7 @@ Future<String?> showCommentDialog(BuildContext context) async {
               TextField(
                 controller: commentController,
                 decoration: InputDecoration(
-                  hintText: "Please enter comments/ other info",
+                  hintText: AppStrings.app_error_enter_other_info.tr,
                   hintStyle: const TextStyle(color: Colors.grey),
                   border: const UnderlineInputBorder(),
                   focusedBorder: const UnderlineInputBorder(
@@ -58,7 +58,7 @@ Future<String?> showCommentDialog(BuildContext context) async {
                     onPressed: () {
                       Get.back(); // close without result
                     },
-                    child: const Text("Cancel"),
+                    child: Text(AppStrings.appCancel.toUpperCase().tr),
                   ),
                   const SizedBox(width: 10),
                   TextButton(

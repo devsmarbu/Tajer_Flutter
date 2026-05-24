@@ -176,7 +176,7 @@ class WalletScreen extends StatelessWidget {
                             // 🔄 Loading indicator at bottom
                             return const Padding(
                               padding: EdgeInsets.symmetric(vertical: 16),
-                              child: Center(child: CircularProgressIndicator()),
+                              child: Center(child: CircularProgressIndicator(color: Colors.black)),
                             );
                           }
                         },

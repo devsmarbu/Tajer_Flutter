@@ -1,7 +1,10 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:video_player/video_player.dart';
-import '../../../../../common/widgets/restart_widget.dart';
+import '../../../../../utils/app_loader.dart';
+import '../../../../core/constants/app_constants.dart';
+import '../../../../core/routes/app_routes.dart';
 import '../../AppStoreUpdate/AppStoreUpdate.dart';
 import '../controller/splash_controller.dart';
 
@@ -13,7 +16,7 @@ class SplashView extends StatefulWidget {
 }
 
 class _SplashViewState extends State<SplashView> {
-  late VideoPlayerController _videoController;
+  VideoPlayerController? _videoController; // ✅ nullable
   late SplashController controller;
   bool _videoFinished = false;
 
@@ -21,82 +24,125 @@ class _SplashViewState extends State<SplashView> {
   void initState() {
     super.initState();
 
+    GlobalLoader.disable = true;
+
     controller = Get.put(SplashController(), permanent: true);
     controller.fromSplash.value = true;
 
+    ever(controller.shouldStopVideo, (value) {
+      if (value == true) {
+        stopVideo();
+      }
+    });
+
+    debugPrint('AppState.isReady → ${AppState.isReady}');
+    debugPrint('DeepLink → $deepLinkURL');
+
+    /// ✅ If app already ready → skip splash completely
+    if (AppState.isReady) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Get.offAllNamed(AppRoutes.bottomNavigation);
+      });
+      return;
+    }
+
+    /// ✅ Initialize video ONLY if needed
+    _initVideo();
+
+    /// ✅ Deep link special handling (Android)
+    if (Platform.isAndroid) {
+      Future.delayed(const Duration(milliseconds: 500), () {
+        if (deepLinkURL.contains('/guest-user/user-check-email-verification') &&
+            AppState.isReady) {
+          Get.offAllNamed(AppRoutes.bottomNavigation);
+        }
+      });
+    }
+  }
+
+  void _initVideo() {
     _videoController = VideoPlayerController.asset(
       'assets/videos/splash.mp4',
-      videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true), // 🔥 important !!
+      videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true),
     )
       ..initialize().then((_) {
-        _videoController.setVolume(0); // no audio conflict
-        _videoController.play();
-        _videoController.addListener(_checkVideoCompletion);
-        setState(() {});
+        _videoController?.play();
+        _videoController?.addListener(_checkVideoCompletion);
+        if (mounted) setState(() {});
       });
   }
 
   void _checkVideoCompletion() {
-    /// 🔥 STOP ALL LOGIC if force update is active
     if (AppUpdateService.instance.forceUpdateRequired.value) return;
 
-    final v = _videoController.value;
+    final v = _videoController?.value;
+    if (v == null || !v.isInitialized) return;
 
-    if (!_videoFinished && v.isInitialized) {
-      final position = v.position;
-      final duration = v.duration;
+    final position = v.position;
+    final duration = v.duration;
 
-      if (duration != null &&
-          position != null &&
-          (position >= duration ||
-              position >=
-                  duration - const Duration(milliseconds: 200))) {
-        _videoFinished = true;
-        _videoController.removeListener(_checkVideoCompletion);
+    if (!_videoFinished &&
+        duration != null &&
+        position != null &&
+        (position >= duration ||
+            position >= duration - const Duration(milliseconds: 200))) {
+      _videoFinished = true;
+      _videoController?.removeListener(_checkVideoCompletion);
 
-        /// Wait 2 sec then run APIs (if NOT force update)
-        Future.delayed(const Duration(seconds: 2), () async {
-          if (!AppUpdateService.instance.forceUpdateRequired.value) {
-            await controller.startAllSplashApis();
-          }
-        });
-      }
+      /// 👉 Call APIs or navigate
+      //  controller.startAllSplashApis();
+    }
+  }
+
+  void stopVideo() {
+    if (_videoController?.value.isInitialized ?? false) {
+      _videoController?.pause();
+      _videoController?.seekTo(Duration.zero);
     }
   }
 
   @override
   void dispose() {
-    if (!_videoFinished) {
-      try {
-        _videoController.removeListener(_checkVideoCompletion);
-      } catch (_) {}
-    }
-    _videoController.dispose();
+    GlobalLoader.disable = false;
+
+    try {
+      _videoController?.removeListener(_checkVideoCompletion);
+      _videoController?.dispose();
+    } catch (_) {}
+
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    /// ✅ If video not initialized → show loader
+    if (_videoController == null ||
+        !(_videoController?.value.isInitialized ?? false)) {
+      return const Scaffold(
+        backgroundColor: Colors.black,
+        body: Center(
+          child: CircularProgressIndicator(color: Colors.black),
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: Colors.black,
       body: Obx(() {
-        /// 🔥 OPTIONAL: show loader only if APIs running AND not force update
         if (!AppUpdateService.instance.forceUpdateRequired.value &&
             controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
-        }
-
-        if (!_videoController.value.isInitialized) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(
+            child: CircularProgressIndicator(color: Colors.black),
+          );
         }
 
         return SizedBox.expand(
           child: FittedBox(
             fit: BoxFit.cover,
             child: SizedBox(
-              width: _videoController.value.size.width,
-              height: _videoController.value.size.height,
-              child: VideoPlayer(_videoController),
+              width: _videoController!.value.size.width,
+              height: _videoController!.value.size.height,
+              child: VideoPlayer(_videoController!),
             ),
           ),
         );

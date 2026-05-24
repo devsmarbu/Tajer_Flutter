@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 
 import 'app_colors.dart';
 
@@ -50,7 +52,7 @@ class _AppLoaderDialog extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CircularProgressIndicator(),
+                  CircularProgressIndicator(color: Colors.black),
                   SizedBox(height: 12),
                 ],
               ),
@@ -60,4 +62,34 @@ class _AppLoaderDialog extends StatelessWidget {
       ),
     );
   }
+}
+
+
+class OverlayLoader {
+  static OverlayEntry? _overlayEntry;
+
+  static void show() {
+    if (_overlayEntry != null) return;
+
+    _overlayEntry = OverlayEntry(
+      builder: (context) => Material(
+        color: Colors.black.withOpacity(0.3),
+        child: const Center(
+          child: CircularProgressIndicator(color: Colors.black),
+        ),
+      ),
+    );
+
+    Overlay.of(Get.overlayContext!).insert(_overlayEntry!);
+  }
+
+  static void hide() {
+    _overlayEntry?.remove();
+    _overlayEntry = null;
+  }
+}
+
+
+class AppState {
+  static bool isReady = false;
 }

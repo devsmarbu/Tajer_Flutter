@@ -1,4 +1,3 @@
-
 import 'dart:async';
 import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
@@ -11,7 +10,10 @@ import 'package:tajer/app/firebase/one_signal_notification.dart';
 import 'package:tajer/common/functions/app_function.dart';
 import 'package:tajer/translations/localization_service.dart';
 import 'package:tajer/utils/pref_store.dart';
+import 'package:tiktok_events_sdk/tiktok_events_sdk.dart';
 
+import 'app/core/constants/app_constants.dart';
+import 'app/modules/Account/controller/account_controller.dart';
 import 'app/modules/authentication/splash/controller/splash_controller.dart';
 import 'app/modules/navigation/bottom_navigation.dart';
 import 'common/widgets/restart_widget.dart';
@@ -61,12 +63,16 @@ Future<void> _initLocalNotifications() async {
     },
   );
 }
-
+//
 // --------------------------------------------------
 // MAIN
+
 // --------------------------------------------------
 void main() async {
+
+  AppConfig.env = AppEnvironment.DEVELOPMENT;
   WidgetsFlutterBinding.ensureInitialized();
+  // await captureUtmFromClipboard();
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
@@ -85,14 +91,38 @@ void main() async {
   Get.put(localization, permanent: true);
 
   // REGISTER CONTROLLERS BEFORE UI BUILDS
+  Get.put(AccountController(), permanent: true);
   Get.put(SplashController(), permanent: true);
   Get.put(BottomNavController(), permanent: true);
 
   DeepLinkService.instance.init();
+
+  // iOS options example
+  final iosOptions = TikTokIosOptions(
+    disableTracking: false, // true would disable ALL tracking
+    disableAutomaticTracking: false,
+    disableSKAdNetworkSupport: false,
+  );
+
+// Android options example
+  final androidOptions = TikTokAndroidOptions(
+    disableAutoStart: false,
+    disableAutoEvents: true,
+    enableAutoIapTrack: false, // enable IAP tracking
+    disableAdvertiserIDCollection: false,
+  );
+
+  await TikTokEventsSdk.initSdk(
+    androidAppId: 'com.tajershops.tajer',
+    tikTokAndroidId: '7608560967040483336',
+    iosAppId: '1511303897', // if same, otherwise use iOS one
+    tiktokIosId: '7608438154462265351',
+    isDebugMode: false,               // Turn on debug logging
+    logLevel: TikTokLogLevel.warn,
+    androidOptions: androidOptions,
+    iosOptions: iosOptions,
+  );
   runApp(RestartWidget(child: MyRootApp()));
-
-
-
 }
 
 
@@ -102,12 +132,12 @@ void main() async {
 // --------------------------------------------------
 Future<void> _initializeFirebaseAsync() async {
   try {
-    // iOS Permissions
-    await FirebaseMessaging.instance.requestPermission(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
+  // iOS Permissions
+  //   await FirebaseMessaging.instance.requestPermission(
+  //     alert: true,
+  //     badge: true,
+  //     sound: true,
+  //   );
 
     // APNs token (iOS only)
     if (Platform.isIOS) {
@@ -166,3 +196,4 @@ Future<void> _showLocalNotification(RemoteMessage message) async {
     payload: message.data['payload'] ?? "",
   );
 }
+

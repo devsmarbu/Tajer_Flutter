@@ -5,9 +5,13 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:get/get.dart';
 import 'package:tajer/app/data/service/search_api_client.dart';
 import 'package:tajer/app/modules/product_detail/search_view/search_model.dart';
 import 'package:tajer/app/modules/wish_list/wish_list_model.dart';
+
+import '../../../common/widgets/app_dialog.dart';
+import '../../core/constants/app_constants.dart';
 
 class SearchRepository {
   final SearchApiClient _apiClient = SearchApiClient();
@@ -45,19 +49,16 @@ class SearchRepository {
         debugPrint("⚠️ Unexpected response for shopId: $keyword");
         return null;
       }
-
-
-
-
-
-
-
-
-
-
-    } on DioException catch (e) {
-      debugPrint("❌ Dio Error in searching: ${e.message}");
-      return null;
+    } on DioException catch (e, s) {
+      if (e.type == DioExceptionType.connectionError) {
+        Get.snackbar(AppConstants.appName, "APP_ERROR_INTERNET_CONNECTION".tr);
+        return null;
+      }
+      else {
+        debugPrint("❌ Error in repository: $e");
+        debugPrint("$s");
+        return null;
+      }
     } catch (e, s) {
       debugPrint("❌ Unknown error in search: $e");
       debugPrint("$s");
@@ -97,9 +98,16 @@ class SearchRepository {
       } else {
         return null;
       }
-    } on DioException catch (e) {
-      debugPrint("❌ Dio Error in searching: ${e.message}");
-      return null;
+    } on DioException catch (e, s) {
+      if (e.type == DioExceptionType.connectionError) {
+        Get.snackbar(AppConstants.appName, "APP_ERROR_INTERNET_CONNECTION".tr);
+        return null;
+      }
+      else {
+        debugPrint("❌ Error in repository: $e");
+        debugPrint("$s");
+        return null;
+      }
     } catch (e, s) {
       debugPrint("❌ Unknown error in search: $e");
       debugPrint("$s");

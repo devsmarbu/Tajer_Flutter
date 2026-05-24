@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart' hide Value;
+import 'package:marquee/marquee.dart';
 import 'package:tajer/app/Extensions/convert_extension.dart';
 import 'package:tajer/app/modules/product_detail/productSizeInfo/size_chart_screen.dart';
 import 'package:tajer/app/modules/product_detail/product_detail_model.dart'
@@ -11,10 +12,13 @@ import 'package:tajer/app/modules/product_detail/product_detail_model.dart'
 import 'package:tajer/app/modules/product_detail/product_images/fullscreen_product_images.dart';
 import 'package:tajer/app/modules/product_detail/select_size/select_size_controller.dart';
 import 'package:tajer/app/modules/product_detail/select_size/select_size_view.dart';
+import 'package:tajer/marque_label.dart';
+import 'package:tajer/utils/app_colors.dart';
 import 'package:tajer/utils/app_strings.dart';
 import 'package:tajer/utils/pref_store.dart';
 import '../../Extensions/expandable_text.dart';
 import '../../core/constants/app_constants.dart';
+import '../../core/routes/app_routes.dart';
 import '../../modules/home/dual_horizontal_product_view/dual_horizontal_product_view.dart';
 import '../../modules/product_detail/product_detail_controller.dart';
 import '../../modules/product_detail/product_images/product_images.dart';
@@ -42,19 +46,52 @@ class ProductDetailView extends StatefulWidget {
   State<ProductDetailView> createState() => _ProductDetailViewState();
 }
 
-class _ProductDetailViewState extends State<ProductDetailView> {
-  final controller = Get.put(ProductDetailController());
+class _ProductDetailViewState extends State<ProductDetailView> with SingleTickerProviderStateMixin {
+  late final ProductDetailController controller;
+  late final String controllerTag;
   final ScrollController _scrollController = ScrollController();
-  final List<String> sizes = ["Freesize", "S", "M", "L", "XL", "XXL"];
-  final String productDescription =
-      "Unleash your inner legend with the Quake Legend T-Shirt. Crafted from premium cotton for all-day comfort, this tee combines a bold black-grey contrast with a modern fit that moves with you. Perfect for casual wear or street style, it’s designed to make a statement wherever you go.";
   bool isExpanded = false;
   bool showFloatingBar = false;
+  late AnimationController _shakeController;
+  late Animation<double> _shakeAnimation;
 
   @override
   void initState() {
     super.initState();
-    controller.loadProductDetail();
+    // controller.loadProductDetail();
+    controllerTag = UniqueKey().toString();
+    // 🔥 Always create fresh controller for every pushed ProductDetailView
+    controller = Get.put(ProductDetailController(), tag: controllerTag);
+
+    _shakeController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 600), // duration of 3 shakes
+    );
+
+    _shakeAnimation = TweenSequence<double>([
+      TweenSequenceItem(tween: Tween(begin: 0, end: -8), weight: 1),
+      TweenSequenceItem(tween: Tween(begin: -8, end: 8), weight: 2),
+      TweenSequenceItem(tween: Tween(begin: 8, end: -8), weight: 2),
+      TweenSequenceItem(tween: Tween(begin: -8, end: 8), weight: 2),
+      TweenSequenceItem(tween: Tween(begin: 8, end: 0), weight: 1),
+
+    ]).animate(CurvedAnimation(
+      parent: _shakeController,
+      curve: Curves.easeInOut,
+    ));
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final args = Get.arguments;
+debugPrint('it is being called');
+      if (args != null && args['productId'] != null) {
+        controller.loadOtherProduct(
+          args['productId'].toString(),
+          args['productName']?.toString() ?? "",
+        );
+      }
+    });
+
+    _startAutoShake();
 
     _scrollController.addListener(() {
       if (_scrollController.offset > 200 && !showFloatingBar) {
@@ -64,6 +101,33 @@ class _ProductDetailViewState extends State<ProductDetailView> {
       }
     });
   }
+
+  @override
+  void dispose() {
+    Get.delete<ProductDetailController>(tag: controllerTag);
+    _shakeController.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+
+  void _startAutoShake() {
+    ever(controller.inStock, (value) {
+      if (value == '1') {
+        _shakeController.forward(from: 0);
+      } else {
+        _shakeController.stop();
+      }
+    });
+    Future.doWhile(() async {
+      await Future.delayed(const Duration(seconds: 3));
+      if (!mounted) return false;
+
+      await _shakeController.forward(from: 0);
+      return true; // keep looping
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -101,8 +165,16 @@ class _ProductDetailViewState extends State<ProductDetailView> {
             padding: const EdgeInsetsDirectional.only(end: 15),
             child: GestureDetector(
               onTap: () {
-                Get.back();
-                controller.goToMainCartPage();
+                // Get.back();
+                // controller.goToMainCartPage();
+                debugPrint(Get.previousRoute);
+                if ((Get.previousRoute == AppRoutes.bottomNavigation) && (Get.find<BottomNavController>().currentIndex.value == 3)) {
+                  debugPrint('this is if block');
+                  Get.back();
+                } else {
+                  debugPrint('this is else block');
+                  controller.goToMainCartPage();
+                }
               },
               child: Stack(
                 clipBehavior: Clip.none,
@@ -144,33 +216,142 @@ class _ProductDetailViewState extends State<ProductDetailView> {
         ],
       ),
       body: Obx(() {
-        if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+        if (controller.isLoading.value && controller.productSections.isEmpty) {
+          return const Center(
+            child: CircularProgressIndicator(color: Colors.black),
+          );
         }
-
         final productData = controller.productSections;
 
-        return ListView(
-          controller: _scrollController,
+        return Column(
           children: [
-            ...List.generate(
-              productData.length,
-              (index) => _buildSection(productData[index], index),
+            /// 🔥 Marquee Label
+            (PrefStore().loadString(AppConstants.promoBannerText)??'').marqueeLabel(),
+            /// 🔥 Your List
+            Expanded(
+              child: ListView(
+                controller: _scrollController,
+                children: [
+                  ...List.generate(
+                    productData.length,
+                        (index) =>
+                        _buildSection(productData[index], index),
+                  ),
+                ],
+              ),
             ),
           ],
         );
-      }),
-      bottomNavigationBar: SafeArea(
-        child: Container(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-          color: Colors.white,
-          child: SizedBox(
-            height: 50,
-            width: double.infinity,
-            child: Obx(() {
+      }),      bottomNavigationBar: SafeArea(
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+        color: Colors.white,
+        child: SizedBox(
+          height: 50,
+          width: double.infinity,
+          child: Obx(() {
+            bool hasBoxContent = controller.productSections.any(
+                  (e) => e.type == ProductDetailType.boxContent.apiValue,
+            );
+
+            final List<BoxContent> items = hasBoxContent
+                ? controller.productSections
+                .firstWhere(
+                  (e) =>
+              e.type ==
+                  ProductDetailType.boxContent.apiValue,
+            )
+                .content
+                ?.boxContent ??
+                <BoxContent>[]
+                : <BoxContent>[];
+
+            bool allSelectedInStock = true;
+
+            for (final item in items) {
+              // if no selection → treat as not in stock
+              if (item.currentOptionValues == null ||
+                  item.currentOptionValues!.isEmpty) {
+                allSelectedInStock = true;
+                break;
+              }
+
+              final selected = item.currentOptionValues!.first;
+
+              if (selected.inStock != "1") {
+                allSelectedInStock = false;
+                break; // ❌ one false is enough
+              }
+            }
+
+            debugPrint("all selected: $allSelectedInStock");
+
+            if (hasBoxContent == false) {
+              if (controller.inStock.value == '') {
+                return const SizedBox.shrink();
+              }
+              return Obx(() =>
+                  AnimatedBuilder(
+                    animation: _shakeAnimation,
+                    builder: (context, child) {
+                      final shouldShake = controller.inStock.value == '1';
+                      return Transform.translate(
+                        offset: Offset(shouldShake ? _shakeAnimation.value : 0, 0),
+                        child: child,
+                      );
+                    },
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: controller.inStock.value == '1'
+                            ? Colors.black
+                            : Colors.black,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      onPressed: controller.inStock.value == '1'
+                          ? () {
+                        final productId = controller.selProductId;
+                        final productName = controller.productName.value;
+                        final productPrice = controller.productPrice.value;
+
+                        final sizeController =
+                        Get.put(SelectSizeController(productId));
+
+                        sizeController.addToCart(
+                          productId,
+                          productName,
+                          productPrice,
+                          selProdIdsForBoxContent:
+                          controller.selectedSelProdIdForBoxContent,
+                          directAddedToCart: '1'
+                        );
+                      } : null,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.shopping_bag_outlined,
+                              color: Colors.white, size: 20),
+                          const SizedBox(width: 8),
+                          Text(
+                            controller.inStock.value == '1'
+                                ? AppStrings.appAddToCart.tr
+                                : AppStrings.appSoldOut.tr,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontFamily: "Nunito",
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ));
+            } else {
               return ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: controller.inStock.value == "1"
+                  backgroundColor: allSelectedInStock == true
                       ? Colors.black
                       : Colors.grey[400],
                   shape: RoundedRectangleBorder(
@@ -188,6 +369,8 @@ class _ProductDetailViewState extends State<ProductDetailView> {
                     productId,
                     productName,
                     productPrice,
+                    selProdIdsForBoxContent:
+                    controller.selectedSelProdIdForBoxContent,
                   );
                 },
                 child: Row(
@@ -200,7 +383,7 @@ class _ProductDetailViewState extends State<ProductDetailView> {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      controller.inStock.value == "1"
+                      allSelectedInStock == true
                           ? AppStrings.appAddToCart.tr
                           : AppStrings.appSoldOut.tr,
                       style: const TextStyle(
@@ -213,29 +396,30 @@ class _ProductDetailViewState extends State<ProductDetailView> {
                   ],
                 ),
               );
-            }),
-          ),
+            }
+          }),
         ),
       ),
+    ),
       floatingActionButton: showFloatingBar
           ? Padding(
-              padding: EdgeInsets.only(bottom: Platform.isIOS ? 40 : 0),
-              child: FloatingActionButton.small(
-                backgroundColor: Colors.black,
-                onPressed: () {
-                  _scrollController.animateTo(
-                    0,
-                    duration: const Duration(milliseconds: 500),
-                    curve: Curves.easeOut,
-                  );
-                },
-                child: const Icon(
-                  Icons.arrow_upward,
-                  color: Colors.white,
-                  size: 18,
-                ),
-              ),
-            )
+        padding: EdgeInsets.only(bottom: Platform.isIOS ? 40 : 0),
+        child: FloatingActionButton.small(
+          backgroundColor: Colors.black,
+          onPressed: () {
+            _scrollController.animateTo(
+              0,
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.easeOut,
+            );
+          },
+          child: const Icon(
+            Icons.arrow_upward,
+            color: Colors.white,
+            size: 18,
+          ),
+        ),
+      )
           : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
@@ -246,7 +430,7 @@ class _ProductDetailViewState extends State<ProductDetailView> {
 
     switch (datum?.customType) {
       case ProductDetailType.productImages:
-        // TODO: Handle this case.
+      // TODO: Handle this case.
         final productImages = datum?.content?.productImagesArr ?? [];
         sectionWidget = SizedBox(
           height: 440,
@@ -256,7 +440,7 @@ class _ProductDetailViewState extends State<ProductDetailView> {
                 onTap: () {
                   // debugPrint("tappped");
                   Get.to(
-                    () => FullScreenProductImagesView(
+                        () => FullScreenProductImagesView(
                       images: productImages,
                       isFullScreen: true,
                     ),
@@ -297,16 +481,16 @@ class _ProductDetailViewState extends State<ProductDetailView> {
                     ),
                     const SizedBox(height: 10),
                     Obx(
-                      () => _buildCircleIconButton(
+                          () => _buildCircleIconButton(
                         icon: controller.isInAnyWishlist.value != "0"
                             ? Icons.favorite
                             : Icons.favorite_border,
                         onPressed: () async {
                           debugPrint("Favorite tapped");
                           if ((PrefStore().loadString(
-                                    AppConstants.sessionToken,
-                                  ) ??
-                                  "") ==
+                            AppConstants.sessionToken,
+                          ) ??
+                              "") ==
                               "") {
                             Get.bottomSheet(
                               LoginScreen(isEmail: true, isBottomSheet: true),
@@ -337,15 +521,15 @@ class _ProductDetailViewState extends State<ProductDetailView> {
                               transitionBuilder: (_, anim, __, child) {
                                 return SlideTransition(
                                   position:
-                                      Tween(
-                                        begin: const Offset(0, 1),
-                                        end: Offset.zero,
-                                      ).animate(
-                                        CurvedAnimation(
-                                          parent: anim,
-                                          curve: Curves.easeOut,
-                                        ),
-                                      ),
+                                  Tween(
+                                    begin: const Offset(0, 1),
+                                    end: Offset.zero,
+                                  ).animate(
+                                    CurvedAnimation(
+                                      parent: anim,
+                                      curve: Curves.easeOut,
+                                    ),
+                                  ),
                                   child: child,
                                 );
                               },
@@ -384,15 +568,15 @@ class _ProductDetailViewState extends State<ProductDetailView> {
                       transitionBuilder: (_, anim, __, child) {
                         return SlideTransition(
                           position:
-                              Tween(
-                                begin: const Offset(0, 1),
-                                end: Offset.zero,
-                              ).animate(
-                                CurvedAnimation(
-                                  parent: anim,
-                                  curve: Curves.easeOut,
-                                ),
-                              ),
+                          Tween(
+                            begin: const Offset(0, 1),
+                            end: Offset.zero,
+                          ).animate(
+                            CurvedAnimation(
+                              parent: anim,
+                              curve: Curves.easeOut,
+                            ),
+                          ),
                           child: child,
                         );
                       },
@@ -404,7 +588,7 @@ class _ProductDetailViewState extends State<ProductDetailView> {
           ),
         );
       case ProductDetailType.productDetail:
-        // TODO: Handle this case.
+      // TODO: Handle this case.
         final productDetail = datum?.content?.productDetail;
         final productBadge = (productDetail?.badges?.isNotEmpty ?? false)
             ? productDetail?.badges!.first.url
@@ -469,7 +653,7 @@ class _ProductDetailViewState extends State<ProductDetailView> {
           ],
         );
       case ProductDetailType.productOption:
-        // TODO: Handle this case.
+      // TODO: Handle this case.
         final productOptions = datum?.content?.optionRows;
 
         sectionWidget = Column(
@@ -503,7 +687,7 @@ class _ProductDetailViewState extends State<ProductDetailView> {
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
-                            if ((datum?.isSizeChartAvailable ?? "0") == "1")
+                            if ((datum?.isSizeChartAvailable ?? "0") == "1" && productOption?.optionIsColor == "0")
                               GestureDetector(
                                 onTap: () {
                                   showDialog(
@@ -513,10 +697,10 @@ class _ProductDetailViewState extends State<ProductDetailView> {
                                     builder: (_) => SizeChartScreen(
                                       productId: controller.selProductId,
                                       productOptions:
-                                          productOption?.values ?? [],
+                                      productOption?.values ?? [],
                                       productName: controller.productName.value,
                                       productPrice:
-                                          controller.productPrice.value,
+                                      controller.productPrice.value,
                                     ),
                                     //     SizeChartOverlay(
                                     //   imageUrl: datum?.sizeChartImage ?? "",
@@ -525,9 +709,9 @@ class _ProductDetailViewState extends State<ProductDetailView> {
                                 },
                                 child: Text(
                                   (PrefStore().loadString(
-                                            AppConstants.languageCode,
-                                          ) ==
-                                          "AR")
+                                    AppConstants.languageCode,
+                                  ) ==
+                                      "AR")
                                       ? "مخطط الحجم"
                                       : "Size Chart",
                                   style: const TextStyle(
@@ -548,47 +732,109 @@ class _ProductDetailViewState extends State<ProductDetailView> {
                             itemCount: productOption?.values?.length ?? 0,
                             itemBuilder: (context, index) {
                               final value = productOption?.values?[index];
-                              return GestureDetector(
-                                onTap: () async {
-                                  if ((value?.isSelected ?? "0") == "0") {
-                                    debugPrint(
-                                      "🟢 Selected option: ${value?.optionvalueName}",
-                                    );
-                                    await controller.updateProductOption(
-                                      value?.selprodId ?? "",
-                                    );
-                                  }
-                                },
-                                child: Container(
-                                  margin: const EdgeInsets.only(right: 8),
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 10,
-                                    vertical: 8,
-                                  ),
-                                  constraints: const BoxConstraints(
-                                    minWidth: 40, // ✅ minimum width set here
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: value?.isSelected == "1"
-                                        ? Colors.black
-                                        : Colors.white,
-                                    border: Border.all(color: Colors.black),
+                              if (productOption?.optionIsColor == "0") {
+                                int stockValue = ((value?.stock ?? "0").toIntSafe());
+
+                                return GestureDetector(
+                                  onTap: () async {
+                                    if (stockValue > 0 && (value?.isSelected ?? "0") == "0") {
+                                      debugPrint("🟢 Selected option: ${value?.optionvalueName}");
+                                      await controller.updateProductOption(value?.selprodId ?? "");
+                                    }
+                                  },
+                                  child: ClipRRect( // 🔒 ADD THIS
                                     borderRadius: BorderRadius.circular(10),
+                                    child: Stack(
+                                      children: [
+                                        Opacity(
+                                          opacity: stockValue > 0 ? 1 : 0.4,
+                                          child: Container(
+                                            margin: const EdgeInsets.only(right: 8),
+                                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                                            constraints: const BoxConstraints(minWidth: 40),
+                                            decoration: BoxDecoration(
+                                              color: value?.isSelected == "1"
+                                                  ? Colors.black
+                                                  : Colors.white,
+                                              border: Border.all(color: Colors.black),
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),
+                                            child: Center(
+                                              child: Text(
+                                                value?.optionvalueName ?? "",
+                                                style: TextStyle(
+                                                  color: value?.isSelected == "1"
+                                                      ? Colors.white
+                                                      : Colors.black,
+                                                  fontWeight: FontWeight.w500,
+                                                  fontFamily: "Nunito",
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+
+                                        if (stockValue == 0)
+                                          Positioned.fill(
+                                            child: CustomPaint(
+                                              painter: DiagonalCrossPainter(),
+                                            ),
+                                          ),
+                                      ],
+                                    ),
                                   ),
-                                  child: Center(
-                                    child: Text(
-                                      value?.optionvalueName ?? "",
-                                      style: TextStyle(
-                                        color: value?.isSelected == "1"
-                                            ? Colors.white
-                                            : Colors.black,
-                                        fontWeight: FontWeight.w500,
-                                        fontFamily: "Nunito",
+                                );
+                              }
+                              else {
+                                return GestureDetector(
+                                  onTap: () async {
+                                    if ((value?.isSelected ?? "0") == "0") {
+                                      debugPrint("🟢 Selected option: ${value?.optionvalueName}");
+                                      await controller.updateProductOption(value?.selprodId ?? "");
+                                    }
+                                  },
+                                  child: AnimatedScale(
+                                    scale: value?.isSelected == "1" ? 1.15 : 1.0,
+                                    duration: const Duration(milliseconds: 200),
+                                    curve: Curves.easeOut,
+                                    child: Container(
+                                      margin: const EdgeInsets.all(0),
+                                      width: 56,
+                                      height: 56,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        border: Border.all(
+                                          color: value?.isSelected == "1"
+                                              ? Colors.black
+                                              : Colors.grey.shade400,
+                                          width: value?.isSelected == "1" ? 2.5 : 1,
+                                        ),
+                                      ),
+                                      child: Center(
+                                        child: Container(
+                                          width: value?.isSelected == "1" ? 26 : 46,
+                                          height: value?.isSelected == "1" ? 26 : 46,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: value?.optionvalueColorCode?.hexToColor ?? Colors.transparent,
+                                            border: Border.all(color: Colors.white, width: 1),
+                                            boxShadow: value?.isSelected == "1"
+                                                ? [
+                                              BoxShadow(
+                                                color: Colors.black.withValues(alpha: 0.2),
+                                                blurRadius: 6,
+                                                spreadRadius: 1,
+                                                offset: const Offset(0, 2),
+                                              ),
+                                            ]
+                                                : [],
+                                          ),
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              );
+                                );
+                              }
                             },
                           ),
                         ),
@@ -614,19 +860,19 @@ class _ProductDetailViewState extends State<ProductDetailView> {
         );
 
       case ProductDetailType.volumeDiscount:
-        // TODO: Handle this case.
+      // TODO: Handle this case.
         sectionWidget = SizedBox(
           width: Get.width,
           height: 5,
           child: Container(color: Colors.grey[200]),
         );
       case ProductDetailType.productDescription:
-        // TODO: Handle this case.
-        // sectionWidget = SizedBox(
-        //   width: Get.width,
-        //   height: 5,
-        //   child: Container(color: Colors.grey[300]),
-        // );
+      // TODO: Handle this case.
+      // sectionWidget = SizedBox(
+      //   width: Get.width,
+      //   height: 5,
+      //   child: Container(color: Colors.grey[300]),
+      // );
         final description = datum?.content?.description ?? "";
 
         sectionWidget = Column(
@@ -650,32 +896,29 @@ class _ProductDetailViewState extends State<ProductDetailView> {
                   ),
                   Container(
                     padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                    child:
-                    _isHtml(description)
+                    child: _isHtml(description)
                         ? Html(
-                            data: description,
-                            style: {
-                              "*": Style(
-                                fontFamily: "Nunito",
-                                fontSize: FontSize(14),
-                                fontWeight: FontWeight.w500,
-                                color: Colors.black87,
-                                lineHeight: LineHeight.number(1.5),
-                              ),
-                              "p": Style(margin: Margins.only(bottom: 8)),
-                            },
-                          )
-                        :
-                    ExpandableText(
-                            text: description,
-                            trimLines: 4,
-                            style: const TextStyle(
-                              color: Colors.black87,
-                              fontWeight: FontWeight.w500,
-                              fontFamily: "Nunito",
-                              fontSize: 14,
-                            ),
-                          ),
+                      data: description,
+                      style: {
+                        "*": Style(
+                          fontFamily: "Nunito",
+                          fontSize: FontSize(14),
+                          color: Colors.black87,
+                          lineHeight: LineHeight.number(1.5),
+                        ),
+                        "p": Style(margin: Margins.only(bottom: 8)),
+                      },
+                    )
+                        : ExpandableText(
+                      text: description,
+                      trimLines: 4,
+                      style: const TextStyle(
+                        color: Colors.black87,
+                        fontWeight: FontWeight.w500,
+                        fontFamily: "Nunito",
+                        fontSize: 14,
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -689,7 +932,7 @@ class _ProductDetailViewState extends State<ProductDetailView> {
         );
 
       case ProductDetailType.productPolicies:
-        // TODO: Handle this case.
+      // TODO: Handle this case.
         final productSpecifications = datum?.content?.productPolicies;
         // TODO: Handle this case.
         sectionWidget = Column(
@@ -740,14 +983,14 @@ class _ProductDetailViewState extends State<ProductDetailView> {
         );
 
       case ProductDetailType.banner:
-        // TODO: Handle this case.
+      // TODO: Handle this case.
         sectionWidget = SizedBox(
           width: Get.width,
           height: 5,
           child: Container(color: Colors.grey[200]),
         );
       case ProductDetailType.similarProducts:
-        // TODO: Handle this case.
+      // TODO: Handle this case.
         sectionWidget = SizedBox(
           width: Get.width,
           height: 5,
@@ -780,10 +1023,13 @@ class _ProductDetailViewState extends State<ProductDetailView> {
                 final crossAxisCount = 2;
                 final rowCount = (products.length / crossAxisCount).ceil();
                 final itemHeight =
-                    constraints.maxWidth / crossAxisCount / 0.635;
+                    (constraints.maxWidth / crossAxisCount / 0.635) - 33;
 
                 final totalHeight = (rowCount * itemHeight);
 
+                final width = MediaQuery.of(context).size.width;
+
+                final bool isFolded = width <= 400;
                 return SizedBox(
                   height: totalHeight, // ✅ dynamic height calculation
                   child: GridView.builder(
@@ -794,17 +1040,50 @@ class _ProductDetailViewState extends State<ProductDetailView> {
                       vertical: 12,
                     ),
                     gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          childAspectRatio: 0.61,
-                          crossAxisSpacing: 12.0,
-                          mainAxisSpacing: 12.0,
-                        ),
+                    SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 12,
+                      mainAxisSpacing: 12,
+                      // height > width
+                      childAspectRatio: isFolded ? 0.62:0.68,
+                    ),
                     itemCount: products.length,
                     itemBuilder: (context, index) {
+
+                      // 👇 Extract colors for THIS product only
+                      List<Color> colorList = [];
+
+                      if (products[index].productOptions != null) {
+                        for (var option in products[index].productOptions!) {
+                          if (option.optionIsColor == "1") {
+                            for (var value in option.values ?? []) {
+                              final hexCode = value.optionvalueColorCode;
+
+                              if (hexCode != null && hexCode.isNotEmpty) {
+                                try {
+                                  final cleanedHex = hexCode.replaceAll("#", "");
+
+                                  // Add full opacity if only 6 characters
+                                  final formattedHex =
+                                  cleanedHex.length == 6 ? "FF$cleanedHex" : cleanedHex;
+
+                                  final color =
+                                  Color(int.parse(formattedHex, radix: 16));
+
+                                  colorList.add(color);
+                                } catch (e) {
+                                  debugPrint("Invalid color code: $hexCode");
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+
                       return ProductCard(
                         product: products[index],
                         isVertical: true,
+                        colorList: colorList,
                         onAddToCart: () {
                           debugPrint("Add to cart tapped");
                           final options = products[index].productOptions;
@@ -818,18 +1097,32 @@ class _ProductDetailViewState extends State<ProductDetailView> {
                                 backgroundColor: Colors.transparent,
                                 builder: (context) => SelectSizeView(
                                   price: products[index].selprodPrice ?? "",
-                                  productId: products[index].productId ?? "",
-                                  productOptions: firstOptionValues,
+                                  productId: firstOptionValues.first.selprodId ?? "",
+                                  productOptions: options,
                                   currencyCode:
-                                  PrefStore().loadString(AppConstants.currencySymbol) ?? "\$", productName: products[index].productName ?? '',
+                                  PrefStore().loadString(
+                                    AppConstants.currencySymbol,
+                                  ) ??
+                                      "\$",
+                                  productName:
+                                  products[index].productName ?? '', isSizeChartAvailable: '',
                                 ),
                               );
                             } else {
                               debugPrint("⚠️ No option values found");
                             }
                           } else {
-                            final sizeController = Get.put(SelectSizeController(products[index].selprodId ?? ""));
-                            sizeController.addToCart(products[index].selprodId ?? "",products[index].productName ?? '',products[index].selprodPrice ?? '');
+                            final sizeController = Get.put(
+                              SelectSizeController(
+                                products[index].selprodId ?? "",
+                              ),
+                            );
+                            sizeController.addToCart(
+                              products[index].selprodId ?? "",
+                              products[index].productName ?? '',
+                              products[index].selprodPrice ?? '',
+                              directAddedToCart: '1'
+                            );
                           }
                         },
                         onTap: () {
@@ -837,7 +1130,7 @@ class _ProductDetailViewState extends State<ProductDetailView> {
                             products[index].selprodId ?? "",
                             products[index].productName ?? "",
                           );
-                        },
+                        }, productIndex: index.toString(),
                       );
                     },
                   ),
@@ -848,14 +1141,14 @@ class _ProductDetailViewState extends State<ProductDetailView> {
         );
         break;
       case ProductDetailType.buyTogether:
-        // TODO: Handle this case.
+      // TODO: Handle this case.
         sectionWidget = SizedBox(
           width: Get.width,
           height: 5,
           child: Container(color: Colors.grey[200]),
         );
       case ProductDetailType.shop:
-        // TODO: Handle this case.
+      // TODO: Handle this case.
         final productShop = datum?.content?.shop;
 
         sectionWidget = Column(
@@ -946,6 +1239,8 @@ class _ProductDetailViewState extends State<ProductDetailView> {
                         controller.goToAskAQuestionView(
                           productShop?.shopId ?? "",
                           productShop?.shopName ?? "",
+                          controller.selProductId,
+                          controller.productName.value
                         );
                       },
                       child: Text(
@@ -971,35 +1266,35 @@ class _ProductDetailViewState extends State<ProductDetailView> {
         );
 
       case ProductDetailType.reviews:
-        // TODO: Handle this case.
+      // TODO: Handle this case.
         sectionWidget = SizedBox(
           width: Get.width,
           height: 5,
           child: Container(color: Colors.grey[200]),
         );
       case ProductDetailType.previewFiles:
-        // TODO: Handle this case.
+      // TODO: Handle this case.
         sectionWidget = SizedBox(
           width: Get.width,
           height: 5,
           child: Container(color: Colors.grey[200]),
         );
       case ProductDetailType.unknown:
-        // TODO: Handle this case.
+      // TODO: Handle this case.
         sectionWidget = SizedBox(
           width: Get.width,
           height: 5,
           child: Container(color: Colors.grey[200]),
         );
       case null:
-        // TODO: Handle this case.
+      // TODO: Handle this case.
         sectionWidget = SizedBox(
           width: Get.width,
           height: 5,
           child: Container(color: Colors.grey[200]),
         );
       case ProductDetailType.modelMesurement:
-        // TODO: Handle this case.
+      // TODO: Handle this case.
         final modelMeasurement = datum?.content?.modelMeasurement;
 
         sectionWidget = Column(
@@ -1095,76 +1390,250 @@ class _ProductDetailViewState extends State<ProductDetailView> {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               separatorBuilder: (_, __) =>
                   Divider(height: 35, thickness: 1, color: Colors.grey[100]),
-              itemBuilder: (context, index) {
-                final item = boxItems[index];
+              itemBuilder: (context, outerIndex) {
+                final item = boxItems[outerIndex];
 
-                return Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(8),
-                    onTap: () {
-                      // 👇 handle tap
-                      debugPrint("Tapped box item: ${item.selprodTitle}");
+                return Column(
+                  children: [
+                    Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(8),
+                        onTap: () {
+                          // 👇 handle tap
+                          debugPrint("Tapped box item: ${item.selprodTitle}");
 
-                      controller.loadOtherProduct(
-                        item.selprodId ?? "",
-                        item.selprodTitle ?? "",
-                      );
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 6),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            width: 60,
-                            height: 60,
-                            decoration: BoxDecoration(
-                              color: Colors.grey.shade200,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(8),
-                              child: item.image != null
-                                  ? Image.network(
-                                      AppConstants.imageBaseURLPath +
-                                          item.imageURL!,
-                                      fit: BoxFit.contain,
-                                    )
-                                  : const Icon(Icons.image_not_supported),
-                            ),
+                          controller.loadOtherProduct(
+                            item.selprodId ?? "",
+                            item.selprodTitle ?? "",
+                          );
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 6),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                width: 60,
+                                height: 60,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade200,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: item.image != null
+                                      ? Image.network(
+                                    AppConstants.imageBaseURLPath +
+                                        item.imageURL!,
+                                    fit: BoxFit.contain,
+                                  )
+                                      : const Icon(Icons.image_not_supported),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      item.selprodTitle ?? "",
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                        fontFamily: "Nunito",
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      "${PrefStore().loadString(AppConstants.currencySymbol)}${item.selprodPrice ?? ""}",
+                                      style: const TextStyle(
+                                        fontFamily: "Nunito",
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                        ),
+                      ),
+                    ),
+                    if (item.hasVariants == "1")
+                      Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 4),
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  item.selprodTitle ?? "",
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
+                                  (item.availableVariants?.isNotEmpty == true &&
+                                      item
+                                          .availableVariants!
+                                          .first
+                                          .optionValues
+                                          .isNotEmpty)
+                                      ? item
+                                      .availableVariants!
+                                      .first
+                                      .optionValues
+                                      .first
+                                      .optionName ??
+                                      ""
+                                      : "",
                                   style: const TextStyle(
+                                    fontSize: 16,
                                     fontFamily: "Nunito",
-                                    fontSize: 13,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
-                                const SizedBox(height: 2),
-                                Text(
-                                  "${PrefStore().loadString(AppConstants.currencySymbol)}${item.selprodPrice ?? ""}",
-                                  style: const TextStyle(
-                                    fontFamily: "Nunito",
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.w700,
+                                if ((item.hasSizechart ?? "0") == "1")
+                                  GestureDetector(
+                                    onTap: () {
+                                      showDialog(
+                                        context: context,
+                                        barrierColor: Colors.black87,
+                                        // dark background
+                                        builder: (_) => SizeChartScreen(
+                                          productId: item.selprodId ?? "0",
+                                          productOptions: [],
+                                          productName:
+                                          controller.productName.value,
+                                          productPrice:
+                                          controller.productPrice.value,
+                                        ),
+                                        //     SizeChartOverlay(
+                                        //   imageUrl: datum?.sizeChartImage ?? "",
+                                        // ),
+                                      );
+                                    },
+                                    child: Text(
+                                      (PrefStore().loadString(
+                                        AppConstants.languageCode,
+                                      ) ==
+                                          "AR")
+                                          ? "مخطط الحجم"
+                                          : "Size Chart",
+                                      style: const TextStyle(
+                                        color: Colors.blue,
+                                        fontSize: 14,
+                                        fontFamily: "Nunito",
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
                                   ),
-                                ),
                               ],
                             ),
-                          ),
-                        ],
+                            const SizedBox(height: 12),
+                            SizedBox(
+                              height: 40, // height of inner horizontal list
+                              child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: item.availableVariants?.length ?? 0,
+                                itemBuilder: (context, index) {
+                                  final value = item
+                                      .availableVariants?[index]
+                                      .optionValues
+                                      .first;
+                                  return GestureDetector(
+                                    onTap: () async {
+                                      if (item
+                                          .currentOptionValues
+                                          ?.first
+                                          .optionvalueId !=
+                                          value?.optionvalueId) {
+                                        debugPrint(
+                                          "🟢 Selected option: ${value?.optionvalueName}",
+                                        );
+
+                                        final selectedVariant =
+                                        item.availableVariants![index];
+                                        final selectedOption =
+                                            selectedVariant.optionValues.first;
+                                        final selectedInStock =
+                                            selectedVariant.inStock;
+
+                                        debugPrint(
+                                          "is in stock: $selectedInStock",
+                                        );
+                                        // 🔁 Replace current_option_values with tapped one
+                                        item.currentOptionValues = [
+                                          selectedOption,
+                                        ];
+                                        item
+                                            .currentOptionValues
+                                            ?.first
+                                            .inStock =
+                                            selectedInStock;
+                                        controller
+                                            .selectedSelProdIdForBoxContent?[outerIndex] =
+                                            item
+                                                .currentOptionValues
+                                                ?.first
+                                                .selprodoptionSelprodId ??
+                                                "";
+                                        debugPrint(
+                                          "selected product box content ids ${controller.selectedSelProdIdForBoxContent}",
+                                        );
+                                        controller.productSections.refresh();
+                                      }
+                                    },
+                                    child: Container(
+                                      margin: const EdgeInsets.only(right: 8),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 10,
+                                        vertical: 8,
+                                      ),
+                                      constraints: const BoxConstraints(
+                                        minWidth:
+                                        40, // ✅ minimum width set here
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color:
+                                        (item
+                                            .currentOptionValues
+                                            ?.first
+                                            .optionvalueId ==
+                                            value?.optionvalueId)
+                                            ? Colors.black
+                                            : Colors.white,
+                                        border: Border.all(color: Colors.black),
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          value?.optionvalueName ?? "",
+                                          style: TextStyle(
+                                            color:
+                                            (item
+                                                .currentOptionValues
+                                                ?.first
+                                                .optionvalueId ==
+                                                value?.optionvalueId)
+                                                ? Colors.white
+                                                : Colors.black,
+                                            fontWeight: FontWeight.w500,
+                                            fontFamily: "Nunito",
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ),
+                  ],
                 );
               },
             ),
@@ -1200,13 +1669,35 @@ class _ProductDetailViewState extends State<ProductDetailView> {
         onPressed: onPressed,
         icon: imagePath != null
             ? Image.asset(
-                imagePath,
-                width: 15,
-                height: 15,
-                color: Colors.black87, // optional tint
-              )
+          imagePath,
+          width: 15,
+          height: 15,
+          color: Colors.black87, // optional tint
+        )
             : Icon(icon, color: Colors.black87, size: 15),
       ),
     );
   }
+}
+
+
+class DiagonalCrossPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+
+    final paint = Paint()
+      ..color = Colors.grey
+      ..strokeWidth = 1
+      ..strokeCap = StrokeCap.round;
+
+    // Draw diagonal inside bounds
+    canvas.drawLine(
+      Offset(size.width - 10, 5),
+      Offset(0, size.height ),
+      paint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

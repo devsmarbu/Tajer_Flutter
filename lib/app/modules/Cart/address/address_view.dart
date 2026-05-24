@@ -38,6 +38,7 @@ class AddressView extends StatelessWidget {
     }
 
     return Column(
+      key: Key("address_view"),
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         HeaderView(

@@ -43,13 +43,30 @@ mixin OrderApiClient {
 
   }
 
-  Future<Response> reOrderProductApi(
-      String orderID,
-      ) async {
-    return await _api.dio.get(
-      "${AppConstants.reOrderProduct}$orderID",
-    );
+  // Future<Response> reOrderProductApi(
+  //     String orderID,
+  //     ) async {
+  //   return await _api.dio.get(
+  //     "${AppConstants.reOrderProduct}$orderID",
+  //   );
+  //
+  // }
 
+  Future<Response> reOrderProductApi({
+    required String productId,
+    required String quantity,
+  }) async {
+    return await _api.dio.post(
+      AppConstants.addToCart,
+      data: FormData.fromMap({"selprod_id": productId, "quantity": quantity}),
+      options: Options(
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'multipart/form-data',
+        },
+      ),
+    );
   }
+
 
 }

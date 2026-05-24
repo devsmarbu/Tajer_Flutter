@@ -74,14 +74,42 @@ mixin AppFunction {
     }
   }
 
-  static String getDateFormat(String date, String format) {
+  static String getDateFormat(
+      String date,
+      String format, {
+        String inputFormatStr = 'yyyy-MM-dd HH:mm:ss',
+      }) {
     try {
-      final inputFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
-      final dateTime = inputFormat.parse(date);
-      final outputFormat = DateFormat(format);
-      return outputFormat.format(dateTime);
+      if (date.isEmpty || date.toLowerCase() == "null") {
+        return "";
+      }
+
+      final inputFormatter = DateFormat(inputFormatStr); // ✅ renamed
+      final dateTime = inputFormatter.parseStrict(date);
+
+      final outputFormatter = DateFormat(format);
+      return outputFormatter.format(dateTime);
     } catch (e) {
-      return "xx";
+      print("Date parse error: $date");
+      return "";
+    }
+  }
+
+  static int getRemainingHours(String cancelDateStr) {
+    try {
+      final cancelDate =
+      DateTime.parse(cancelDateStr.replaceFirst(' ', 'T'));
+
+      final diff = cancelDate.difference(DateTime.now());
+
+      if (diff.isNegative) return 0;
+
+      // 👇 convert minutes → hours (rounded up)
+      return (diff.inMinutes / 60).ceil();
+
+    } catch (e) {
+      print("Date parse error: $e");
+      return 0;
     }
   }
 
@@ -93,4 +121,11 @@ mixin AppFunction {
     return LoginData.fromJson(jsonMap);
   }
 
+}
+
+class NetworkChecker {
+  static Future<bool> hasInternet() async {
+    final result = await Connectivity().checkConnectivity();
+    return result != ConnectivityResult.none;
+  }
 }

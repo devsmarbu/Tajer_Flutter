@@ -139,12 +139,16 @@ class AppStrings {
   static const app_paypal_id= "APP_HINT_PAYPAL_ID";
   static const app_paid= "Paid";
   static const app_pending= "APP_PENDING";
+  static const app_pending_request= "APP_RETURN_REQUESTS";
   static const app_total= "APP_TOTAL";
   static const app_home= "APP_HOME";
   static const app_categories= "APP_CATEGORIES";
   static const app_cart= "APP_CART";
   static const app_account= "APP_ACCOUNT";
   static const app_verify= "APP_VERIFY";
+  static const APP_CONGRATULATIONS= "APP_CONGRATULATIONS";
+  static const APP_SUCCESS_USER_SIGN_UP_EMAIL_VERIFICATION_PENDING= "APP_SUCCESS_USER_SIGN_UP_EMAIL_VERIFICATION_PENDING";
+  static const APP_LOG_INTO_YOUR_ACCOUNT= "APP_LOG_INTO_YOUR_ACCOUNT";
 
   // App labels key
   // Text labels keys
@@ -358,6 +362,7 @@ class AppStrings {
   static const app_added_date= "app_added_date";
   static const app_expiry_date= "app_expiry_date";
   static const app_tajer_com_all_rights_reserved= "app_tajer_com_all_rights_reserved";
+  static const appMissing = "app_missing";
 
 
   static const appNoRewardFound= "app_no_reward_found";
@@ -370,5 +375,30 @@ class AppStrings {
   static const appAddAddress = "APP_ADD_A_NEW_ADDRESS";
   static const appIAmLookingFor = "APP_I_AM_LOOKING_FOR";
   static const appNoDataFound = "APP_CAPTION_NO_DATA";
+  static const APP_PLEASE_SELECT_PAYMENT_METHOD = "APP_PLEASE_SELECT_PAYMENT_METHOD";
+
+  // new keys added
+  static const appCreateAccount = "APP_CREATE_ACCOUNT";
+  static const appShopSmartShopBig = "APP_SHOP_SMART_SHOP_BIG";
+  static const appWelcomeBack = "APP_WELCOME_BACk";
+  static const appUpdateEmail = "APP_UPDATE_EMAIL";
+
+
+  static const appResendOtp = "APP_RESEND_OTP";
+  static const appResendOtpIn = "APP_RESEND_OTP_IN";
+  static const appSendOtpToVerify = "APP_SEND_OTP_TO_VERIFY";
+  static const appConfirmOtp = "APP_CONFIRM_OTP";
+  static const appOtpSent = "APP_OTP_SENT";
+  static const appPhoneUpdateSuccessfully = "APP_PHONE_UPDATED_SUCCESSFULLY";
+  static const appVerificationEmailSent = "APP_VERIFICATION_EMAIL_SENT";
+  static const appPleaseNoteChangingThisWill = "APP_PLEASE_NOTE_CHANGING_THIS_WILL_ALSO_CHANGE_THE_NUMBER_FOR_DEFAULT_ADDRESS";
+  static const appSelectDate = "APP_SELECT_DATE";
+  static const appEnterOtp = "APP_ENTER_OTP";
+  static const APP_EMPLOYEE_WORK_EMAIL_VERIFIED = "APP_EMPLOYEE_WORK_EMAIL_VERIFIED";
+  static const APP_REGISTER_WITH_PERSONAL_EMAIL_TO_ACTIVATE_EMPLOYEE_BENEFITS = "APP_REGISTER_WITH_PERSONAL_EMAIL_TO_ACTIVATE_EMPLOYEE_BENEFITS";
+  static const APP_LOGIN_OR_SIGNUP_DISCOUNTS = "APP_LOGIN_OR_SIGNUP_DISCOUNTS";
+  static const APP_EMAIL_VERIFIED_SUCCESSFULLY = "APP_EMAIL_VERIFIED_SUCCESSFULLY";
+  static const APP_EMPLOYEE_BENEFITS_PROGRAMME = "APP_EMPLOYEE_BENEFITS_PROGRAMME";
+  static const APP_ERROR = "APP_ERROR";
 
 }

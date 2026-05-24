@@ -1,15 +1,17 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:tajer/app/Extensions/convert_extension.dart';
-import 'package:tajer/utils/app_strings.dart';
+import 'package:tajer/app/firebase/one_signal_notification.dart';
+import 'package:tajer/marque_label.dart';
 import 'package:tajer/utils/pref_store.dart';
+import '../../../main_extension.dart';
+import '../../../utils/app_loader.dart';
 import '../../core/constants/app_constants.dart';
-import '../../modules/Cart/MainCartView.dart';
+import '../../core/routes/app_routes.dart';
 import '../../modules/home/beauty_product_view/beauty_product_view.dart';
 import '../../modules/home/category_view/category_view.dart';
-import '../../modules/home/padded_banner_view/padded_banner_view.dart';
-import '../../modules/home/reel_page_view/reel_page_view.dart';
 import '../../modules/home/reel_view/reel_view.dart';
 import '../../modules/home/search_view/search_view.dart';
 import '../../modules/home/shop_list_view/shop_list_view.dart';
@@ -23,9 +25,9 @@ import 'home_controller.dart';
 import 'home_model.dart';
 import 'perfume_view/perfume_view.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import '../notifications/alerts/view/notification_screen.dart';
 import 'package:visibility_detector/visibility_detector.dart';
+import 'package:flutter/services.dart';
 
 class HomeView extends StatefulWidget {
   final VoidCallback? onCartTap;
@@ -41,6 +43,7 @@ class _HomeViewState extends State<HomeView> {
   final ScrollController _scrollController = ScrollController();
   final HomeController controller = Get.put(HomeController());
   bool showScrollToTop = false;
+  late Worker _bannerWorker;
 
   @override
   void initState() {
@@ -60,6 +63,15 @@ class _HomeViewState extends State<HomeView> {
         if (showScrollToTop) setState(() => showScrollToTop = false);
       }
     });
+
+    _bannerWorker = ever(controller.firstTimeBannerImageURL, (url) {
+      if (!mounted) return;
+      // ✅ Only show if Home screen is currently visible
+      if (Get.currentRoute != AppRoutes.bottomNavigation) return;
+      if (url.isNotEmpty && controller.isFirstTimeBannerImage == "1") {
+        tryShowBanner(context);
+      }
+    });
   }
 
   @override
@@ -67,15 +79,16 @@ class _HomeViewState extends State<HomeView> {
     _scrollController.dispose();
 
     // Optional: safely remove listeners or reset reactive updates
-    if (Get.isRegistered<HomeController>()) {
-      controller.isLoading.close();
-    }
+    // if (Get.isRegistered<HomeController>()) {
+    //   controller.isLoading.close();
+    // }
 
     super.dispose();
   }
 
   Widget buildAppBar(Color color) {
     return Container(
+      key: const Key('home_container'),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.bottomCenter,
@@ -91,32 +104,41 @@ class _HomeViewState extends State<HomeView> {
       child: Padding(
         padding: const EdgeInsets.only(top: 8),
         child: Row(
+          key: const Key('home_row1'),
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const Spacer(),
             const Spacer(),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Image.asset(
-                "assets/images/Tajer_Logo.png",
-                height: 55,
-                color: Colors.black54,
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Image.asset(
+                  key: const Key('home_tajer_logo'),
+                 // "assets/images/Tajer_Logo.png",
+                  "assets/icons/ic_eid_icon.png",
+                  height: 38,
+                ),
               ),
             ),
             const Spacer(),
             Column(
+              key: const Key('home_column1'),
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Row(
+                  key: const Key('home_row2'),
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     GestureDetector(
+                      key: const Key('navigate_to_notification_screen'),
                       onTap: () {
                         Get.to(() => NotificationScreen());
                       },
                       child: Align(
                         alignment: Alignment.bottomCenter,
                         child: Image.asset(
+                          key: const Key('home_notification_icon'),
                           "assets/images/notification.png",
                           height: 28,
                           color: Colors.black,
@@ -126,15 +148,18 @@ class _HomeViewState extends State<HomeView> {
                     const SizedBox(width: 15),
                     // pref.loadString(AppConstants.sessionToken) ?? ""
                     GestureDetector(
+                      key: const Key('home_on_tap_cart'),
                       onTap: () {
                         widget.onCartTap?.call();
                       },
                       child: Align(
                         alignment: Alignment.bottomCenter,
                         child: Stack(
+                          key: const Key('home_stack'),
                           clipBehavior: Clip.none,
                           children: [
                             Image.asset(
+                              key: const Key('home_cart_icon'),
                               "assets/images/cartIcon.png",
                               height: 28,
                               color: Colors.black,
@@ -144,9 +169,11 @@ class _HomeViewState extends State<HomeView> {
                             Obx(() {
                               if (cartItemCounts.value.toIntSafe() > 0) {
                                 return Positioned(
+                                  key: const Key('home_cart_item_count'),
                                   right: -6,
                                   top: -6,
                                   child: Container(
+                                    key: const Key('home_cart_red_circle'),
                                     padding: const EdgeInsets.all(3),
                                     decoration: const BoxDecoration(
                                       color: Colors.red,
@@ -157,6 +184,7 @@ class _HomeViewState extends State<HomeView> {
                                       minHeight: 18,
                                     ),
                                     child: Text(
+                                      key: const Key('home_cart_count_text'),
                                       cartItemCounts.value.toString(),
                                       textAlign: TextAlign.center,
                                       style: const TextStyle(
@@ -196,12 +224,12 @@ class _HomeViewState extends State<HomeView> {
       case CollectionLayoutType.productLayout2:
       case CollectionLayoutType.trendingProduct:
         sectionWidget = SizedBox(
-          height: 335,
+          height: 370,
           child: DualHorizontalProductView(
             titleHeader: collection.collectionName ?? "",
             products: collection.products,
             scrollDirection: Axis.horizontal,
-            height: 285,
+            height: 310,
             wantHeader: true,
             scrollEnabled: true,
             isHomeHeader: true,
@@ -326,6 +354,16 @@ class _HomeViewState extends State<HomeView> {
         );
       case CollectionLayoutType.spacer:
         sectionWidget = const SizedBox(height: 40);
+      case CollectionLayoutType.homePageBannerStripe:
+        sectionWidget = InfiniteScrollBanner(
+          height: 40,
+          duration: const Duration(seconds: 30),
+          child: SvgPicture.network(
+            collection.homePageStripeSVGUrl ?? '',
+            height: 40,
+            fit: BoxFit.fitHeight,
+          ),
+        );
       default:
         sectionWidget = const SizedBox.shrink(); // skip unknown layouts
     }
@@ -348,138 +386,296 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
-    double screenSizeWidth = MediaQuery.of(context).size.width;
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        flexibleSpace: buildAppBar(appBarColor),
-        leading: SizedBox(
-          width: 100,
-          height: 35,
-          child: Container(
-            color: Colors.transparent,
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                child: TextButton(
-                  onPressed: () async {
-                    final result = await showDialog(
-                      context: context,
-                      builder: (_) => CountrySelectDialog(
-                        selectedCountryName: PrefStore().loadString(AppConstants.countryName,
-                      ),
-                    ));
-                    if (result != null) {
-                      final selected = result as Result;
-                      print("Selected Country ID: ${selected.id}");
-                      print("Selected Country Name: ${selected.text}");
-                      controller.setCountry(
-                        "${selected.id ?? 0}",
-                        selected.text ?? "Qatar",
+    final bool isDarkBg =
+        ThemeData.estimateBrightnessForColor(appBarColor) == Brightness.dark;
+
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: isDarkBg
+          ? SystemUiOverlayStyle
+                .light // white status bar icons
+          : SystemUiOverlayStyle.dark, // black status bar icons
+      child: Scaffold(
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          systemOverlayStyle: isDarkBg
+              ? SystemUiOverlayStyle.light
+              : SystemUiOverlayStyle.dark,
+          flexibleSpace: buildAppBar(appBarColor),
+          leading: SizedBox(
+            width: 100,
+            height: 35,
+            child: Container(
+              color: Colors.transparent,
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  child: TextButton(
+                    onPressed: () async {
+                      final result = await showDialog(
+                        context: context,
+                        builder: (_) => CountrySelectDialog(
+                          selectedCountryName: PrefStore().loadString(
+                            AppConstants.countryName,
+                          ),
+                        ),
                       );
-                    }
-                  },
-                  child: Text(
-                    "${(PrefStore().loadString(AppConstants.countryName) ?? "").isEmpty ? "Qatar" : PrefStore().loadString(AppConstants.countryName)}",
-                    style: TextStyle(
-                      color:
-                          ThemeData.estimateBrightnessForColor(appBarColor) ==
-                              Brightness.dark
-                          ? Colors.white
-                          : Colors.black,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14,
+                      if (result != null) {
+                        final selected = result as Result;
+                        print("Selected Country ID: ${selected.id}");
+                        print("Selected Country Name: ${selected.text}");
+                        controller.setCountry(
+                          "${selected.id ?? 0}",
+                          selected.text ?? "Qatar",
+                        );
+                      }
+                    },
+                    child: Text(
+                      "${(PrefStore().loadString(AppConstants.countryName) ?? "").isEmpty ? "Qatar" : PrefStore().loadString(AppConstants.countryName)}",
+                      style: TextStyle(
+                        color:
+                            ThemeData.estimateBrightnessForColor(appBarColor) ==
+                                Brightness.dark
+                            ? Colors.white
+                            : Colors.black,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14,
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
           ),
+          leadingWidth:
+              PrefStore().loadString(AppConstants.languageCode) == "AR"
+              ? 90
+              : 170,
         ),
-        leadingWidth: PrefStore().loadString(AppConstants.languageCode) == "AR"
-            ? 90
-            : 170,
+        backgroundColor: Colors.white,
+        body: Obx(() {
+          if (controller.isLoading.value) {
+            return const Center(
+              child: CircularProgressIndicator(color: Colors.black),
+            );
+          }
+          final posts = controller.posts;
+          // if (posts.isEmpty) {
+          //   return Center(
+          //     child: EmptyCartWidget(
+          //       imagePath: 'assets/images/no_data_image.png',
+          //       message: AppStrings.appNoDataFound.tr,
+          //     ),
+          //   );
+          // }
+
+          return Column(
+            children: [
+              /// 🔥 Marquee Label
+              (PrefStore().loadString(AppConstants.promoBannerText) ?? '')
+                  .marqueeLabel(),
+              Container(
+                color: appBarColor,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
+                  child: SearchPage(),
+                ),
+              ),
+              Expanded(
+                child: RefreshIndicator(
+                  color: Colors.black,
+                  onRefresh: () async {
+                    await controller.reloadHomeData();
+                  },
+                  child: ListView(
+                    controller: _scrollController,
+                    children: [
+                      ...List.generate(controller.posts.length, (index) {
+                        return Column(
+                          children: [
+                            _buildSection(controller.posts[index], index),
+                            // if (controller.posts[index].layoutType ==
+                            //         CollectionLayoutType.homeSlider &&
+                            //     index == 0)
+                            //   (PrefStore().loadString(
+                            //             AppConstants.promoBannerText,
+                            //           ) ??
+                            //           '')
+                            //       .marqueeLabel(),
+                          ],
+                        );
+                      }),
+
+                      // ⬇ Loader without Obx
+                      GetBuilder<HomeController>(
+                        builder: (_) {
+                          return controller.isPageLoading
+                              ? const Padding(
+                                  padding: EdgeInsets.all(20),
+                                  child: Center(
+                                    child: CircularProgressIndicator(
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                )
+                              : const SizedBox();
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          );
+        }),
+        floatingActionButton: showScrollToTop
+            ? Padding(
+                padding: EdgeInsets.only(bottom: Platform.isIOS ? 40 : 0),
+                child: FloatingActionButton.small(
+                  backgroundColor: Colors.black,
+                  onPressed: () {
+                    _scrollController.animateTo(
+                      0,
+                      duration: const Duration(milliseconds: 500),
+                      curve: Curves.easeOut,
+                    );
+                  },
+                  child: const Icon(
+                    Icons.arrow_upward,
+                    color: Colors.white,
+                    size: 18,
+                  ),
+                ),
+              )
+            : null,
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       ),
-      backgroundColor: Colors.white,
-      body: Obx(() {
-        if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        final posts = controller.posts;
-        // if (posts.isEmpty) {
-        //   return Center(
-        //     child: EmptyCartWidget(
-        //       imagePath: 'assets/images/no_data_image.png',
-        //       message: AppStrings.appNoDataFound.tr,
-        //     ),
-        //   );
-        // }
+    );
+  }
 
-        return Column(
-          children: [
-            Container(
-              color: appBarColor,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 12,
-                ),
-                child: SearchPage(),
-              ),
-            ),
-            Expanded(
-              child: RefreshIndicator(
-                onRefresh: () async {
-                  await controller.reloadHomeData();
-                },
-                child: ListView(
-                  controller: _scrollController,
-                  children: [
-                    ...List.generate(
-                      controller.posts.length,
-                      (index) => _buildSection(controller.posts[index], index),
+  void showBannerPopup(BuildContext context) {
+    bool imageLoaded = false;
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      // 👈 we handle dismissal ourselves
+      barrierColor: Colors.transparent,
+      useSafeArea: false,
+      builder: (_) => StatefulBuilder(
+        builder: (context, setState) {
+          return Material(
+            type: MaterialType.transparency,
+            child: Stack(
+              children: [
+                // 🔴 FULLSCREEN BLACK OVERLAY (tap to dismiss)
+                if (imageLoaded)
+                  Positioned.fill(
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () => Get.back(),
+                      child: Container(color: Colors.black.withOpacity(0.6)),
                     ),
+                  ),
 
-                    // ⬇ Loader without Obx
-                    GetBuilder<HomeController>(
-                      builder: (_) {
-                        return controller.isPageLoading
-                            ? const Padding(
-                                padding: EdgeInsets.all(20),
-                                child: Center(
-                                  child: CircularProgressIndicator(),
+                // 🖼️ CENTERED BANNER
+                Center(
+                  child: Dialog(
+                    insetPadding: const EdgeInsets.all(16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: GestureDetector(
+                            onTap: () {
+                              // 👉 your click action here
+                              // e.g. open webview / navigate
+                              print("Banner tapped");
+                              redirectionURL =
+                                  controller.bannerRedirectURL.value;
+                              if (AppState.isReady == true) {
+                                debugPrint('this is universal navigation 4');
+                                UrlHandling.shared.universalUrlDetailsAPI(
+                                  controller.bannerRedirectURL.value,
+                                );
+                              }
+                              // Get.to(() => OfferScreen());
+                            },
+                            child: Image.network(
+                              controller.firstTimeBannerImageURL.value,
+                              fit: BoxFit.cover,
+                              frameBuilder: (context, child, frame, _) {
+                                if (frame != null && !imageLoaded) {
+                                  WidgetsBinding.instance.addPostFrameCallback((
+                                    _,
+                                  ) {
+                                    setState(() => imageLoaded = true);
+                                  });
+                                }
+                                return child;
+                              },
+                              errorBuilder: (_, __, ___) =>
+                                  const SizedBox(height: 200),
+                            ),
+                          ),
+                        ),
+                        // ❌ CLOSE BUTTON (after load)
+                        if (imageLoaded)
+                          Positioned(
+                            top: -40,
+                            right: 0,
+                            child: GestureDetector(
+                              onTap: () => Get.back(),
+                              child: Container(
+                                padding: const EdgeInsets.all(6),
+                                decoration: BoxDecoration(
+                                  color: Colors.black.withOpacity(0.6),
+                                  shape: BoxShape.circle,
                                 ),
-                              )
-                            : const SizedBox();
-                      },
+                                child: const Icon(
+                                  Icons.close,
+                                  size: 18,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
+              ],
             ),
-          ],
-        );
-      }),
-      floatingActionButton: showScrollToTop
-          ?
-
-      Padding(padding: EdgeInsets.only(bottom: Platform.isIOS ? 40 : 0),child:
-      FloatingActionButton.small(
-        backgroundColor: Colors.black,
-        onPressed: () {
-          _scrollController.animateTo(
-            0,
-            duration: const Duration(milliseconds: 500),
-            curve: Curves.easeOut,
           );
         },
-        child: const Icon(Icons.arrow_upward, color: Colors.white,size: 18,),
-      )
-      )
-          : null,
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      ),
     );
+  }
+
+  void tryShowBanner(BuildContext context) {
+    final url = controller.firstTimeBannerImageURL.value;
+    if (url.isEmpty) return;
+
+    final image = NetworkImage(url);
+    final ImageStream stream = image.resolve(const ImageConfiguration());
+
+    late ImageStreamListener listener;
+    listener = ImageStreamListener((_, __) {
+      stream.removeListener(listener);
+
+      if (context.mounted) {
+        showBannerPopup(context); // ✅ open dialog ONLY after load
+      }
+    });
+
+    stream.addListener(listener);
   }
 }

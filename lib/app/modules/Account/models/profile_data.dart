@@ -7,6 +7,7 @@ class ProfileData {
   final String totalUnreadNotificationCount;
   final String cartItemsCount;
   final PersonalInfo? personalInfo;
+  final MembershipInfo? membershipInfo;
   final BankInfo? bankInfo;
   final String privacyPolicyLink;
   final String faqLink;
@@ -26,6 +27,7 @@ class ProfileData {
     required this.totalUnreadNotificationCount,
     required this.cartItemsCount,
     this.personalInfo,
+    this.membershipInfo,
     this.bankInfo,
     required this.privacyPolicyLink,
     required this.faqLink,
@@ -48,6 +50,9 @@ class ProfileData {
       cartItemsCount: json['cartItemsCount'] ?? '',
       personalInfo: json['personalInfo'] != null
           ? PersonalInfo.fromJson(json['personalInfo'])
+          : null,
+      membershipInfo: json['membershipInfo'] != null
+          ? MembershipInfo.fromJson(json['membershipInfo'])
           : null,
       bankInfo: json['bankInfo'] != null
           ? BankInfo.fromJson(json['bankInfo'])
@@ -72,6 +77,7 @@ class ProfileData {
     'totalUnreadNotificationCount': totalUnreadNotificationCount,
     'cartItemsCount': cartItemsCount,
     'personalInfo': personalInfo?.toJson(),
+    'membershipInfo': membershipInfo?.toJson(),
     'bankInfo': bankInfo?.toJson(),
     'privacyPolicyLink': privacyPolicyLink,
     'faqLink': faqLink,
@@ -83,6 +89,116 @@ class ProfileData {
     'hasDigitalProducts': hasDigitalProducts,
     'warrantyExchangeLink': warrantyExchangeLink,
     'splitPaymentMethods': splitPaymentMethods,
+  };
+}
+
+class CustomerMembership {
+  final String ucmId;
+  final String ucmUserId;
+  final String ucmPlanId;
+  final String ucmPersonalEmail;
+  final String ucmWorkEmail;
+  final String ucmPeriodStart;
+  final String ucmPeriodEnd;
+  final String ucmDiscountUsed;
+  final String ucmStatus;
+  final String cmplanName;
+
+  CustomerMembership({
+    required this.ucmId,
+    required this.ucmUserId,
+    required this.ucmPlanId,
+    required this.ucmPersonalEmail,
+    required this.ucmWorkEmail,
+    required this.ucmPeriodStart,
+    required this.ucmPeriodEnd,
+    required this.ucmDiscountUsed,
+    required this.ucmStatus,
+    required this.cmplanName,
+  });
+
+  factory CustomerMembership.fromJson(Map<String, dynamic> json) {
+    return CustomerMembership(
+      ucmId: json['ucm_id'] ?? '',
+      ucmUserId: json['ucm_user_id'] ?? '',
+      ucmPlanId: json['ucm_plan_id'] ?? '',
+      ucmPersonalEmail: json['ucm_personal_email'] ?? '',
+      ucmWorkEmail: json['ucm_work_email'] ?? '',
+      ucmPeriodStart: json['ucm_period_start'] ?? '',
+      ucmPeriodEnd: json['ucm_period_end'] ?? '',
+      ucmDiscountUsed: json['ucm_discount_used'] ?? '',
+      ucmStatus: json['ucm_status'] ?? '',
+      cmplanName: json['cmplan_name'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    'ucm_id': ucmId,
+    'ucm_user_id': ucmUserId,
+    'ucm_plan_id': ucmPlanId,
+    'ucm_personal_email': ucmPersonalEmail,
+    'ucm_work_email': ucmWorkEmail,
+    'ucm_period_start': ucmPeriodStart,
+    'ucm_period_end': ucmPeriodEnd,
+    'ucm_discount_used': ucmDiscountUsed,
+    'ucm_status': ucmStatus,
+    'cmplan_name': cmplanName,
+  };
+}
+
+class MembershipInfo {
+  final String membershipType;
+  final String workEmail;
+  final String membershipDiscount;
+  final String membershipDiscountPercent;
+  final String discountReset;
+  final String discountResetDate;
+
+  /// NEW
+  final String discountLimit;
+  final String discountUsed;
+
+  MembershipInfo({
+    required this.membershipType,
+    required this.workEmail,
+    required this.membershipDiscount,
+    required this.membershipDiscountPercent,
+    required this.discountReset,
+    required this.discountResetDate,
+
+    /// NEW
+    required this.discountLimit,
+    required this.discountUsed,
+  });
+
+  factory MembershipInfo.fromJson(Map<String, dynamic> json) {
+    return MembershipInfo(
+      membershipType: json['membershipType'] ?? '',
+      workEmail: json['workEmail'] ?? '',
+      membershipDiscount: json['membershipDiscount'] ?? '',
+      membershipDiscountPercent:
+      json['membershipDiscountPercent'] ?? '',
+      discountReset: json['discountReset'] ?? '',
+      discountResetDate: json['discountResetDate'] ?? '',
+
+      /// NEW
+      discountLimit: json['discountLimit'] ?? '',
+      discountUsed: json['discountUsed'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    'membershipType': membershipType,
+    'workEmail': workEmail,
+    'membershipDiscount': membershipDiscount,
+    'membershipDiscountPercent':
+    membershipDiscountPercent,
+    'discountReset': discountReset,
+    'discountResetDate': discountResetDate,
+
+    /// NEW
+    'discountLimit': discountLimit,
+    'discountUsed': discountUsed,
   };
 }
 
@@ -132,6 +248,8 @@ class PersonalInfo {
   final String userBallance;
   final String userWishlistCount;
   final String userOrderReturnRequestCount;
+  final String phone_section_enabled;
+  final CustomerMembership? customerMembership;
 
   PersonalInfo({
     required this.userId,
@@ -179,6 +297,8 @@ class PersonalInfo {
     required this.userBallance,
     required this.userWishlistCount,
     required this.userOrderReturnRequestCount,
+    required this.phone_section_enabled,
+    this.customerMembership
   });
 
   factory PersonalInfo.fromJson(Map<String, dynamic> json) => PersonalInfo(
@@ -228,8 +348,11 @@ class PersonalInfo {
     userImage: json['userImage'] ?? '',
     userBallance: json['user_ballance'] ?? '',
     userWishlistCount: json['user_wishlist_count'] ?? '',
-    userOrderReturnRequestCount:
-    json['user_order_return_request_count'] ?? '',
+    userOrderReturnRequestCount: json['user_order_return_request_count'] ?? '',
+    phone_section_enabled: json['phone_section_enabled'] ?? '',
+    customerMembership: json['customerMembership'] != null
+        ? CustomerMembership.fromJson(json['customerMembership'])
+        : null,
   );
 
   Map<String, dynamic> toJson() => {
@@ -278,5 +401,9 @@ class PersonalInfo {
     'user_ballance': userBallance,
     'user_wishlist_count': userWishlistCount,
     'user_order_return_request_count': userOrderReturnRequestCount,
+    'phone_section_enabled': phone_section_enabled,
+    'customerMembership': customerMembership?.toJson(),
   };
 }
+
+

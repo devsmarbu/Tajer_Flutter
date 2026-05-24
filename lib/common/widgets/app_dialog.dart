@@ -52,7 +52,12 @@ mixin AppDialog {
 
               /// OK Button
               TextButton(
-                onPressed: () => Get.back(),
+                  onPressed: () {
+                    if (Get.isDialogOpen ?? false) {
+                      //Get.back(closeOverlays: true);
+                      Get.back();
+                    }
+                  },
                 style: TextButton.styleFrom(
                   foregroundColor: Colors.black,
                   minimumSize: const Size(double.infinity, 40),

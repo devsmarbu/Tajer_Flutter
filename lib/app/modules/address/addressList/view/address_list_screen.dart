@@ -7,11 +7,13 @@ import '../../../../../../utils/app_strings.dart';
 import '../controller/address_controller.dart';
 
 class AddressListScreen extends StatelessWidget {
-  const AddressListScreen({super.key});
+   AddressListScreen({super.key});
+
+  final AddressController controller =
+  Get.put(AddressController(), permanent: true);
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(AddressController());
 
     return Scaffold(
       backgroundColor: Colors.grey[100],
@@ -32,7 +34,8 @@ class AddressListScreen extends StatelessWidget {
             final comeFromCart = (Get.arguments != null && Get.arguments is Map)
                 ? Get.arguments["comeFromCart"] ?? "0"
                 : "0";
-            Get.back(result: comeFromCart);
+             // Get.back(result: comeFromCart);
+            Navigator.of(context).pop(comeFromCart);
           },
         ),
       ),
@@ -88,7 +91,7 @@ class AddressListScreen extends StatelessWidget {
                         child: InkWell(
                           borderRadius: BorderRadius.circular(12),
                           onTap: () {
-                            controller.selectAddress(item.addrId ?? "");
+                            controller.selectAddress(item.addrId ?? "",item.addrIsDefault??"");
                           },
                           child: Container(
                             margin: const EdgeInsets.symmetric(
@@ -326,5 +329,13 @@ class AddressListScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+
+class AddressBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut<AddressController>(() => AddressController(),fenix: true);
   }
 }

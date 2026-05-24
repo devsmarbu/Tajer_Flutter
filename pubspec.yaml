@@ -74,17 +74,28 @@ dependencies:
   speech_to_text: ^7.3.0
   onesignal_flutter: ^5.1.4
   package_info_plus: ^9.0.0
-  facebook_app_events: ^0.19.0
+  facebook_app_events: ^0.24.0
+  marquee: ^2.3.0
+  marquee_widget: ^1.2.0
+  dropdown_search: ^5.0.6
+  tiktok_events_sdk: ^1.1.3
+  app_tracking_transparency: ^2.0.4
+  play_install_referrer: ^0.5.0
 
 dev_dependencies:
   flutter_launcher_icons: ^0.13.1  # latest version
   flutter_lints: ^5.0.0
+  flutter_test:
+    sdk: flutter
+  integration_test:
+      sdk: flutter
 
-flutter_icons:
+flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
-  image_path_android: "assets/images/app_logo.png"
-  image_path_ios: "assets/images/app_logo.png"
+  image_path_android: "assets/images/black_app_Icon.png"
+  image_path_ios: "assets/images/black_app_Icon.png"
+#  remove_alpha_ios: true
 
 
   # The "flutter_lints" package below contains a set of recommended lints to
@@ -92,7 +103,7 @@ flutter_icons:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^5.0.0
+  # flutter_lints: ^5.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -106,6 +117,7 @@ flutter:
     - assets/images/
     - assets/fonts/
     - assets/icons/ic_login.svg
+    - assets/assets/
 
   fonts:
     - family: Nunito
@@ -147,7 +159,7 @@ flutter:
   #   - family: Schyler
   #     fonts:
   #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
+  #       - asset: fonts/Schyler-Italic.ttffl
   #         style: italic
   #   - family: Trajan Pro
   #     fonts:
@@ -157,4 +169,3 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
-

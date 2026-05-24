@@ -13,33 +13,55 @@ import '../../../data/service/account_api_client.dart';
 class ChangeEmailController extends GetxController with AccountApiClient,AppLoader {
   // Text controllers
   final newEmailController = TextEditingController();
-  final confirmEmailController = TextEditingController();
+ // final confirmEmailController = TextEditingController();
   final passwordController = TextEditingController();
 
   final pref=PrefStore();
 
   // Reactive error messages
   final newEmailError = ''.obs;
-  final confirmEmailError = ''.obs;
+ // final confirmEmailError = ''.obs;
   final passwordError = ''.obs;
 
   // Password visibility toggle
   final isPasswordVisible = false.obs;
+  var isFormValid = false.obs;
+  var isEmailSent = false.obs;
 
   // Form key
   final formKey = GlobalKey<FormState>();
 
+
+  @override
+  void onInit() {
+    super.onInit();
+    newEmailController.addListener(validateFormLive);
+   // confirmEmailController.addListener(validateFormLive);
+    passwordController.addListener(validateFormLive);
+  }
   void togglePasswordVisibility() {
     isPasswordVisible.value = !isPasswordVisible.value;
   }
 
+  void validateFormLive() {
+    final newEmail = newEmailController.text.trim();
+ //   final confirmEmail = confirmEmailController.text.trim();
+    final password = passwordController.text.trim();
+
+    isFormValid.value =
+        GetUtils.isEmail(newEmail) &&
+           // (confirmEmail == newEmail && confirmEmail.isNotEmpty) &&
+            password.isNotEmpty &&
+            password.length >= 6;
+  }
+
   void validateAndSubmit() {
     newEmailError.value = '';
-    confirmEmailError.value = '';
+   // confirmEmailError.value = '';
     passwordError.value = '';
 
     final newEmail = newEmailController.text.trim();
-    final confirmEmail = confirmEmailController.text.trim();
+    //final confirmEmail = confirmEmailController.text.trim();
     final password = passwordController.text.trim();
 
     bool isValid = true;
@@ -49,10 +71,10 @@ class ChangeEmailController extends GetxController with AccountApiClient,AppLoad
       isValid = false;
     }
 
-    if (confirmEmail != newEmail || confirmEmail.isEmpty) {
-      confirmEmailError.value = 'Emails do not match';
-      isValid = false;
-    }
+    // if (confirmEmail != newEmail || confirmEmail.isEmpty) {
+    //   confirmEmailError.value = 'Emails do not match';
+    //   isValid = false;
+    // }
 
     if (password.isEmpty || password.length < 6) {
       passwordError.value = 'Enter a valid password';
@@ -72,7 +94,7 @@ class ChangeEmailController extends GetxController with AccountApiClient,AppLoad
 
       final response = await changeEmailApi(
           newEmailController.text.trim(),
-          confirmEmailController.text.trim(),
+          newEmailController.text.trim(),
           passwordController.text.trim()
       );
 
@@ -88,8 +110,11 @@ class ChangeEmailController extends GetxController with AccountApiClient,AppLoad
 
       if (apiResponse.responseCode == "200") {
         if (apiResponse.status == AppConstants.SUCCESS) {
-          await pref.saveString(AppConstants.userEmail, newEmailController.text.trim());
-          Get.snackbar(AppConstants.appName, apiResponse.msg);
+          // await pref.saveString(AppConstants.userEmail, newEmailController.text.trim());
+          // Get.back();
+          // await Future.delayed(const Duration(milliseconds: 300));
+          isEmailSent.value=true;
+         // Get.snackbar(AppConstants.appName, apiResponse.msg);
         } else {
           AppDialog.showMessage(apiResponse.msg);
         }
@@ -109,7 +134,7 @@ class ChangeEmailController extends GetxController with AccountApiClient,AppLoad
   @override
   void onClose() {
     newEmailController.dispose();
-    confirmEmailController.dispose();
+   // confirmEmailController.dispose();
     passwordController.dispose();
     super.onClose();
   }

@@ -17,11 +17,13 @@ class _MyRootAppState extends State<MyRootApp> {
   @override
   void initState() {
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Future.delayed(const Duration(milliseconds: 150), () {
-        AppState.isReady = true;
-      });
-    });
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   Future.delayed(const Duration(milliseconds: 150), () {
+    //     AppState.isReady = true;
+    //     debugPrint('here is app ready 2');
+    //
+    //   });
+    // });
     super.initState();
   }
 

@@ -31,7 +31,7 @@ class _ReelPageState extends State<ReelPage> {
 
   int currentIndex = 0;
   bool isMuted = false;
-
+  int _activeIndexToken = 0;
   @override
   void initState() {
     super.initState();
@@ -144,20 +144,26 @@ class _ReelPageState extends State<ReelPage> {
     });
   }
 
-  Future<void> _playCurrentVideo(String currentUrl) async {
-    final controller = _getController(currentUrl);
+  Future<void> _playCurrentVideo(String url, int token) async {
+    final controller = _getController(url);
 
-    // Wait for initialization if not already done (for new caches)
-    // For cached/reused URLs, this is instant since already initialized
-    if (!controller.value.isInitialized) {
-      await controller.initialize();
+    if (_initializationFutures.containsKey(url)) {
+      await _initializationFutures[url];
     }
 
-    // Now safe to seek and play (instant for cached videos)
-    await controller.seekTo(const Duration());
-    controller.setLooping(true);
-    controller.setVolume(isMuted ? 0 : 1);
-    controller.play();
+    // ❌ Initialization finished late — ignore
+    if (token != _activeIndexToken) {
+      controller.setVolume(0);
+      return;
+    }
+
+    if (!controller.value.isInitialized) return;
+
+    await controller.seekTo(Duration.zero);
+    controller
+      ..setLooping(true)
+      ..setVolume(isMuted ? 0 : 1)
+      ..play();
   }
 
   @override
@@ -168,6 +174,15 @@ class _ReelPageState extends State<ReelPage> {
     _playerCache.clear();
     _pageController.dispose();
     super.dispose();
+  }
+
+  void _pauseAll() {
+    for (final controller in _playerCache.values) {
+      if (controller.value.isInitialized && controller.value.isPlaying) {
+        controller.pause();
+        controller.setVolume(0);
+      }
+    }
   }
 
   @override
@@ -184,20 +199,22 @@ class _ReelPageState extends State<ReelPage> {
         }
 
         return PageView.builder(
-          key: ValueKey(products.length),
+          // key: ValueKey(products.length),
           // 👈 rebuilds safely when count changes
           scrollDirection: Axis.vertical,
           controller: _pageController,
           itemCount: products.length,
           onPageChanged: (index) async {
             setState(() => currentIndex = index);
+            _activeIndexToken++; // 🔥 invalidate old inits
+            _controller.onPageChanged(index);
             final currentUrl = products[index].productVideoUrl ?? "";
+            _pauseAll(); // ✅ HARD STOP ALL AUDIO
 
             // Pause and reset others
-            _pauseAndResetOthers(currentUrl);
-
+            // _pauseAndResetOthers(currentUrl);
             // Play current one
-            unawaited(_playCurrentVideo(currentUrl));
+            unawaited(_playCurrentVideo(currentUrl, _activeIndexToken));
 
             // Preload next video early
             _preloadNext();
@@ -346,25 +363,40 @@ class _ReelCellState extends State<ReelCell> {
                   onTap: () => Navigator.pop(context),
                 ),
                 const SizedBox(width: 10),
-              Expanded(
-                child: Center(
-                  child: InkWell(
-                    onTap: () {
-                      AppRoutes.goToProductListPage(brandId: product.brandId ?? '', productVideoAvailable: "0", titleHeader: product.brandName ?? '', prodCatId: '');
-                    },
-                    child: Text(
-                      product.brandName ?? "",
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        fontFamily: 'Nunito',
+                Expanded(
+                  child: Center(
+                    child: InkWell(
+                      onTap: () async {
+                        if (widget.controller.value.isInitialized) {
+                          await widget.controller.pause();
+                        }
+                        await Get.toNamed(
+                          AppRoutes.productListPage,
+                          parameters: {
+                            "brandId": product.brandId ?? '',
+                            "prodCatId": '',
+                            "productVideoAvailable": '0',
+                            "titleHeader": product.brandName ?? '',
+                          },
+                        );
+                        // ▶️ Resume when coming back (optional)
+                        if (mounted && widget.controller.value.isInitialized) {
+                          widget.controller.play();
+                        }
+                      },
+                      child: Text(
+                        product.brandName ?? "",
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          fontFamily: 'Nunito',
+                        ),
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ),
-              ),
                 const SizedBox(width: 40),
               ],
             ),
@@ -397,11 +429,18 @@ class _ReelCellState extends State<ReelCell> {
             left: 16,
             bottom: 190,
             child: GestureDetector(
-              onTap: () {
-                _controller.goToShopDetailView(
+              onTap: () async {
+                if (widget.controller.value.isInitialized) {
+                  await widget.controller.pause();
+                }
+                await _controller.goToShopDetailView(
                   product.shopId ?? "",
                   product.selprod_user_id ?? "",
                 );
+                // ▶️ Resume when coming back (optional)
+                if (mounted && widget.controller.value.isInitialized) {
+                  widget.controller.play();
+                }
               },
               child: Row(
                 children: [
@@ -511,23 +550,37 @@ class _ReelCellState extends State<ReelCell> {
                     clipBehavior: Clip.none,
                     alignment: Alignment.bottomRight,
                     children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child:
-                            // Image.asset(
-                            //   "assets/images/placeholder_image.png",
-                            //   width: 100,
-                            //   height: 100,
-                            //   fit: BoxFit.cover,
-                            // ),
-                            Image.network(
+                      Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(12),
+                          onTap: () async {
+                            if (widget.controller.value.isInitialized) {
+                              await widget.controller.pause();
+                            }
+                            await Get.toNamed(
+                              AppRoutes.productDetail,
+                              arguments: {
+                                "productId": product.selprodId,
+                                "titleHeader": product.selprodTitle,
+                              },
+                            );
+                            if (mounted &&
+                                widget.controller.value.isInitialized) {
+                              widget.controller.play();
+                            }
+                          },
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: Image.network(
                               product.productImageUrl ?? "",
                               width: 100,
                               height: 100,
                               fit: BoxFit.cover,
                             ),
+                          ),
+                        ),
                       ),
-
                       Positioned(
                         bottom: -5,
                         right: -5,
@@ -549,15 +602,15 @@ class _ReelCellState extends State<ReelCell> {
                                   backgroundColor: Colors.transparent,
                                   builder: (context) => SelectSizeView(
                                     price: product.selprodPrice ?? "",
-                                    productId: product.productId ?? "",
-                                    productOptions: firstOptionValues,
+                                    productId: firstOptionValues.first.selprodId ?? "",
+                                    productOptions: options,
                                     currencyCode:
                                         product.selprodPrice?.replaceAll(
                                           RegExp(r'[0-9.]'),
                                           '',
                                         ) ??
                                         "\$",
-                                    productName: product.productName ?? '',
+                                    productName: product.productName ?? '', isSizeChartAvailable: '',
                                   ),
                                 );
                               } else {
@@ -568,6 +621,7 @@ class _ReelCellState extends State<ReelCell> {
                                   product.selprodId ?? '',
                                   product.productName ?? '',
                                   product.selprodPrice ?? '',
+                                  directAddedToCart: '1'
                                 );
                               }
                             } else {
@@ -578,27 +632,30 @@ class _ReelCellState extends State<ReelCell> {
                                 product.selprodId ?? '',
                                 product.productName ?? '',
                                 product.selprodPrice ?? '',
+                                directAddedToCart: '1'
                               );
                             }
                           },
                           child: Container(
+                            width: 40,
+                            height: 40,
                             decoration: BoxDecoration(
                               color: Colors.white,
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(12),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0.3),
-                                  blurRadius: 4,
-                                  offset: const Offset(0, 2),
+                                  color: Colors.black.withOpacity(0.12),
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 4),
                                 ),
                               ],
                             ),
-                            padding: const EdgeInsets.all(8),
-                            child: Image.asset(
-                              "assets/images/AddToCart.png",
-                              height: 25,
-                              width: 25,
-                              color: Colors.black,
+                            child: const Center(
+                              child: Icon(
+                                Icons.shopping_bag_outlined,
+                                color: Colors.black,
+                                size: 25,
+                              ),
                             ),
                           ),
                         ),

@@ -3,6 +3,9 @@ import 'dart:convert';
 
 import 'package:tajer/app/modules/orders/orderDetail/models/net_payable.dart';
 import 'package:tajer/app/modules/orders/orderDetail/models/price_detail.dart';
+import 'package:flutter/material.dart';
+
+import 'order_detail.dart';
 
 class ChildOrderDetailItem {
   String? selprod_title;
@@ -11,6 +14,7 @@ class ChildOrderDetailItem {
   String? prod_rating;
   String? canReturnOrder;
   String? canExchangeOrder;
+  String? canMissingProductRequest;
   String? canSubmitFeedback;
   String? selprod_urlrewrite_id;
   String? credential_password;
@@ -212,7 +216,20 @@ class ChildOrderDetailItem {
   String? plugin_code;
   String? plugin_name;
   String? opshipping_label;
+
+  String? cancel_until_date;
+  String? return_until_date;
+  String? exchange_until_date;
+  String? missing_until_date;
+  String? message_count;
+  String? return_request_date;
+  String? exchange_request_date;
+  String? return_request;
+  String? exchange_request;
+  String? oshistory_date_added;
+  String? missing_request;
   int? availableInLocation;
+  RequestInfo? requestInfo;
 
   ChildOrderDetailItem({
     this.selprod_title,
@@ -221,6 +238,7 @@ class ChildOrderDetailItem {
     this.prod_rating,
     this.canReturnOrder,
     this.canExchangeOrder,
+    this.canMissingProductRequest,
     this.canSubmitFeedback,
     this.selprod_urlrewrite_id,
     this.credential_password,
@@ -423,16 +441,29 @@ class ChildOrderDetailItem {
     this.plugin_name,
     this.opshipping_label,
     this.availableInLocation,
+    this.cancel_until_date,
+    this.exchange_until_date,
+    this.return_until_date,
+    this.missing_until_date,
+    this.message_count,
+    this.exchange_request_date,
+    this.return_request_date,
+    this.exchange_request,
+    this.return_request,
+    this.oshistory_date_added,
+    this.requestInfo,
+    this.missing_request
   });
 
   factory ChildOrderDetailItem.fromJson(Map<String, dynamic> json) {
-    return ChildOrderDetailItem(
+    final model = ChildOrderDetailItem(
       selprod_title: json['selprod_title'] as String?,
       orderstatus_color_code: json['orderstatus_color_code'] as String?,
       canCancelOrder: json['canCancelOrder'] as String?,
       prod_rating: json['prod_rating'] as String?,
       canReturnOrder: json['canReturnOrder'] as String?,
       canExchangeOrder: json['canExchangeOrder'] as String?,
+      canMissingProductRequest: json['canMissingProductRequest'] as String?,
       canSubmitFeedback: json['canSubmitFeedback'] as String?,
       selprod_urlrewrite_id: json['selprod_urlrewrite_id'] as String?,
       credential_password: json['credential_password'] as String?,
@@ -445,7 +476,7 @@ class ChildOrderDetailItem {
       product_image_url: json['product_image_url'] as String?,
       order_discount_value: json['order_discount_value'] as String?,
       user_registered_initially_for:
-      json['user_registered_initially_for'] as String?,
+          json['user_registered_initially_for'] as String?,
       op_review_reminder_count: json['op_review_reminder_count'] as String?,
       opcharge_op_id: json['opcharge_op_id'] as String?,
       op_selprod_sku: json['op_selprod_sku'] as String?,
@@ -460,15 +491,14 @@ class ChildOrderDetailItem {
       user_referral_code: json['user_referral_code'] as String?,
       selprod_condition: json['selprod_condition'] as String?,
       order_referral_reward_points:
-      json['order_referral_reward_points'] as String?,
+          json['order_referral_reward_points'] as String?,
       selprod_active: json['selprod_active'] as String?,
       orderstatus_type: json['orderstatus_type'] as String?,
       selprod_url_keyword: json['selprod_url_keyword'] as String?,
       op_refund_commission: json['op_refund_commission'] as String?,
       order_site_commission: json['order_site_commission'] as String?,
       op_shop_owner_email: json['op_shop_owner_email'] as String?,
-      op_shop_owner_phone_dcode:
-      json['op_shop_owner_phone_dcode'] as String?,
+      op_shop_owner_phone_dcode: json['op_shop_owner_phone_dcode'] as String?,
       order_discount_total: json['order_discount_total'] as String?,
       orderstatus_identifier: json['orderstatus_identifier'] as String?,
       op_product_model: json['op_product_model'] as String?,
@@ -478,8 +508,7 @@ class ChildOrderDetailItem {
       selprod_price: json['selprod_price'] as String?,
       op_brand_name: json['op_brand_name'] as String?,
       order_pmethod_id: json['order_pmethod_id'] as String?,
-      user_affiliate_commission:
-      json['user_affiliate_commission'] as String?,
+      user_affiliate_commission: json['user_affiliate_commission'] as String?,
       order_shippingapi_id: json['order_shippingapi_id'] as String?,
       user_id: json['user_id'] as String?,
       selprod_track_inventory: json['selprod_track_inventory'] as String?,
@@ -487,45 +516,40 @@ class ChildOrderDetailItem {
       op_comments: json['op_comments'] as String?,
       selprod_sku: json['selprod_sku'] as String?,
       op_selprod_download_validity_in_days:
-      json['op_selprod_download_validity_in_days'] as String?,
-      order_wallet_amount_charge:
-      json['order_wallet_amount_charge'] as String?,
+          json['op_selprod_download_validity_in_days'] as String?,
+      order_wallet_amount_charge: json['order_wallet_amount_charge'] as String?,
       order_id: json['order_id'] as String?,
       op_refund_affiliate_commission:
-      json['op_refund_affiliate_commission'] as String?,
+          json['op_refund_affiliate_commission'] as String?,
       op_products_dimension_unit_name:
-      json['op_products_dimension_unit_name'] as String?,
+          json['op_products_dimension_unit_name'] as String?,
       user_name: json['user_name'] as String?,
       selprod_stock: json['selprod_stock'] as String?,
       op_commission_include_shipping:
-      json['op_commission_include_shipping'] as String?,
+          json['op_commission_include_shipping'] as String?,
       op_shipped_date: json['op_shipped_date'] as String?,
-      pmethodlang_pmethod_id:
-      json['pmethodlang_pmethod_id'] as String?,
+      pmethodlang_pmethod_id: json['pmethodlang_pmethod_id'] as String?,
       op_affiliate_commission_charged:
-      json['op_affiliate_commission_charged'] as String?,
+          json['op_affiliate_commission_charged'] as String?,
       order_cart_data: json['order_cart_data'] as String?,
       op_commission_percentage: json['op_commission_percentage'] as String?,
       op_batch_selprod_id: json['op_batch_selprod_id'] as String?,
       op_status_id: json['op_status_id'] as String?,
       orderstatuslang_orderstatus_id:
-      json['orderstatuslang_orderstatus_id'] as String?,
-      op_tax_collected_by_seller:
-      json['op_tax_collected_by_seller'] as String?,
-      op_shop_owner_username:
-      json['op_shop_owner_username'] as String?,
+          json['orderstatuslang_orderstatus_id'] as String?,
+      op_tax_collected_by_seller: json['op_tax_collected_by_seller'] as String?,
+      op_shop_owner_username: json['op_shop_owner_username'] as String?,
       order_user_id: json['order_user_id'] as String?,
       selprod_subtract_stock: json['selprod_subtract_stock'] as String?,
       selprod_available_from: json['selprod_available_from'] as String?,
       orderstatuslang_lang_id: json['orderstatuslang_lang_id'] as String?,
       op_product_length: json['op_product_length'] as String?,
       order_affiliate_total_commission:
-      json['order_affiliate_total_commission'] as String?,
+          json['order_affiliate_total_commission'] as String?,
       op_unit_price: json['op_unit_price'] as String?,
       op_selprod_price: json['op_selprod_price'] as String?,
       order_language_code: json['order_language_code'] as String?,
-      selprod_downloadable_link:
-      json['selprod_downloadable_link'] as String?,
+      selprod_downloadable_link: json['selprod_downloadable_link'] as String?,
       credential_email: json['credential_email'] as String?,
       user_regdate: json['user_regdate'] as String?,
       op_id: json['op_id'] as String?,
@@ -536,40 +560,43 @@ class ChildOrderDetailItem {
       order_user_comments: json['order_user_comments'] as String?,
       pmethod_code: json['pmethod_code'] as String?,
       op_affiliate_commission_percentage:
-      json['op_affiliate_commission_percentage'] as String?,
-      op_product_weight_unit:
-      json['op_product_weight_unit'] as String?,
+          json['op_affiliate_commission_percentage'] as String?,
+      op_product_weight_unit: json['op_product_weight_unit'] as String?,
       pmethod_description: json['pmethod_description'] as String?,
       op_shipping_durations: json['op_shipping_durations'] as String?,
       order_volume_discount_total:
-      json['order_volume_discount_total'] as String?,
+          json['order_volume_discount_total'] as String?,
       user_profile_info: json['user_profile_info'] as String?,
       user_googleplus_id: json['user_googleplus_id'] as String?,
       selprod_sold_count: json['selprod_sold_count'] as String?,
       priceDetail: json['priceDetail'] != null
           ? (json['priceDetail'] as List)
-          .map((e) => PriceDetail.fromJson(e))
-          .toList()
+                .map((e) => PriceDetail.fromJson(e))
+                .toList()
           : [],
-      orderProgress: json['orderProgress'] is List ? List<dynamic>.from(json['orderProgress']) : null,
+      orderProgress: json['orderProgress'] is List
+          ? List<dynamic>.from(json['orderProgress'])
+          : null,
       op_selprod_id: json['op_selprod_id'] as String?,
       user_referrer_user_id: json['user_referrer_user_id'] as String?,
       orderstatus_is_active: json['orderstatus_is_active'] as String?,
       selprod_cost: json['selprod_cost'] as String?,
       pmethod_identifier: json['pmethod_identifier'] as String?,
       oplang_op_id: json['oplang_op_id'] as String?,
-      orderstatus_id: json['orderstatus_id'] is int ? json['orderstatus_id'] as int : int.tryParse(json['orderstatus_id']?.toString() ?? ''),
+      orderstatus_id: json['orderstatus_id'] is int
+          ? json['orderstatus_id'] as int
+          : int.tryParse(json['orderstatus_id']?.toString() ?? ''),
       order_is_wallet_selected: json['order_is_wallet_selected'] as String?,
       order_is_paid: json['order_is_paid'] as String?,
       order_referrer_reward_points:
-      json['order_referrer_reward_points'] as String?,
+          json['order_referrer_reward_points'] as String?,
       user_zip: json['user_zip'] as String?,
       selprod_min_order_qty: json['selprod_min_order_qty'] as String?,
       order_referrer_user_id: json['order_referrer_user_id'] as String?,
       order_discount_type: json['order_discount_type'] as String?,
       order_reward_point_used: json['order_reward_point_used'] as String?,
       user_autorenew_subscription:
-      json['user_autorenew_subscription'] as String?,
+          json['user_autorenew_subscription'] as String?,
       user_preferred_dashboard: json['user_preferred_dashboard'] as String?,
       order_currency_id: json['order_currency_id'] as String?,
       op_qty: json['op_qty'] as String?,
@@ -577,19 +604,18 @@ class ChildOrderDetailItem {
       order_type: json['order_type'] as String?,
       orderstatus_is_digital: json['orderstatus_is_digital'] as String?,
       user_company: json['user_company'] as String?,
-      op_commission_include_tax:
-      json['op_commission_include_tax'] as String?,
+      op_commission_include_tax: json['op_commission_include_tax'] as String?,
       selprod_code: json['selprod_code'] as String?,
       order_date_added: json['order_date_added'] as String?,
       op_is_batch: json['op_is_batch'] as String?,
       user_affiliate_referrer_user_id:
-      json['user_affiliate_referrer_user_id'] as String?,
+          json['user_affiliate_referrer_user_id'] as String?,
       credential_verified: json['credential_verified'] as String?,
       opsetting_op_id: json['opsetting_op_id'] as String?,
       selprod_comments: json['selprod_comments'] as String?,
-        totalAmount: json['totalAmount'] != null
-            ? NetPayable.fromJson(json['totalAmount'])
-            : null,
+      totalAmount: json['totalAmount'] != null
+          ? NetPayable.fromJson(json['totalAmount'])
+          : null,
       selprod_added_on: json['selprod_added_on'] as String?,
       user_country_id: json['user_country_id'] as String?,
       op_shop_name: json['op_shop_name'] as String?,
@@ -600,7 +626,7 @@ class ChildOrderDetailItem {
       oplang_lang_id: json['oplang_lang_id'] as String?,
       user_is_supplier: json['user_is_supplier'] as String?,
       selprod_download_validity_in_days:
-      json['selprod_download_validity_in_days'] as String?,
+          json['selprod_download_validity_in_days'] as String?,
       op_selprod_condition: json['op_selprod_condition'] as String?,
       credential_active: json['credential_active'] as String?,
       op_commission_charged: json['op_commission_charged'] as String?,
@@ -608,7 +634,7 @@ class ChildOrderDetailItem {
       selprod_user_id: json['selprod_user_id'] as String?,
       user_is_affiliate: json['user_is_affiliate'] as String?,
       op_selprod_max_download_times:
-      json['op_selprod_max_download_times'] as String?,
+          json['op_selprod_max_download_times'] as String?,
       order_date_updated: json['order_date_updated'] as String?,
       user_is_shipping_company: json['user_is_shipping_company'] as String?,
       order_reward_point_value: json['order_reward_point_value'] as String?,
@@ -621,14 +647,14 @@ class ChildOrderDetailItem {
       selprod_product_id: json['selprod_product_id'] as String?,
       user_is_buyer: json['user_is_buyer'] as String?,
       selprod_threshold_stock_level:
-      json['selprod_threshold_stock_level'] as String?,
+          json['selprod_threshold_stock_level'] as String?,
       op_invoice_number: json['op_invoice_number'] as String?,
       user_is_advertiser: json['user_is_advertiser'] as String?,
       op_refund_shipping: json['op_refund_shipping'] as String?,
       order_admin_comments: json['order_admin_comments'] as String?,
       order_renew: json['order_renew'] as String?,
       op_product_weight_unit_name:
-      json['op_product_weight_unit_name'] as String?,
+          json['op_product_weight_unit_name'] as String?,
       op_sent_last_reminder: json['op_sent_last_reminder'] as String?,
       user_phone: json['user_phone'] as String?,
       op_selprod_user_id: json['op_selprod_user_id'] as String?,
@@ -646,12 +672,10 @@ class ChildOrderDetailItem {
       orderstatus_priority: json['orderstatus_priority'] as String?,
       pmethod_display_order: json['pmethod_display_order'] as String?,
       op_sduration_id: json['op_sduration_id'] as String?,
-      op_shipping_duration_name:
-      json['op_shipping_duration_name'] as String?,
+      op_shipping_duration_name: json['op_shipping_duration_name'] as String?,
       user_state_id: json['user_state_id'] as String?,
       orderstatus_name: json['orderstatus_name'] as String?,
-      op_actual_shipping_charges:
-      json['op_actual_shipping_charges'] as String?,
+      op_actual_shipping_charges: json['op_actual_shipping_charges'] as String?,
       pmethodlang_lang_id: json['pmethodlang_lang_id'] as String?,
       op_unit_cost: json['op_unit_cost'] as String?,
       user_address2: json['user_address2'] as String?,
@@ -669,10 +693,28 @@ class ChildOrderDetailItem {
       plugin_code: json['plugin_code'] as String?,
       plugin_name: json['plugin_name'] as String?,
       opshipping_label: json['opshipping_label'] as String?,
+
+      cancel_until_date: json['cancel_until_date'] as String?,
+      return_until_date: json['return_until_date'] as String?,
+      exchange_until_date: json['exchange_until_date'] as String?,
+      missing_until_date: json['missing_until_date'] as String?,
+      message_count: json['message_count'] as String?,
+      return_request_date: json['return_request_date'] as String?,
+      exchange_request_date: json['exchange_request_date'] as String?,
+      return_request: json['return_request'] as String?,
+      exchange_request: json['exchange_request'] as String?,
+      oshistory_date_added: json['oshistory_date_added'] as String?,
+      missing_request: json['missing_request'] as String?,
+
       availableInLocation: json['availableInLocation'] is int
           ? json['availableInLocation'] as int
           : int.tryParse(json['availableInLocation']?.toString() ?? ''),
+      requestInfo: (json['request_info'] != null &&
+          json['request_info'] is Map<String, dynamic>)
+          ? RequestInfo.fromJson(json['request_info'])
+          : null,
     );
+    return model;
   }
 
   Map<String, dynamic> toJson() {
@@ -683,6 +725,7 @@ class ChildOrderDetailItem {
       'prod_rating': prod_rating,
       'canReturnOrder': canReturnOrder,
       'canExchangeOrder': canExchangeOrder,
+      'canMissingProductRequest': canMissingProductRequest,
       'canSubmitFeedback': canSubmitFeedback,
       'selprod_urlrewrite_id': selprod_urlrewrite_id,
       'credential_password': credential_password,
@@ -732,7 +775,8 @@ class ChildOrderDetailItem {
       'op_product_name': op_product_name,
       'op_comments': op_comments,
       'selprod_sku': selprod_sku,
-      'op_selprod_download_validity_in_days': op_selprod_download_validity_in_days,
+      'op_selprod_download_validity_in_days':
+          op_selprod_download_validity_in_days,
       'order_wallet_amount_charge': order_wallet_amount_charge,
       'order_id': order_id,
       'op_refund_affiliate_commission': op_refund_affiliate_commission,
@@ -885,11 +929,97 @@ class ChildOrderDetailItem {
       'plugin_name': plugin_name,
       'opshipping_label': opshipping_label,
       'availableInLocation': availableInLocation,
+
+      'cancel_until_date': cancel_until_date,
+      'return_until_date': return_until_date,
+      'exchange_until_date': exchange_until_date,
+      'missing_until_date': missing_until_date,
+      'message_count': message_count,
+      'return_request_date': return_request_date,
+      'exchange_request_date': exchange_request_date,
+      'return_request': return_request,
+      'exchange_request': exchange_request,
+      'oshistory_date_added': oshistory_date_added,
+      'missing_request': missing_request,
+      'request_info': requestInfo?.toJson(),
     };
+  }
+
+  String get statusIcon {
+    switch (op_status_id) {
+      case '2': // Payment Confirmed
+        return 'assets/icons/Check.svg';
+
+      case '3': // In Process
+        return 'assets/icons/Clock.svg';
+
+      case '4': // Shipped
+        return 'assets/icons/Package.svg';
+
+      case '5': // Delivered
+        return 'assets/icons/Check.svg';
+
+      case '7': // Completed
+        return 'assets/icons/Check.svg';
+
+      case '6': // Return Requested
+        return 'assets/icons/ArrowUDownLeft.svg';
+
+      case '20': // Exchange Requested
+        return 'assets/icons/ArrowsLeftRight.svg';
+
+      case '19': // Missing Requested
+        return 'assets/icons/QuestionMark.svg';
+
+      case '8': // Cancelled
+        return 'assets/icons/X.svg';
+
+      case '9': // Refunded/Completed
+        return 'assets/icons/Check.svg';
+
+      case '16': // Cash on Delivery
+        return 'assets/icons/Money.svg';
+
+      case '17': // Pay at Store
+        return 'assets/icons/Money.svg';
+
+      case '18': // Ready for Pickup
+        return 'assets/icons/Check.svg';
+
+      case '15': // Approved
+        return 'assets/icons/Check.svg';
+
+      default:
+        return 'assets/icons/Check.svg';
+    }
   }
 
   @override
   String toString() {
     return jsonEncode(toJson());
+  }
+}
+
+class RequestInfo {
+  String? reason;
+  String? comments;
+
+  RequestInfo({
+    this.reason,
+    this.comments,
+  });
+
+  factory RequestInfo.fromJson(Map<String, dynamic> json) {
+    return RequestInfo(
+      reason: json['reason'],
+      comments: json['comments'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'reason': reason,
+      'comments': comments,
+    };
   }
 }

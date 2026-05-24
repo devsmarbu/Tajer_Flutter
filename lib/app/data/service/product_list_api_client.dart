@@ -20,4 +20,18 @@ class ProductListApiClient {
       ),
     );
   }
+
+  Future<Response> addRemoveToWishList(String productId,String wishListId,String isInAnyWishlist) async {
+    final url = "${AppConstants.addToWishlist}/$productId/$wishListId/$isInAnyWishlist";
+    return await _api.dio.get(
+      url,
+      options: Options(
+        // ✅ Prevent Dio from throwing for non-200 codes
+        validateStatus: (status) {
+          return status != null && status < 500;
+        },
+      ),
+    );
+  }
+
 }

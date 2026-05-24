@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tajer/app/Extensions/convert_extension.dart';
+import 'package:tajer/utils/app_loader.dart';
 import 'package:tajer/utils/app_strings.dart';
+import '../../../Extensions/alert.dart';
+import '../../../core/constants/app_labels.dart';
 import '../cart_shipping/payment_summary_model/payment_summary_model.dart';
+import '../cart_shipping/regular_products/regular_product_controller.dart';
 
 class SelectedPlugin {
-  final String pluginId;
+  String pluginId;
   final String pluginCode;
   final Token token;
 
@@ -20,7 +24,7 @@ class PaymentSelectionPage extends StatefulWidget {
   final Function(int, SelectedPlugin)? onRadioSelected;
   final List<Token> cards;
   final PaymentSummaryModel? paymentSummaryModel;
-  final Function() walletMethodSelected;
+  final Future<void> Function() walletMethodSelected;
   final PaymentMethod? selectedPaymentMethod;
 
   PaymentSelectionPage({
@@ -36,10 +40,13 @@ class PaymentSelectionPage extends StatefulWidget {
   _PaymentSelectionPageState createState() => _PaymentSelectionPageState();
 }
 
-class _PaymentSelectionPageState extends State<PaymentSelectionPage> {
-  String? selectedMethod;
+class _PaymentSelectionPageState extends State<PaymentSelectionPage> with AppLoader{
+
+
   RxString selectedCardToken = "".obs;
   var selectedCardIndex = 0;
+
+  final controller = Get.find<RegularProductController>();
 
   final otherCardToken = Token(
     token: "",
@@ -51,13 +58,39 @@ class _PaymentSelectionPageState extends State<PaymentSelectionPage> {
   void initState() {
     super.initState();
 
-    selectedMethod =
-    widget.paymentSummaryModel?.data?.cartSummary?.cartWalletSelected == "1"
-        ? AppStrings.appWallet.toUpperCase().tr
-        : "card";
+    final wallet =
+        widget.paymentSummaryModel?.data?.userWalletBalance.toIntSafe() ?? 0;
+
+    final total =
+        widget.paymentSummaryModel?.data?.orderNetAmount.toIntSafe() ?? 0;
+
+    /// ✅ CASE 1: Wallet has some balance
+    if (wallet > 0) {
+      controller.useWallet.value = true;
+
+      /// If wallet is NOT sufficient → allow both
+      if (wallet < total) {
+        controller.useCard.value = false; // default only wallet selected
+        controller.selectedMethod = "both"; // for internal tracking
+      } else {
+        /// Wallet sufficient → only wallet
+        controller.useCard.value = false;
+        controller.selectedMethod = "WALLET";
+      }
+    } else {
+      /// No wallet → fallback to card
+      controller.useWallet.value = false;
+     // controller.useCard.value = true;
+     // selectedMethod = "card";
+    }
+
+    // selectedMethod =
+    // widget.paymentSummaryModel?.data?.cartSummary?.cartWalletSelected == "1"
+    //     ? AppStrings.appWallet.toUpperCase().tr
+    //     : "card";
 
     /// Auto-select first card ONLY if tokens exist
-    if (selectedMethod == "card") {
+    if (controller.selectedMethod == "card") {
       if (widget.cards.isNotEmpty) {
         selectedCardToken.value = widget.cards.first.token ?? "";
         selectedCardIndex = 0;
@@ -69,6 +102,8 @@ class _PaymentSelectionPageState extends State<PaymentSelectionPage> {
       }
     }
 
+    debugPrint('this is selected method: $controller.selectedMethod');
+
     debugPrint("this is the wallet balance");
     debugPrint((widget.paymentSummaryModel?.data?.displayUserWalletBalance ?? "0"));
   }
@@ -76,6 +111,7 @@ class _PaymentSelectionPageState extends State<PaymentSelectionPage> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      key: Key("choose_payment_view"),
       children: [
         /// ——— HEADER ———
         Container(
@@ -144,14 +180,37 @@ class _PaymentSelectionPageState extends State<PaymentSelectionPage> {
                     const Spacer(),
                     Checkbox(
                       activeColor: Colors.black,
-                      value: selectedMethod == "wallet",
-                      onChanged: (_) {
+                      value: controller.useWallet.value,
+                      onChanged: (_) async {
+                        if (controller.isWalletLoading.value) return;
+
+                        controller.isWalletLoading.value = true;
+
+                        showLoader(context); // ✅ SHOW APP LOADER
+
                         setState(() {
-                          selectedMethod = "wallet";
-                          widget.walletMethodSelected();
+                          controller.useWallet.value = !(controller.useWallet.value);
+
+                          if (controller.isWalletSufficient) {
+                            controller.useCard.value = false;
+                            controller.selectedMethod = "WALLET";
+                          } else {
+                            controller.selectedMethod =
+                            controller.useWallet.value ? "both" : "card";
+                          }
                         });
+
+                        try {
+                          await widget.walletMethodSelected(); // API call
+                        } catch (e) {
+                          debugPrint("Wallet API error: $e");
+                        } finally {
+                          controller.isWalletLoading.value = false;
+
+                          hideLoader(context); // ✅ HIDE APP LOADER
+                        }
                       },
-                    ),
+                    )
                   ],
                 ),
 
@@ -163,9 +222,23 @@ class _PaymentSelectionPageState extends State<PaymentSelectionPage> {
                   Radio<String>(
                     activeColor: Colors.black,
                     value: "card",
-                    groupValue: selectedMethod,
+                    groupValue: controller.useCard.value ? "card" : null,
                     onChanged: (value) {
-                      setState(() => selectedMethod = value!);
+
+                      setState(() {
+                        controller.selectedMethod = "card";
+                        controller.useCard.value = true;
+
+                        if (controller.isWalletSufficient) {
+                          /// Wallet alone is enough → disable wallet toggle
+                          controller.useWallet.value = false;
+                        } else {
+                          /// Partial wallet → allow both
+                          if (controller.useWallet.value) {
+                            controller.selectedMethod = "both";
+                          }
+                        }
+                      });
 
                       if (widget.cards.isNotEmpty) {
                         /// Saved cards exist
@@ -198,6 +271,7 @@ class _PaymentSelectionPageState extends State<PaymentSelectionPage> {
                         widget.onRadioSelected?.call(
                             widget.cards.length, selectedPlugin);
                       }
+
                     },
                   ),
                   const Expanded(
@@ -210,7 +284,8 @@ class _PaymentSelectionPageState extends State<PaymentSelectionPage> {
                     ),
                   ),
                   Image.asset(
-                    "assets/images/placeholder_image.png",
+                    // "assets/images/placeholder_image.png",
+                    "assets/images/credit-card.png",
                     height: 28,
                   ),
                   const SizedBox(width: 10),
@@ -220,7 +295,7 @@ class _PaymentSelectionPageState extends State<PaymentSelectionPage> {
               const SizedBox(height: 20),
 
               /// ——— CARD LIST (ONLY WHEN TOKENS EXIST) ———
-              if (selectedMethod == "card" && widget.cards.isNotEmpty)
+              if (controller.useCard.value && widget.cards.isNotEmpty)
                 ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
@@ -304,9 +379,25 @@ class _PaymentSelectionPageState extends State<PaymentSelectionPage> {
                                     width: 20,
                                     height: 20,
                                   ),
-                                  onPressed: () {
-                                    setState(() => widget.cards.removeAt(index));
-                                  },
+                                    onPressed: () {
+                                      final card = widget.cards[index];
+
+                                      showAlertMessage(
+                                        context,
+                                        title: AppLabels.APP_NAME,
+                                        message: AppStrings.appRemoveCartItemLabel.toUpperCase().tr, // reuse same text
+                                        onOk: () async {
+                                          await controller.removeCardItem(
+                                            "2",
+                                            card.token ?? "",
+                                          );
+
+                                        },
+                                        onCancel: () {
+                                          debugPrint("dismissed");
+                                        },
+                                      );
+                                    }
                                 ),
                             ],
                           ),

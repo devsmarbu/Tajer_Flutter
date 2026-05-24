@@ -29,19 +29,34 @@ class HomeApiClient {
     return await _api.dio.post(url);
   }
 
-  Future<Response> addToCart({required String productId, required String quantity}) async {
+  Future<Response> addToCart({
+    required String productId,
+    required String quantity,
+    List<String>? selProdIdsForBoxContent,
+  }) async {
+    final Map<String, dynamic> data = {
+      "quantity": quantity,
+      "selprod_id": productId
+  };
+
+    // ✅ If box content exists → send only box items
+    if (selProdIdsForBoxContent != null && selProdIdsForBoxContent.isNotEmpty) {
+      for (int i = 0; i < selProdIdsForBoxContent.length; i++) {
+        data["box_item_selprods[$i]"] = selProdIdsForBoxContent[i];
+      }
+    }
+
     return await _api.dio.post(
       AppConstants.addToCart,
-      data: FormData.fromMap({
-        "selprod_id": productId,
-        "quantity": quantity,
-      }),
+      data: FormData.fromMap(data),
       options: Options(
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'multipart/form-data',
-          'X-IP-COUNTRY-CODE': PrefStore().loadString(AppConstants.countryCode) ?? "QA",
-          'X-IP-COUNTRY-ID': PrefStore().loadString(AppConstants.countryId) ?? "173",
+          'X-IP-COUNTRY-CODE':
+          PrefStore().loadString(AppConstants.countryCode) ?? "QA",
+          'X-IP-COUNTRY-ID':
+          PrefStore().loadString(AppConstants.countryId) ?? "173",
         },
       ),
     );
@@ -77,4 +92,16 @@ class HomeApiClient {
     );
   }
 
+  Future<Response> addRemoveToWishList(String productId,String wishListId,String isInAnyWishlist) async {
+    final url = "${AppConstants.addToWishlist}/$productId/$wishListId/$isInAnyWishlist";
+    return await _api.dio.get(
+      url,
+      options: Options(
+        // ✅ Prevent Dio from throwing for non-200 codes
+        validateStatus: (status) {
+          return status != null && status < 500;
+        },
+      ),
+    );
+  }
 }

@@ -2,11 +2,13 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:get/get.dart';
 import 'package:tajer/app/modules/product_detail/GetFiltersModel.dart';
 import 'package:tajer/app/modules/product_detail/productSizeInfo/size_chart_model.dart';
 import 'package:tajer/common/functions/app_function.dart';
 import 'package:tajer/utils/app_dialog.dart';
 import '../../../common/widgets/app_dialog.dart';
+import '../../core/constants/app_constants.dart';
 import '../../modules/product_detail/product_detail_model.dart';
 import '../../modules/wish_list/wish_list_model.dart';
 import '../service/product_detail_api_client.dart';
@@ -33,17 +35,15 @@ class ProductRepository {
       }
       return null;
     } on DioException catch (e, s) {
-      debugPrint("❌ DIO ERROR (page $page)");
-      debugPrint("TYPE: ${e.type}");
-      debugPrint("STATUS: ${e.response?.statusCode}");
-      debugPrint("DATA: ${e.response?.data}");
-      debugPrint("MESSAGE: ${e.message}");
-      debugPrint("$s");
-      return null;
-    } catch (e, s) {
-      debugPrint("❌ UNKNOWN ERROR (page $page): $e");
-      debugPrint("$s");
-      return null;
+      if (e.type == DioExceptionType.connectionError) {
+        Get.snackbar(AppConstants.appName, "APP_ERROR_INTERNET_CONNECTION".tr);
+        return null;
+      }
+      else {
+        debugPrint("❌ Error in repository: $e");
+        debugPrint("$s");
+        return null;
+      }
     }
   }
 
@@ -73,10 +73,16 @@ class ProductRepository {
         debugPrint("⚠️ Failed to load size chart detail: ${response.statusCode}");
         return null;
       }
-    } catch (e, s) {
-      debugPrint("❌ Error in repository: $e");
-      debugPrint("$s");
-      return null;
+    } on DioException catch (e, s) {
+      if (e.type == DioExceptionType.connectionError) {
+        Get.snackbar(AppConstants.appName, "APP_ERROR_INTERNET_CONNECTION".tr);
+        return null;
+      }
+      else {
+        debugPrint("❌ Error in repository: $e");
+        debugPrint("$s");
+        return null;
+      }
     }
   }
 
@@ -102,10 +108,16 @@ class ProductRepository {
         debugPrint("⚠️ Failed to report product: ${response.statusCode}");
         return null;
       }
-    } catch (e, s) {
-      debugPrint("❌ Error in repository: $e");
-      debugPrint("$s");
-      return null;
+    } on DioException catch (e, s) {
+      if (e.type == DioExceptionType.connectionError) {
+        Get.snackbar(AppConstants.appName, "APP_ERROR_INTERNET_CONNECTION".tr);
+        return null;
+      }
+      else {
+        debugPrint("❌ Error in repository: $e");
+        debugPrint("$s");
+        return null;
+      }
     }
   }
 
@@ -135,10 +147,16 @@ class ProductRepository {
         debugPrint("⚠️ Failed to report product: ${response.statusCode}");
         return null;
       }
-    } catch (e, s) {
-      debugPrint("❌ Error in repository: $e");
-      debugPrint("$s");
-      return null;
+    } on DioException catch (e, s) {
+      if (e.type == DioExceptionType.connectionError) {
+        Get.snackbar(AppConstants.appName, "APP_ERROR_INTERNET_CONNECTION".tr);
+        return null;
+      }
+      else {
+        debugPrint("❌ Error in repository: $e");
+        debugPrint("$s");
+        return null;
+      }
     }
   }
 

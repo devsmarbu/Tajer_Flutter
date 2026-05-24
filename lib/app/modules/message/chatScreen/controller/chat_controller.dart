@@ -31,6 +31,7 @@ class ChatController extends GetxController with ChatApiClient, AppLoader {
   var orRequestId = ''.obs;
   var getCanWithdrawRequest = ''.obs;
   var screenTitle = ''.obs;
+  var title = ''.obs;
   var userID = ''.obs;
 
   /// Pagination state
@@ -48,9 +49,12 @@ class ChatController extends GetxController with ChatApiClient, AppLoader {
     if (args is Map && args[AppParams.screenTitle] != null) {
       screenTitle.value = args[AppParams.screenTitle]?.toString() ?? '';
     }
+    if (args is Map && args['title'] != null) {
+      title.value = args['title']?.toString() ?? '';
+    }
 
     if (screenTitle.value == AppStrings.app_return_request ||
-        screenTitle.value == AppStrings.app_exchange_request) {
+        screenTitle.value == AppStrings.app_exchange_request || screenTitle.value == 'APP_RETURN_REQUEST_DETAILS'.tr || screenTitle.value == 'APP_EXCHANGE_REQUEST_DETAILS'.tr || screenTitle.value == 'APP_MISSING_REQUEST_DETAIL'.tr || screenTitle.value == 'APP_CANCEL_REQUEST_DETAIL'.tr) {
       orRequestId.value = args[AppParams.orRequestId]?.toString() ?? '';
       getCanWithdrawRequest.value =
           args[AppParams.getCanWithdrawRequest]?.toString() ?? '';
@@ -80,7 +84,7 @@ class ChatController extends GetxController with ChatApiClient, AppLoader {
       if (threadId.value.isNotEmpty) {
         final messageId = messages.last.messageId.toString();
         response = await sendMessageApi(text,threadId.value,messageId);
-      } else if (screenTitle.value == AppStrings.app_exchange_request) {
+      } else if (screenTitle.value == AppStrings.app_exchange_request || screenTitle.value == 'APP_EXCHANGE_REQUEST_DETAILS'.tr) {
         response = await sendMessageExchangeOrderApi(text,orRequestId.value);
       } else {
         response = await sendMessageReturnOrderApi(text, orRequestId.value);
@@ -137,11 +141,10 @@ class ChatController extends GetxController with ChatApiClient, AppLoader {
       if (!isLoadMore) showLoader(Get.context!);
 
       dynamic response;
-
       // ✅ Determine which API to call
       if (threadId.value.isNotEmpty) {
         response = await getMessageList(threadId.value, currentPage.value);
-      } else if (screenTitle.value == AppStrings.app_exchange_request) {
+      } else if (screenTitle.value == AppStrings.app_exchange_request || screenTitle.value == 'APP_EXCHANGE_REQUEST_DETAILS'.tr) {
         response = await orderExchangeRequestMessageSearchApi(
             orRequestId.value, currentPage.value);
       } else {
@@ -163,7 +166,7 @@ class ChatController extends GetxController with ChatApiClient, AppLoader {
 
         if (threadId.value.isNotEmpty) {
           newMessages = data.data?.threads ?? [];
-        } else if (screenTitle.value == AppStrings.app_exchange_request) {
+        } else if (screenTitle.value == AppStrings.app_exchange_request || screenTitle.value == 'APP_EXCHANGE_REQUEST_DETAILS'.tr) {
           newMessages = data.data?.exchangeMessagesList ?? [];
         } else {
           newMessages = data.data?.messagesList ?? [];
@@ -175,7 +178,7 @@ class ChatController extends GetxController with ChatApiClient, AppLoader {
           if (threadId.value.isNotEmpty) {
             messages.addAll(newMessages.cast<Threads>());
           } else if (screenTitle.value ==
-              AppStrings.app_exchange_request) {
+              AppStrings.app_exchange_request || screenTitle.value == 'APP_EXCHANGE_REQUEST_DETAILS'.tr) {
             messagesExchange.addAll(newMessages.cast<ExchangeMessage>());
           } else {
             messagesReturn.addAll(newMessages.cast<ReturnMessage>());

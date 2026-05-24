@@ -1,3 +1,4 @@
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -5,6 +6,10 @@ import 'package:tajer/utils/app_strings.dart';
 import '../../../common/widgets/common_text_field.dart';
 import '../../../common/widgets/phone_field.dart';
 import '../../../utils/app_colors.dart';
+import '../../../utils/app_params.dart';
+import '../../../utils/pref_store.dart';
+import '../../core/constants/app_constants.dart';
+import '../../core/routes/app_routes.dart';
 import '../edit_profile/edit_profile_controller.dart';
 import '../address/addAddress/models/country_item.dart';
 import '../address/addAddress/models/state_item.dart';
@@ -39,17 +44,27 @@ class EditProfileView extends StatelessWidget {
                 Navigator.pop(context);
               },
             ),
-            Obx(() => controller.profileImage.value != null
-                ? ListTile(
-              leading: const Icon(Icons.delete_outline, color: Colors.red),
-              title: Text(AppStrings.appRemove.toUpperCase().tr,
-                  style: TextStyle(color: Colors.red)),
-              onTap: () {
-                controller.removePic();
-                Navigator.pop(context);
-              },
-            )
-                : const SizedBox.shrink()),
+            Obx(
+              () => controller.profileImage.value != null
+                  ? ListTile(
+                      leading: const Icon(
+                        Icons.delete_outline,
+                        color: Colors.red,
+                      ),
+                      title: Text(
+                        AppStrings.appRemove.toUpperCase().tr,
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontFamily: 'Nunito',
+                        ),
+                      ),
+                      onTap: () {
+                        controller.removePic();
+                        Navigator.pop(context);
+                      },
+                    )
+                  : const SizedBox.shrink(),
+            ),
             ListTile(
               leading: const Icon(Icons.close),
               title: Text(AppStrings.appCancel.toUpperCase().tr),
@@ -66,15 +81,25 @@ class EditProfileView extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: AppColors.black1,
-        title: Text(
-          AppStrings.appEditProfile.toUpperCase().tr,
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+        backgroundColor: AppColors.white,
+        titleSpacing: 0,
+        leading: InkWell(
+          onTap: () => Get.back(),
+          child: const Icon(Icons.arrow_back),
         ),
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.close, color: Colors.white),
-          onPressed: () => Get.back(),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              AppStrings.appEditProfile.toUpperCase().tr,
+              style: const TextStyle(
+                fontFamily: "Nunito",
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: AppColors.black1,
+              ),
+            ),
+          ],
         ),
       ),
       body: Obx(() {
@@ -95,8 +120,11 @@ class EditProfileView extends StatelessWidget {
                       radius: 45,
                       backgroundImage: controller.profileImage.value != null
                           ? FileImage(controller.profileImage.value!)
+                          : (controller.networkImage != null &&
+                                controller.networkImage!.isNotEmpty)
+                          ? NetworkImage(controller.networkImage!)
                           : const AssetImage("assets/images/userProfile.jpeg")
-                      as ImageProvider,
+                                as ImageProvider,
                     ),
                     Positioned(
                       bottom: 0,
@@ -109,8 +137,11 @@ class EditProfileView extends StatelessWidget {
                             shape: BoxShape.circle,
                           ),
                           padding: const EdgeInsets.all(6),
-                          child: const Icon(Icons.edit,
-                              size: 16, color: Colors.white),
+                          child: const Icon(
+                            Icons.edit,
+                            size: 16,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),
@@ -120,35 +151,65 @@ class EditProfileView extends StatelessWidget {
               const SizedBox(height: 24),
 
               // ---------------- Name ----------------
-              CommonTextField(
-                label: AppStrings.appLabelName.toUpperCase().tr,
-                controller: controller.nameController,
-                hint: "Enter name",
-                backgroundColor: AppColors.colorAccountBackground,
-              ),
-              const SizedBox(height: 16),
+              // CommonTextField(
+              //   label: AppStrings.appLabelName.toUpperCase().tr,
+              //   controller: controller.nameController,
+              //   hint: "Enter name",
+              //   backgroundColor: AppColors.colorAccountBackground,
+              // ),
+              // const SizedBox(height: 16),
 
               // ---------------- Email ----------------
               CommonTextField(
                 label: AppStrings.appEmail.toUpperCase().tr,
                 controller: controller.emailController,
-                hint:  AppStrings.appEmail.toUpperCase().tr,
-                backgroundColor: AppColors.colorAccountBackground,
+                hint: AppStrings.appEmail.toUpperCase().tr,
+                backgroundColor: AppColors.white,
+                readOnly: true,
+                actionText: AppStrings.appUpdate.toUpperCase().tr,
+                onActionTap: () {
+                  Get.toNamed(AppRoutes.changeEmail);
+                },
               ),
               const SizedBox(height: 16),
 
               // ---------------- Phone ----------------
-              PhoneField(
-                controller: controller.phoneController,
-                errorText: controller.phoneError,
-                selectedCountryCode: controller.selectedCountryCode,
-                backgroundColor: AppColors.colorAccountBackground,
-                onChanged: (val) {
-                  controller.phoneError.value =
-                  val.isEmpty ? "Phone number required" : "";
-                },
-              ),
-              const SizedBox(height: 16),
+              if (PrefStore().loadString(AppConstants.phoneSectionEnabled) == '1')
+               PhoneField(
+                  actionText: AppStrings.appUpdate.toUpperCase().tr,
+                  controller: controller.phoneController,
+                  errorText: controller.phoneError,
+                  selectedCountryCode: controller.selectedCountryCode,
+                  backgroundColor: AppColors.white,
+                  onChanged: (val) {
+                    controller.phoneError.value = val.isEmpty
+                        ? "Phone number required"
+                        : "";
+                  },
+                  onActionTap: () async {
+                    final result = await Get.toNamed(
+                      AppRoutes.updatePhoneNumber,
+                      arguments: {
+                        AppParams.title: AppStrings.appUpdatePhone
+                            .toUpperCase()
+                            .tr,
+                        AppParams.isUpdate: true,
+                        "phone": controller.phoneController.text,
+                        "countryCode": controller.selectedCountryCode.value,
+                      },
+                    );
+
+                    if (result != null) {
+                     // await controller.getProfileInfo();
+
+                      Get.back(result: result); // forward message to Account
+                    }
+                  },
+                  isEnabled: false,
+                ),
+              if (PrefStore().loadString(AppConstants.phoneSectionEnabled) ==
+                  '1')
+                const SizedBox(height: 16),
 
               // ---------------- DOB ----------------
               GestureDetector(
@@ -157,8 +218,8 @@ class EditProfileView extends StatelessWidget {
                   child: CommonTextField(
                     label: "${AppStrings.appHintDateOfBirth.toUpperCase().tr}*",
                     controller: controller.dobController,
-                    backgroundColor: AppColors.colorAccountBackground,
-                    hint: "Select Date",
+                    backgroundColor: AppColors.white,
+                    hint: AppStrings.appSelectDate.toUpperCase().tr,
                   ),
                 ),
               ),
@@ -176,32 +237,49 @@ class EditProfileView extends StatelessWidget {
               ),
               const SizedBox(height: 10),
 
-              DropdownButtonFormField<CountryItem>(
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: AppColors.colorAccountBackground,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
+              DropdownSearch<CountryItem>(
+                selectedItem: controller.selectedCountry.value,
+                items: controller.countryList,
+                itemAsString: (CountryItem? c) => c?.name ?? "",
+                popupProps:  PopupProps.bottomSheet(
+                  showSearchBox: true,
+                  searchFieldProps: TextFieldProps(
+                    decoration: InputDecoration(hintText: AppStrings.appSearch.toUpperCase().tr),
                   ),
                 ),
-                value: controller.selectedCountry.value,
-                isExpanded: true,
-                items: controller.countryList
-                    .map(
-                      (c) => DropdownMenuItem(
-                    value: c,
-                    child: Text(c.name ?? ''),
+                dropdownDecoratorProps: DropDownDecoratorProps(
+                  dropdownSearchDecoration: InputDecoration(
+                    filled: true,
+                    hintText: AppStrings.appSelectCountry.toUpperCase().tr,
+                    fillColor: AppColors.white,
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(
+                        color: AppColors.dashboardBgd,
+                      ), // default color
+                    ),
+
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(
+                        color: AppColors.dashboardBgd,
+                      ), // focused color
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                   ),
-                )
-                    .toList(),
+                ),
                 onChanged: (val) async {
                   controller.selectedCountry.value = val;
                   controller.selectedState.value = null;
+
                   if (val != null) {
                     await controller.getStateList(val.id ?? "");
                   }
                 },
               ),
+
               const SizedBox(height: 16),
 
               // ---------------- State ----------------
@@ -211,7 +289,7 @@ class EditProfileView extends StatelessWidget {
                   children: [
                     Text(
                       "${AppStrings.appState.toUpperCase().tr}*",
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
                         color: Colors.black87,
@@ -219,53 +297,86 @@ class EditProfileView extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    // if (controller.isStateLoading.value)
-                    //   const Center(child: CircularProgressIndicator())
-                    // else
-                      DropdownButtonFormField<StateItem>(
-                        decoration: InputDecoration(
+
+                    DropdownSearch<StateItem>(
+                      enabled: controller.selectedCountry.value != null,
+                      selectedItem: controller.selectedState.value,
+                      items: controller.stateList,
+                      itemAsString: (StateItem? s) => s?.name ?? "",
+
+                      popupProps:  PopupProps.bottomSheet(
+                        showSearchBox: true,
+                        searchFieldProps: TextFieldProps(
+                          decoration: InputDecoration(
+                            hintText: AppStrings.appSearch.toUpperCase().tr,
+                            border: OutlineInputBorder(),
+                          ),
+                        ),
+                      ),
+
+                      dropdownDecoratorProps: DropDownDecoratorProps(
+                        dropdownSearchDecoration: InputDecoration(
                           filled: true,
-                          fillColor: AppColors.colorAccountBackground,
+                          fillColor: AppColors.white,
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(
+                              color: AppColors.dashboardBgd,
+                            ), // default color
+                          ),
+
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(
+                              color: AppColors.dashboardBgd,
+                            ), // focused color
+                          ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
+                          hintText: AppStrings.appSelectState.toUpperCase().tr
                         ),
-                        value: controller.selectedState.value,
-                        isExpanded: true,
-                        items: controller.stateList
-                            .map(
-                              (s) => DropdownMenuItem(
-                            value: s,
-                            child: Text(s.name ?? ''),
-                          ),
-                        )
-                            .toList(),
-                        onChanged: (val) {
-                          controller.selectedState.value = val;
-                        },
                       ),
+
+                      onChanged: (val) {
+                        controller.selectedState.value = val;
+                      },
+                    ),
                   ],
                 );
               }),
+
               const SizedBox(height: 32),
 
               // ---------------- Update Button ----------------
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.black1,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8)),
-                    padding: const EdgeInsets.symmetric(vertical: 14),
+              Obx(() {
+                final isEnabled = controller.isChanged.value;
+
+                return SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: isEnabled
+                          ? AppColors.black1
+                          : AppColors.black1.withOpacity(0.4),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      elevation: isEnabled ? 2 : 0,
+                    ),
+                    onPressed: isEnabled ? controller.updateProfile : null,
+                    child: Text(
+                      AppStrings.appUpdate.toUpperCase().tr,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.white,
+                        fontFamily: 'Nunito',
+                      ),
+                    ),
                   ),
-                  onPressed: controller.updateProfile,
-                  child: Text(
-                    AppStrings.appUpdate.toUpperCase().tr,
-                    style: TextStyle(fontSize: 16, color: Colors.white),
-                  ),
-                ),
-              ),
+                );
+              }),
             ],
           ),
         );

@@ -89,20 +89,26 @@ class _BannerPageViewState extends State<BannerPageView> {
       bannerContent = const Center(child: Text("No banner available"));
     }
 
-    return Padding(
-      padding: widget.addPadding
-          ? const EdgeInsets.symmetric(horizontal: 16, vertical: 10)
-          : EdgeInsets.zero,
-      child: SizedBox(height: 200, width: screenSize, child: bannerContent),
+    return Semantics(
+      label: 'banner_section',
+      child: Padding(
+        key: const Key('banner_padding'),
+        padding: widget.addPadding
+            ? const EdgeInsets.symmetric(horizontal: 16, vertical: 10)
+            : EdgeInsets.zero,
+        child: SizedBox(height: 200,key: const Key('banner_container'), width: screenSize, child: bannerContent),
+      ),
     );
   }
 
   /// ✅ Build slider from slides
   Widget _buildSlidesView(double screenSize) {
     return Stack(
+      key: const Key('banner_stack'),
       alignment: Alignment.bottomCenter,
       children: [
         PageView.builder(
+          key: const Key('banner_page_view'),
           controller: _controller,
           itemCount: widget.slides!.length,
           onPageChanged: (index) async {
@@ -118,53 +124,63 @@ class _BannerPageViewState extends State<BannerPageView> {
             final imageUrl = widget.slides![index].slideImageUrl ?? "";
             final provider = NetworkImage(imageUrl);
 
-            return GestureDetector(
-              onTap: () {
-                handleSlideNavigation(
-                  context,
-                  widget.slides![index].slideUrlType ?? "",
-                  widget.slides![index].slideUrl ?? "",
-                  widget.slides![index].slideUrlTitle ?? "",
-                );
-              },
-              onPanDown: (_) {
-                // ✅ Pause auto-scroll while user is dragging
-                _autoScrollTimer?.cancel();
-              },
-              onPanEnd: (_) {
-                // ✅ Resume timer after user stops interaction
-                _startAutoScroll();
-              },
-              child: ClipRRect(
-                borderRadius: widget.addPadding
-                    ? BorderRadius.circular(12)
-                    : BorderRadius.zero,
-                child: Container(
-                  color: Colors.grey.withValues(alpha: 0.1),
-                  width: screenSize,
-                  child: Image(
-                    image: provider,
-                    fit: BoxFit.cover,
+            return Semantics(
+              label:
+              'banner_item_${widget.slides![index].slideUrlTitle}_$index',
+              button: true,
+              child: GestureDetector(
+                key: Key('banner_item_tap_$index'),
+                onTap: () {
+                  handleSlideNavigation(
+                    context,
+                    widget.slides![index].slideUrlType ?? "",
+                    widget.slides![index].slideUrl ?? "",
+                    widget.slides![index].slideUrlTitle ?? "",
+                  );
+                },
+                onPanDown: (_) {
+                  // ✅ Pause auto-scroll while user is dragging
+                  _autoScrollTimer?.cancel();
+                },
+                onPanEnd: (_) {
+                  // ✅ Resume timer after user stops interaction
+                  _startAutoScroll();
+                },
+                child: ClipRRect(
+                  borderRadius: widget.addPadding
+                      ? BorderRadius.circular(12)
+                      : BorderRadius.zero,
+                  child: Container(
+                    key: Key('banner_item_container_$index'),
+                    color: Colors.grey.withValues(alpha: 0.1),
                     width: screenSize,
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null &&
-                          index == 0 &&
-                          !_firstColorExtracted) {
-                        _firstColorExtracted = true;
-                        _extractColor(provider);
-                      }
-                      return child;
-                    },
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        color: Colors.grey[300],
-                        child: const Icon(
-                          Icons.broken_image,
-                          color: Colors.grey,
-                          size: 40,
-                        ),
-                      );
-                    },
+                    child: Image(
+                      key: Key('banner_image_$index'),
+                      image: provider,
+                      fit: BoxFit.cover,
+                      width: screenSize,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null &&
+                            index == 0 &&
+                            !_firstColorExtracted) {
+                          _firstColorExtracted = true;
+                          _extractColor(provider);
+                        }
+                        return child;
+                      },
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          key: Key(
+                              'banner_image_error_$index'),
+                          color: Colors.grey[300],
+                          child: const Icon(
+                            Icons.broken_image,
+                            color: Colors.grey,
+                            size: 40,
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),
@@ -173,14 +189,19 @@ class _BannerPageViewState extends State<BannerPageView> {
         ),
         if (!widget.pageControllerHide)
           Positioned(
+            key: const Key('banner_indicator_positioned'),
             bottom: 8,
-            child: SmoothPageIndicator(
-              controller: _controller,
-              count: widget.slides!.length,
-              effect: const WormEffect(
-                dotHeight: 8,
-                dotWidth: 8,
-                activeDotColor: Colors.black54,
+            child: Semantics(
+              label: 'banner_page_indicator',
+              child: SmoothPageIndicator(
+                key: const Key('banner_indicator'),
+                controller: _controller,
+                count: widget.slides!.length,
+                effect: const WormEffect(
+                  dotHeight: 8,
+                  dotWidth: 8,
+                  activeDotColor: Colors.black54,
+                ),
               ),
             ),
           ),
@@ -193,41 +214,49 @@ class _BannerPageViewState extends State<BannerPageView> {
     final provider = NetworkImage(widget.bannerImage!);
     _extractColor(provider);
 
-    return ClipRRect(
-      borderRadius: widget.addPadding
-          ? BorderRadius.circular(12)
-          : BorderRadius.zero,
-      child: Container(
-        color: Colors.grey.withValues(alpha: 0.1),
-        // 👈 Background color while image loads or fails
-        width: screenSize,
-        child: GestureDetector(
-          onTap: () {
-            debugPrint("debug print ");
-            debugPrint(widget.bannerURLType ?? "");
-            debugPrint(widget.bannerImage ?? "");
-            debugPrint(widget.bannerTitle ?? "");
-            handleSlideNavigation(
-              context,
-              widget.bannerURLType ?? "",
-              widget.bannerUrlOrId ?? "",
-              widget.bannerTitle ?? "",
-            );
-          },
-          child : Image.network(
-            widget.bannerImage ?? "",
-            fit: BoxFit.fitWidth,
-            width: screenSize,
-            loadingBuilder: (context, child, loadingProgress) {
-              if (loadingProgress == null) return child;
-              return const Center(child: CircularProgressIndicator());
+    return Semantics(
+      label: 'single_banner',
+      button: true,
+      child: ClipRRect(
+        borderRadius: widget.addPadding
+            ? BorderRadius.circular(12)
+            : BorderRadius.zero,
+        child: Container(
+          key: const Key('single_banner_container'),
+          color: Colors.grey.withValues(alpha: 0.1),
+          // 👈 Background color while image loads or fails
+          width: screenSize,
+          child: GestureDetector(
+            key: const Key('single_banner_tap'),
+            onTap: () {
+              debugPrint("debug print ");
+              debugPrint(widget.bannerURLType ?? "");
+              debugPrint(widget.bannerImage ?? "");
+              debugPrint(widget.bannerTitle ?? "");
+              handleSlideNavigation(
+                context,
+                widget.bannerURLType ?? "",
+                widget.bannerUrlOrId ?? "",
+                widget.bannerTitle ?? "",
+              );
             },
-            errorBuilder: (_, __, ___) => Container(
-              color: Colors.grey[300],
-              alignment: Alignment.center,
-              child: const Text(
-                "Failed to load banner",
-                style: TextStyle(color: Colors.grey, fontSize: 14),
+            child : Image.network(
+              key: const Key('single_banner_image'),
+              widget.bannerImage ?? "",
+              fit: BoxFit.fitWidth,
+              width: screenSize,
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) return child;
+                return const Center(child: CircularProgressIndicator(color: Colors.black));
+              },
+              errorBuilder: (_, __, ___) => Container(
+                key: const Key('single_banner_error'),
+                color: Colors.grey[300],
+                alignment: Alignment.center,
+                child: const Text(
+                  "Failed to load banner",
+                  style: TextStyle(color: Colors.grey, fontSize: 14),
+                ),
               ),
             ),
           ),

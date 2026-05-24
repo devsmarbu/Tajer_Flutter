@@ -2,14 +2,17 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+import 'package:tajer/app/data/events/app_analytics_service.dart';
 import 'package:tajer/app/modules/authentication/socialController/social_controller.dart';
 import 'package:tajer/app/modules/authentication/splash/controller/splash_controller.dart';
 import 'package:tajer/common/functions/app_function.dart';
 import 'package:tajer/utils/app_strings.dart';
+import 'package:tiktok_events_sdk/tiktok_events_sdk.dart';
 import '../../../../common/widgets/app_dialog.dart';
 import '../../../../utils/base_response.dart';
 import '../../../../utils/pref_store.dart';
@@ -38,6 +41,7 @@ class LoginController extends GetxController {
   final phoneError = ''.obs;
   final passwordError = ''.obs;
   final isLoading = false.obs;
+  final workEmailMsg = ''.obs;
 
   final isFormValid = false.obs;
   final selectedCountryCode = "+91-in".obs;
@@ -45,15 +49,59 @@ class LoginController extends GetxController {
   String deviceType = Platform.isAndroid ? "1" : "0";
 
 
+  @override
+  void onInit() {
+    // TODO: implement onInit
+    super.onInit();
+    debugPrint('this is login controller page ${PrefStore().loadString(AppConstants.sessionId)}');
+    emailController.addListener(() {
+      validateEmail(emailController.text);
+    });
 
-  void validateEmail(String value) {
+    passwordController.addListener(() {
+      validatePassword(passwordController.text);
+    });
 
+    phoneController.addListener(() {
+      validatePhone(phoneController.text);
+    });
+
+    final args = Get.arguments;
+
+    if (args != null &&
+        args["msg"] != null &&
+        args["msg"].toString().trim().isNotEmpty) {
+
+      workEmailMsg.value = args["msg"].toString();
+
+      debugPrint(" Work Email Msg: ${workEmailMsg.value}");
+
+      Future.delayed(const Duration(milliseconds: 500), () {
+        Get.snackbar(
+          AppStrings.APP_ERROR.tr,
+          workEmailMsg.value,
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.black,
+          colorText: Colors.white,
+          margin: const EdgeInsets.all(12),
+          duration: const Duration(seconds: 3),
+        );
+      });
+    }
+  }
+
+
+
+
+  void validateEmail(String value, {bool isSubmit = false}) {
     emailError.value = "";
 
     final trimmed = value.trim();
 
     if (trimmed.isEmpty) {
-      emailError.value = AppStrings.emailCanNotBeEmpty.tr;
+      if (isSubmit) {
+        emailError.value = AppStrings.emailCanNotBeEmpty.tr;
+      }
     } else if (!GetUtils.isEmail(trimmed)) {
       emailError.value = AppStrings.pleaseEnterValidEmail.tr;
     }
@@ -61,8 +109,15 @@ class LoginController extends GetxController {
     checkFormValid();
   }
 
-  void validatePhone(String value) {
-    if (value.trim().length < 10) {
+  void validatePhone(String value, {bool isSubmit = false}) {
+    final trimmed = value.trim();
+    if (trimmed.isEmpty) {
+      if (isSubmit) {
+        phoneError.value = "Please enter valid phone number";
+      } else {
+        phoneError.value = "";
+      }
+    } else if (trimmed.length < 10) {
       phoneError.value = "Please enter valid phone number";
     } else {
       phoneError.value = "";
@@ -70,14 +125,17 @@ class LoginController extends GetxController {
     checkFormValid();
   }
 
-  void validatePassword(String value) {
-    if (value.trim().isEmpty) {
-      passwordError.value = AppStrings.pleaseEnterPassword.tr;
-    }
-    // if (value.trim().length < 6) {
-    //   passwordError.value = "Password must be at least 6 characters";
-    // }
-    else {
+  void validatePassword(String value, {bool isSubmit = false}) {
+    final trimmed = value.trim();
+    if (trimmed.isEmpty) {
+      if (isSubmit) {
+        passwordError.value = AppStrings.pleaseEnterPassword.tr;
+      } else {
+        passwordError.value = "";
+      }
+    } else if (trimmed.length < 6) {
+      passwordError.value = "Password must be at least 6 characters";
+    } else {
       passwordError.value = "";
     }
     checkFormValid();
@@ -86,16 +144,14 @@ class LoginController extends GetxController {
   void checkFormValid() {
     if (isEmail.value) {
       isFormValid.value =
-          emailError.isEmpty &&
-              passwordError.isEmpty &&
-              emailController.text.isNotEmpty &&
-              passwordController.text.isNotEmpty;
+          emailError.value.isEmpty &&
+              passwordError.value.isEmpty &&
+              emailController.text.trim().isNotEmpty &&
+              passwordController.text.trim().isNotEmpty;
     } else {
       isFormValid.value =
-          phoneError.isEmpty &&
-              passwordError.isEmpty &&
-              phoneController.text.isNotEmpty &&
-              passwordController.text.isNotEmpty;
+          phoneError.value.isEmpty &&
+              phoneController.text.trim().isNotEmpty;
     }
   }
 
@@ -104,7 +160,8 @@ class LoginController extends GetxController {
   }
 
   void continueWithPhone() {
-    isEmail.value ? isEmail.value=false:isEmail.value=true;
+    isEmail.value = !isEmail.value;
+    checkFormValid();
   }
 
   void goToRegister() {
@@ -114,24 +171,25 @@ class LoginController extends GetxController {
   /// 🔹 Check all fields manually on login button
   bool validateAll() {
     if (isEmail.value) {
-      validateEmail(emailController.text);
-      validatePassword(passwordController.text);
-      return emailError.isEmpty &&
-          passwordError.isEmpty &&
+      validateEmail(emailController.text, isSubmit: true);
+      validatePassword(passwordController.text, isSubmit: true);
+      return emailError.value.isEmpty &&
+          passwordError.value.isEmpty &&
           emailController.text.isNotEmpty &&
           passwordController.text.isNotEmpty;
     } else {
-      validatePhone(phoneController.text);
+      validatePhone(phoneController.text, isSubmit: true);
       //validatePassword(passwordController.text);
-      return phoneError.isEmpty &&
+      return phoneError.value.isEmpty &&
           phoneController.text.isNotEmpty;
     }
   }
 
   void login(){
-    if (validateAll()) {
-      isEmail.value ? loginUser():loginUserWithOtp();
 
+    if (validateAll()) {
+      TextInput.finishAutofillContext();
+        isEmail.value ? loginUser():loginUserWithOtp();
     } else {
       Get.snackbar(
         "Error",
@@ -167,8 +225,7 @@ class LoginController extends GetxController {
         if(common.responseCode=="200"){
           if(common.status==AppConstants.SUCCESS){
             controllerSocial.saveLoginData(common.data);
-            final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
-            await analytics.logLogin(loginMethod: 'email');
+            AppAnalyticsService.login();
            // await saveLoginData(common.data);
           }
           // else if (common.status == AppConstants.WARNING && common.notVerified != null) {

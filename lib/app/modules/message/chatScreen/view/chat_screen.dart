@@ -23,7 +23,7 @@ class ChatScreen extends StatelessWidget {
         titleSpacing: 0,
         title: Obx(
               () => Text(
-            controller.screenTitle.value,
+            controller.title.value == '' ? controller.screenTitle.value : controller.title.value,
             style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w600,
@@ -45,8 +45,8 @@ class ChatScreen extends StatelessWidget {
                 // Dynamically choose message list
                 final messages = controller.threadId.value.isNotEmpty
                     ? controller.messages
-                    : controller.screenTitle.value ==
-                    AppStrings.app_exchange_request
+                    : (controller.screenTitle.value ==
+                    AppStrings.app_exchange_request || controller.screenTitle.value == 'APP_EXCHANGE_REQUEST_DETAILS'.tr)
                     ? controller.messagesExchange
                     : controller.messagesReturn;
 

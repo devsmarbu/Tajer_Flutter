@@ -16,6 +16,12 @@ mixin AccountApiClient{
       data: FormData.fromMap({
         '_token': token,
       }),
+      options: Options(
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "multipart/form-data",
+        },
+      ),
     );
   }
 
@@ -126,6 +132,19 @@ mixin AccountApiClient{
         'user_phone': userPhone,
         'user_phone_dcode': phoneDCode,
         'use_for': userFor,
+      }),
+    );
+  }
+
+  Future<Response> verifyPhoneGetOtp(
+      String userPhone,
+      String phoneDCode,
+      ) async {
+    return await _api.dio.post(
+      AppConstants.verifyPhone,
+      data: FormData.fromMap({
+        'phone_number': userPhone,
+        'phone_code': phoneDCode
       }),
     );
   }

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:tajer/marque_label.dart';
+import '../../../utils/pref_store.dart';
+import '../../core/constants/app_constants.dart';
 import '../../modules/categories/brands_list/brands_list_view.dart';
 import '../../modules/categories/category_list/category_list_view.dart';
 import '../../../utils/app_colors.dart';
@@ -38,11 +41,12 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
         child: Column(
           children: [
             // 🔍 Search Bar
+            /// 🔥 Marquee Label
+            (PrefStore().loadString(AppConstants.promoBannerText)??'').marqueeLabel(),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               child: SearchPage(),
             ),
-
             // 🔹 Tabs: Categories / Brands / Shops
             Obx(() {
               return Row(
@@ -86,7 +90,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
             Expanded(
               child: Obx(() {
                 if (controller.isLoading.value) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator(color: Colors.black));
                 }
 
                 if (controller.categories.isEmpty) {

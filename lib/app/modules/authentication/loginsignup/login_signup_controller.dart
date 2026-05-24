@@ -16,15 +16,21 @@ class LoginSignupController extends GetxController {
     }
   }
 
-  void signInClick() {
+  Future<void> signInClick() async {
+    //await pref.saveBoolean(AppConstants.skipForNow, true);
     if(Get.currentRoute != AppRoutes.loginOption) {
       Get.toNamed(AppRoutes.loginOption);
     }
   }
 
-  void signUpClick() {
+  Future<void> signUpClick() async {
+    //await pref.saveBoolean(AppConstants.skipForNow, true);
     if(Get.currentRoute != AppRoutes.signUp) {
       Get.toNamed(AppRoutes.signUp);
     }
+  }
+
+  void goToLogin() {
+    Get.toNamed(AppRoutes.login);
   }
 }

@@ -33,22 +33,29 @@ class HeaderView extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: implement build
     return SizedBox(
+      key: const Key('header_view_sized_box'),
       height: 50,
       child: Padding(
         padding: EdgeInsets.only(left: (isHomeHeader == false) ? 10 : 10),
         child: Row(
+          key: const Key('header_view_row'),
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             if (isHomeHeader == true)
-              SizedBox(
-                height: 30,
-                width: 2,
-                child: Container(color: Colors.black87),
+              Semantics(
+                label: 'header_left_indicator',
+                child: SizedBox(
+                  key: const Key('header_left_indicator'),
+                  height: 30,
+                  width: 2,
+                  child: Container(color: Colors.black87),
+                ),
               ),
             (isHomeHeader == true)
-                ? const SizedBox(width: 10)
-                : const SizedBox(width: 5),
+                ? const SizedBox(width: 10,key: Key('header_spacing_large'),)
+                : const SizedBox(width: 5,key: Key('header_spacing_small'),),
             Text(
+              key: const Key('header_view_title_header_text'),
               titleHeader,
               style: TextStyle(
                 fontWeight: FontWeight.w600,
@@ -58,45 +65,54 @@ class HeaderView extends StatelessWidget {
               maxLines: 1,
               textAlign: TextAlign.left,
             ),
-            const Spacer(),
+            const Spacer(key: Key('header_spacer')),
             if (hideSeeAll == false)
-              SizedBox(
-                child: TextButton(
-                  onPressed: () {
-                    // Get.toNamed(
-                    //   AppRoutes.productListPage,
-                    //   parameters: {
-                    //     "prodCatId": prodCatId ?? "",
-                    //     "productVideoAvailable": productVideoAvailable ?? "0",
-                    //   },
-                    // );
-                    HeaderViewHelper.seeAllButton(context,collection,currencySymbol);
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 6,
-                      vertical: 3,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade200,
-                      // 👈 background color
-                      borderRadius: BorderRadius.circular(
-                        16,
-                      ), // 👈 corner radius
-                    ),
-                    child: Text(
-                      AppStrings.appSeeAll.toUpperCase().tr,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontFamily: "Nunito",
-                        fontSize: 15,
-                        color: Colors.black87,
+              Semantics(
+                label: 'header_see_all_button',
+                button: true,
+                enabled: true,
+                child: SizedBox(
+                  key: const Key('header_see_all_container'),
+                  child: TextButton(
+                    key: const Key('header_see_all_btn'),
+                    onPressed: () {
+                      // Get.toNamed(
+                      //   AppRoutes.productListPage,
+                      //   parameters: {
+                      //     "prodCatId": prodCatId ?? "",
+                      //     "productVideoAvailable": productVideoAvailable ?? "0",
+                      //   },
+                      // );
+                      HeaderViewHelper.seeAllButton(context,collection,currencySymbol);
+                    },
+                    child: Container(
+                      key: const Key('header_see_all_inner_container'),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 3,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade200,
+                        // 👈 background color
+                        borderRadius: BorderRadius.circular(
+                          16,
+                        ), // 👈 corner radius
+                      ),
+                      child: Text(
+                        key: const Key('header_see_all_text'),
+                        AppStrings.appSeeAll.toUpperCase().tr,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontFamily: "Nunito",
+                          fontSize: 15,
+                          color: Colors.black87,
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-            SizedBox(width: 5),
+            SizedBox(width: 5,key: Key('header_end_spacing'),),
           ],
         ),
       ),

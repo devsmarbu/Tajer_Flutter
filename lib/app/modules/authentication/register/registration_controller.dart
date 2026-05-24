@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:facebook_app_events/facebook_app_events.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:tajer/app/data/events/app_analytics_service.dart';
+import 'package:tiktok_events_sdk/tiktok_events_sdk.dart';
 import '../../../../../utils/app_strings.dart';
 import '../../../../common/functions/app_function.dart';
 import '../../../../common/widgets/app_dialog.dart';
@@ -36,6 +38,7 @@ class RegistrationController extends GetxController {
   final emailError = ''.obs;
   final passwordError = ''.obs;
   final confirmPasswordError = ''.obs;
+  final deeplinkEmail = ''.obs;
 
   // State
   final isLoading = false.obs;
@@ -46,38 +49,62 @@ class RegistrationController extends GetxController {
     // TODO: implement onInit
     super.onInit();
     passwordController.addListener(() {
-      validatePasswordWhenTyping(passwordController.text);
+      validatePassword(passwordController.text);
     });
     confirmPasswordController.addListener(() {
-      validateConfirmPasswordWhenTyping(confirmPasswordController.text);
+      validateConfirmPassword(confirmPasswordController.text);
     });
+    nameController.addListener(() {
+      validateName(nameController.text);
+    });
+    // userNameController.addListener(() {
+    //   validateUserName(userNameController.text);
+    // });
+    emailController.addListener(() {
+      validateEmail(emailController.text);
+    });
+
+    final args = Get.arguments;
+
+    if (args != null && args["email"] != null) {
+      deeplinkEmail.value = args["email"];
+      debugPrint("✅ Prefilled Email: ${args["email"]}");
+    }
+
   }
 
   // Name Validation
-  void validateName(String value) {
+  void validateName(String value, {bool isSubmit = false}) {
     nameError.value = "";
-    if (value.trim().isEmpty) {
-      nameError.value = AppStrings.pleaseEnterName.tr;
+    final trimmed = value.trim();
+    if (trimmed.isEmpty) {
+      if (isSubmit) {
+        nameError.value = AppStrings.pleaseEnterName.tr;
+      }
     }
     checkFormValid();
   }
 
   // Username Validation
-  void validateUserName(String value) {
-    userNameError.value = "";
-    if (value.trim().isEmpty) {
-      userNameError.value = AppStrings.pleaseEnterUserName.tr;
-    }
-    checkFormValid();
-  }
+  // void validateUserName(String value, {bool isSubmit = false}) {
+  //   userNameError.value = "";
+  //   if (value.trim().isEmpty) {
+  //     if (isSubmit) {
+  //       userNameError.value = AppStrings.pleaseEnterUserName.tr;
+  //     }
+  //   }
+  //   checkFormValid();
+  // }
 
   // Email Validation
-  void validateEmail(String value) {
+  void validateEmail(String value, {bool isSubmit = false}) {
     emailError.value = "";
     final trimmed = value.trim();
 
     if (trimmed.isEmpty) {
-      emailError.value = AppStrings.emailCanNotBeEmpty.tr;
+      if (isSubmit) {
+        emailError.value = AppStrings.emailCanNotBeEmpty.tr;
+      }
     } else if (!GetUtils.isEmail(trimmed)) {
       emailError.value = AppStrings.pleaseEnterValidEmail.tr;
     }
@@ -85,15 +112,16 @@ class RegistrationController extends GetxController {
   }
 
   //  Password Validation
-  void validatePassword(String value) {
+  void validatePassword(String value, {bool isSubmit = false}) {
     debugPrint("validatePassword called: $value");
     passwordError.value = "";
     final trimmed = value.trim();
 
     if (trimmed.isEmpty) {
-      passwordError.value = AppStrings.pleaseEnterPassword.tr;
-    }
-    if (trimmed.isNotEmpty) {
+      if (isSubmit) {
+        passwordError.value = AppStrings.pleaseEnterPassword.tr;
+      }
+    } else {
       if (trimmed.length < 8 ||
           !RegExp(r'[!@#$%^&*(),.?":{}|<>_\-+=/\\\[\]]').hasMatch(trimmed)) {
         passwordError.value = AppStrings.pleaseMustBe6Character.tr;
@@ -114,7 +142,7 @@ class RegistrationController extends GetxController {
         passwordError.value = "";
       }
     }
-    checkFormValid();
+    // checkFormValid();
   }
 
   void validateConfirmPasswordWhenTyping(String value) {
@@ -129,24 +157,30 @@ class RegistrationController extends GetxController {
         confirmPasswordError.value = "";
       }
     }
-    checkFormValid();
+    // checkFormValid();
   }
 
-  void validateCheckTerms() {
+  bool validateCheckTerms() {
     if (isCheckTerms.value == false) {
       Get.snackbar("Signup", "Please select terms");
+      return false;
     }
+
+    return true;
     // checkFormValid();
   }
 
   // Confirm Password Validation
-  void validateConfirmPassword(String value) {
+  void validateConfirmPassword(String value, {bool isSubmit = false}) {
     confirmPasswordError.value = "";
-    if (value.trim().isEmpty) {
-      confirmPasswordError.value = AppStrings.pleaseEnterConfirmPassword.tr;
-    } else if (value.trim().length < 6) {
+    final trimmed = value.trim();
+    if (trimmed.isEmpty) {
+      if (isSubmit) {
+        confirmPasswordError.value = AppStrings.pleaseEnterConfirmPassword.tr;
+      }
+    } else if (trimmed.length < 6) {
       confirmPasswordError.value = AppStrings.pleaseMustBe6Character.tr;
-    } else if (value.trim() != passwordController.text.trim()) {
+    } else if (trimmed != passwordController.text.trim()) {
       confirmPasswordError.value = AppStrings.confirmPasswordDoesNotMatch.tr;
     }
     checkFormValid();
@@ -161,7 +195,7 @@ class RegistrationController extends GetxController {
         passwordError.value.isEmpty &&
         confirmPasswordError.value.isEmpty &&
         nameController.text.trim().isNotEmpty &&
-        userNameController.text.trim().isNotEmpty &&
+        // userNameController.text.trim().isNotEmpty &&
         emailController.text.trim().isNotEmpty &&
         passwordController.text.trim().isNotEmpty &&
         confirmPasswordController.text.trim().isNotEmpty &&
@@ -170,38 +204,44 @@ class RegistrationController extends GetxController {
 
   void goToLogin() {
     Get.toNamed(AppRoutes.login);
+    Get.toNamed(
+      AppRoutes.login,
+      arguments: {
+        "email": deeplinkEmail.value,
+      },
+    );
   }
 
   // Manual validation before signup
   bool validateAll() {
-    validateName(nameController.text);
-    validateUserName(userNameController.text);
-    validateEmail(emailController.text);
-    validatePassword(passwordController.text);
-    validateConfirmPassword(confirmPasswordController.text);
-    validateCheckTerms();
+    validateName(nameController.text, isSubmit: true);
+    // validateUserName(userNameController.text, isSubmit: true);
+    validateEmail(emailController.text, isSubmit: true);
+    validatePassword(passwordController.text, isSubmit: true);
+    validateConfirmPassword(confirmPasswordController.text, isSubmit: true);
 
     return nameError.value.isEmpty &&
         userNameError.value.isEmpty &&
         emailError.value.isEmpty &&
         passwordError.value.isEmpty &&
-        confirmPasswordError.value.isEmpty &&
-        isCheckTerms.value == true;
+        confirmPasswordError.value.isEmpty;
+       // && isCheckTerms.value == true;
   }
 
   // Signup
   void signUp() {
-    if (validateAll()) {
+    if (validateAll() && validateCheckTerms()) {
       signUpUser();
-    } else {
-      Get.snackbar(
-        "Error",
-        "Please fix the errors before continuing",
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
     }
+    // else {
+    //   Get.snackbar(
+    //     "Error",
+    //     "Please fix the errors before continuing",
+    //     snackPosition: SnackPosition.BOTTOM,
+    //     backgroundColor: Colors.red,
+    //     colorText: Colors.white,
+    //   );
+    // }
   }
 
   Future<void> signUpUser() async {
@@ -211,7 +251,7 @@ class RegistrationController extends GetxController {
 
         final response = await _apiClient.getSignUpUser(
           nameController.text,
-          userNameController.text,
+          // userNameController.text,
           emailController.text,
           passwordController.text,
           confirmPasswordController.text,
@@ -234,10 +274,21 @@ class RegistrationController extends GetxController {
         if (common.responseCode == "200") {
           if (common.status == AppConstants.SUCCESS) {
             final loginData = common.data!;
-            controllerSocial.saveLoginData(loginData);
-            final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
-            await analytics.logSignUp(signUpMethod: 'email');
-            final facebookAppEvents = FacebookAppEvents();
+            //controllerSocial.saveLoginData(loginData);
+            AppAnalyticsService.register();
+            // Get.showSnackbar(
+            //   GetSnackBar(
+            //     message: common.msg,
+            //     backgroundColor: Colors.black87,
+            //     duration: Duration(seconds: 2),
+            //     snackPosition: SnackPosition.TOP,
+            //     margin: EdgeInsets.all(12),
+            //     borderRadius: 8,
+            //     isDismissible: true,
+            //   ),
+            // );
+
+            Get.offAllNamed(AppRoutes.registrationSuccessScreen);
 
             // if (loginData.userId != null && loginData.token==null || loginData.token=="") {
             //   Get.toNamed(AppRoutes.updatePhoneNumber);

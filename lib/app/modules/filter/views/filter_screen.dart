@@ -72,7 +72,7 @@ class _FilterScreenState extends State<FilterScreen> {
         ),
         title: Text(
           AppStrings.app_filter.tr,
-          style: TextStyle(color: Colors.black), // Black text
+          style: TextStyle(color: Colors.black,fontFamily: "Nunito",fontWeight: FontWeight.w600), // Black text
         ),
         titleSpacing: 0,
         centerTitle: false,
@@ -127,7 +127,7 @@ class _FilterScreenState extends State<FilterScreen> {
                         child: Text(
                           filters[index].title ?? "",
                           style: TextStyle(
-                            fontFamily: "nunito",
+                            fontFamily: "Nunito",
                             fontWeight: isSelected
                                 ? FontWeight.w600
                                 : FontWeight.w400,
@@ -147,7 +147,7 @@ class _FilterScreenState extends State<FilterScreen> {
                     controller.productFilters.value?.data?.filters ?? [];
 
                 if (filters.isEmpty) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator(color: Colors.black));
                 }
 
                 final currentFilter = filters[selectedIndex];
@@ -181,7 +181,7 @@ class _FilterScreenState extends State<FilterScreen> {
                         ),
                         child: TextField(
                           decoration: InputDecoration(
-                            hintText: AppStrings.appSearch,
+                            hintText: AppStrings.appSearch.toUpperCase().tr,
                             prefixIcon: const Icon(
                               Icons.search,
                               color: AppColors.black1,
@@ -339,7 +339,7 @@ class _FilterScreenState extends State<FilterScreen> {
       bottomNavigationBar: Container(
         color: AppColors.white,
         child: Padding(
-          padding: const EdgeInsets.all(12.0),
+          padding: const EdgeInsets.fromLTRB(20, 0, 20, 25),
           child: Row(
             children: [
               // Clear All Button (smaller weight)
@@ -347,7 +347,7 @@ class _FilterScreenState extends State<FilterScreen> {
                 flex: 4, // smaller weight
                 child: OutlinedButton(
                   style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    padding: const EdgeInsets.symmetric(vertical: 15),
                     side: const BorderSide(color: Colors.black, width: 1.2),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(
@@ -364,6 +364,7 @@ class _FilterScreenState extends State<FilterScreen> {
                   child: Text(
                     AppStrings.app_clear_all.tr,
                     style: TextStyle(
+                    fontFamily: "Nunito",
                       color: Colors.black,
                       fontWeight: FontWeight.w500,
                     ),
@@ -378,7 +379,7 @@ class _FilterScreenState extends State<FilterScreen> {
                 flex: 6, // bigger weight
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    padding: const EdgeInsets.symmetric(vertical: 15),
                     backgroundColor: Colors.black,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(
@@ -401,6 +402,7 @@ class _FilterScreenState extends State<FilterScreen> {
                   child: Text(
                     AppStrings.appApply.toUpperCase().tr,
                     style: TextStyle(
+                    fontFamily: "Nunito",
                       color: Colors.white,
                       fontWeight: FontWeight.w600,
                     ),

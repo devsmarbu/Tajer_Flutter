@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tajer/app/Extensions/alert.dart';
+import 'package:tajer/marque_label.dart';
 import 'package:tajer/utils/app_strings.dart';
 import 'package:tajer/utils/pref_store.dart';
 import '../../core/constants/app_constants.dart';
@@ -72,6 +73,9 @@ class _WishListNamesViewState extends State<WishlistNamesView> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          /// 🔥 Marquee Label
+          (PrefStore().loadString(AppConstants.promoBannerText)??'').marqueeLabel(),
+          Spacer(),
           Text(
             "APP_PLEASE_SIGNIN_FOR_MORE_OPTIONS".tr,
             style: const TextStyle(
@@ -102,6 +106,7 @@ class _WishListNamesViewState extends State<WishlistNamesView> {
               ),
             ),
           ),
+          Spacer(),
         ],
       ),
     );
@@ -113,15 +118,18 @@ class _WishListNamesViewState extends State<WishlistNamesView> {
   Widget _buildWishlistBody() {
     return Stack(
       children: [
+        /// 🔥 Marquee Label
+        (PrefStore().loadString(AppConstants.promoBannerText)??'').marqueeLabel(),
+
         Container(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 80),
           decoration: const BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+            // borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
           ),
           child: Obx(() {
             if (controller.isLoading.value) {
-              return const Center(child: CircularProgressIndicator());
+              return const Center(child: CircularProgressIndicator(color: Colors.black));
             }
 
             if (controller.wishList.isEmpty) {

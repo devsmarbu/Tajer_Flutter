@@ -17,6 +17,12 @@ class CommonTextField extends StatefulWidget {
   final int? maxLines;
   final double? fontSize;
   final Widget? suffixIcon;
+  final TextInputAction? textInputAction;
+  final bool readOnly;
+  final bool enabled;
+
+  final String? actionText;
+  final VoidCallback? onActionTap;
 
   const CommonTextField({
     super.key,
@@ -33,6 +39,11 @@ class CommonTextField extends StatefulWidget {
     this.maxLines,
     this.fontSize,
     this.suffixIcon,
+    this.textInputAction,
+    this.readOnly = false,
+    this.enabled = true,
+    this.actionText,
+    this.onActionTap,
   });
 
   @override
@@ -42,10 +53,12 @@ class CommonTextField extends StatefulWidget {
 class _CommonTextFieldState extends State<CommonTextField> {
   late TextEditingController _controller;
   bool _ownsController = false;
+  bool _isObscure = true; // 👈 ADD THIS
 
   @override
   void initState() {
     super.initState();
+    _isObscure = widget.obscureText; // 👈 INIT FROM WIDGET
     if (widget.controller != null) {
       _controller = widget.controller!;
     } else {
@@ -67,32 +80,58 @@ class _CommonTextFieldState extends State<CommonTextField> {
     final hasError = widget.errorText != null && widget.errorText!.isNotEmpty;
 
     return Column(
+      key: Key("common text field container"),
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Label
         if (widget.label.isNotEmpty)
           Padding(
             padding: const EdgeInsets.only(bottom: 6),
-            child: Text(
-              widget.label,
-              style: const TextStyle(
-                fontFamily: "Nunito",
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-              ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  widget.label,
+                  style: const TextStyle(
+                    fontFamily: "Nunito",
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+
+                if (widget.actionText != null)
+                  GestureDetector(
+                    onTap: widget.onActionTap,
+                    child: Text(
+                      widget.actionText!,
+                      style: const TextStyle(
+                        fontFamily: "Nunito",
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        decoration: TextDecoration.underline,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+              ],
             ),
           ),
 
         // Input Field
         TextField(
+          key: Key("common text field"),
           controller: _controller,
-          obscureText: widget.obscureText,
+          obscureText: _isObscure,
           autofillHints: widget.autofillHints,
           keyboardType: widget.keyboardType,
           maxLines: widget.maxLines ?? 1,
+          textInputAction: widget.textInputAction,
+          readOnly: widget.readOnly,
+          enabled: widget.enabled,
           style: TextStyle(
             color: AppColors.black1,
             fontFamily: "Nunito",
+            fontWeight: FontWeight.normal,
             fontSize: widget.fontSize ?? 14.0,
           ),
           decoration: InputDecoration(
@@ -100,7 +139,7 @@ class _CommonTextFieldState extends State<CommonTextField> {
             hintStyle: TextStyle(
               color: AppColors.offWhite2,
               fontFamily: "Nunito",
-              fontWeight: FontWeight.w500
+              fontWeight: FontWeight.normal,
             ),
             filled: widget.backgroundColor != null,
             fillColor: widget.backgroundColor,
@@ -120,6 +159,8 @@ class _CommonTextFieldState extends State<CommonTextField> {
                 width: 2,
               ),
             ),
+
+            // 👇 UPDATED LOGIC
             suffixIcon: hasError
                 ? Padding(
               padding: const EdgeInsets.all(12),
@@ -128,6 +169,19 @@ class _CommonTextFieldState extends State<CommonTextField> {
                 height: 16,
                 width: 16,
               ),
+            )
+                : widget.obscureText
+                ? IconButton(
+              icon: Icon(
+                _isObscure
+                    ? Icons.visibility_off
+                    : Icons.visibility,
+              ),
+              onPressed: () {
+                setState(() {
+                  _isObscure = !_isObscure;
+                });
+              },
             )
                 : widget.suffixIcon,
           ),
@@ -142,7 +196,7 @@ class _CommonTextFieldState extends State<CommonTextField> {
               style: const TextStyle(
                 fontFamily: "Nunito",
                 color: Colors.red,
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.normal,
                 fontSize: 13,
               ),
             ),

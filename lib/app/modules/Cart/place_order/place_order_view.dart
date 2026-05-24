@@ -26,6 +26,7 @@ class PlaceOrderView extends StatelessWidget {
     final controller = Get.put(RegularProductController());
 
     return Column(
+      key: Key("place_order_view"),
       children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
@@ -87,15 +88,34 @@ class PlaceOrderView extends StatelessWidget {
                                 0;
                             debugPrint("$walletBalance");
                             debugPrint("$orderNetAmount");
-                            if (walletBalance < orderNetAmount) {
-                              if (controller.selectedPlugin == null) {
-                                showAlertMessage(
-                                  Get.context!,
-                                  title: AppLabels.APP_NAME,
-                                  message: "Insufficient balance.",
-                                );
-                              } else {
-                                 final result = await controller.confirmOrder(
+                            if(controller.useWallet.value==false && controller.useCard.value==false){
+                              showAlertMessage(
+                                Get.context!,
+                                title: AppLabels.APP_NAME,
+                                message: AppStrings.APP_PLEASE_SELECT_PAYMENT_METHOD.tr,
+                              );
+                              return;
+                            }
+                            else{
+                              if (walletBalance < orderNetAmount) {
+                                if (controller.useCard.value==false && controller.useWallet.value==true) {
+                                  showAlertMessage(
+                                    Get.context!,
+                                    title: AppLabels.APP_NAME,
+                                    message: "Insufficient balance.",
+                                  );
+                                } else {
+                                  final result = await controller.confirmOrder(
+                                    controller.cartOrderId,
+                                    controller.orderType,
+                                    controller.selectedPlugin?.pluginId ?? "56",
+                                    walletBalance,
+                                    controller.isUseWalletPayment,
+                                  );
+                                }
+                              }
+                              else {
+                                final result = await controller.confirmOrder(
                                   controller.cartOrderId,
                                   controller.orderType,
                                   controller.selectedPlugin?.pluginId ?? "56",
@@ -103,19 +123,13 @@ class PlaceOrderView extends StatelessWidget {
                                   controller.isUseWalletPayment,
                                 );
                               }
-                            } else {
-                              final result = await controller.confirmOrder(
-                                controller.cartOrderId,
-                                controller.orderType,
-                                controller.selectedPlugin?.pluginId ?? "56",
-                                walletBalance,
-                                controller.isUseWalletPayment,
-                              );
                             }
+
                           }
                         }
                       },
                       child: Row(
+                        key: Key("app_place_order_button"),
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Image.asset(

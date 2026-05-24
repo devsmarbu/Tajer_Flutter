@@ -25,128 +25,172 @@ class _BeautyProductCellViewState extends State<BeautyProductCellView> {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-    return Container(
-      color: Color(0xFFFDCDD7),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          HeaderView(
-            titleHeader: "Flawless Makeup Picks",
-            collection: widget.collection,
-          ),
-          SizedBox(height: 10),
-          Container(
-            decoration: BoxDecoration(
-              // color: Colors.pink[100], // optional background color
-              image: DecorationImage(
-                image: AssetImage("assets/images/BeautyBG.png"),
-                fit: BoxFit.fitWidth, // cover, contain, fill, etc.
-                alignment: Alignment.bottomCenter,
-              ),
+    return Semantics(
+      label: 'beauty_product_section',
+      child: Container(
+        key: const Key('beauty_product_root'),
+        color: Color(0xFFFDCDD7),
+        child: Column(
+          key: const Key('beauty_product_column'),
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            HeaderView(
+              key: const Key('beauty_product_header'),
+              titleHeader: "Flawless Makeup Picks",
+              collection: widget.collection,
             ),
-            height: screenWidth - 130,
-            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-            child: SizedBox(
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: widget.products.length,
-                itemBuilder: (context, index) {
-                  final product = widget.products[index];
-                  final provider = NetworkImage(product.productImageUrl ?? "");
-                  return GestureDetector(
-
-                    child: Padding(
-                      padding: EdgeInsets.only(
-                        top: index.isOdd ? 0 : 50,
-                        // odd → top padding
-                        bottom: index.isEven ? 0 : 50,
-                        // even → bottom padding
-                        right: 10,
-                        left: 10,
-                      ),
-                      child: SizedBox(
-                        width: screenWidth / 3 - 20,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              width: screenWidth / 3 - 30,
-                              height: screenWidth / 3,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Color(0xFFFBBECB),
-                                  borderRadius: const BorderRadius.all(
-                                    Radius.circular(15),
+            SizedBox(height: 10,key: Key('beauty_product_spacing_header')),
+            Container(
+              key: const Key('beauty_product_bg_container'),
+              decoration: BoxDecoration(
+                // color: Colors.pink[100], // optional background color
+                image: DecorationImage(
+                  image: AssetImage("assets/images/BeautyBG.png"),
+                  fit: BoxFit.fitWidth, // cover, contain, fill, etc.
+                  alignment: Alignment.bottomCenter,
+                ),
+              ),
+              height: screenWidth - 130,
+              padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+              child: SizedBox(
+                child: ListView.builder(
+                  key: const Key('beauty_product_list'),
+                  scrollDirection: Axis.horizontal,
+                  itemCount: widget.products.length,
+                  itemBuilder: (context, index) {
+                    final product = widget.products[index];
+                    final provider = NetworkImage(product.productImageUrl ?? "");
+                    return Semantics(
+                      label:
+                      'beauty_product_${product.productName}_$index',
+                      button: true,
+                      child: GestureDetector(
+                        key: Key('beauty_product_tap_$index'),
+                            
+                        child: Padding(
+                          key: Key(
+                              'beauty_product_padding_$index'),
+                          padding: EdgeInsets.only(
+                            top: index.isOdd ? 0 : 50,
+                            // odd → top padding
+                            bottom: index.isEven ? 0 : 50,
+                            // even → bottom padding
+                            right: 10,
+                            left: 10,
+                          ),
+                          child: SizedBox(
+                            key: Key(
+                                'beauty_product_item_$index'),
+                            width: screenWidth / 3 - 20,
+                            child: Column(
+                              key: Key(
+                                  'beauty_product_column_$index'),
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  key: Key(
+                                      'beauty_product_image_wrapper_$index'),
+                                  width: screenWidth / 3 - 30,
+                                  height: screenWidth / 3,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Color(0xFFFBBECB),
+                                      borderRadius: const BorderRadius.all(
+                                        Radius.circular(15),
+                                      ),
+                                    ),
+                                    child: Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        Positioned(
+                                          bottom: 0,
+                                          child: Image.asset(
+                                            key: Key(
+                                                'beauty_product_shadow_$index'),
+                                            "assets/images/ShadowPink.png",
+                                            width: screenWidth / 4,
+                                            // adjust for proportion
+                                            height: 40,
+                                            color: Colors.pink.withValues(
+                                              alpha: 0.7,
+                                            ),
+                                            fit: BoxFit.contain,
+                                          ),
+                                        ),
+                                        // Main image
+                                        Padding(
+                                          padding: const EdgeInsets.all(10),
+                                          child: Semantics(
+                                            label:
+                                            'beauty_product_image_${product.productName}_$index',
+                                            child: Image(
+                                              key: Key(
+                                                  'beauty_product_image_$index'),
+                                              image: provider,
+                                              fit: BoxFit.contain,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                                child: Stack(
-                                  alignment: Alignment.center,
-                                  children: [
-                                    Positioned(
-                                      bottom: 0,
-                                      child: Image.asset(
-                                        "assets/images/ShadowPink.png",
-                                        width: screenWidth / 4,
-                                        // adjust for proportion
-                                        height: 40,
-                                        color: Colors.pink.withValues(
-                                          alpha: 0.7,
-                                        ),
-                                        fit: BoxFit.contain,
-                                      ),
+                                SizedBox(height: 4,key: Key(
+                                    'beauty_product_spacing_1')),
+                                Semantics(
+                                  label:
+                                  'beauty_product_name_${product.productName}_$index',
+                                  child: Text(
+                                    key: Key(
+                                        'beauty_product_name_$index'),
+                                    product.productName ?? "",
+                                    maxLines: 2,
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w600,
+                                      fontFamily: "Nunito",
                                     ),
-                                    // Main image
-                                    Padding(
-                                      padding: const EdgeInsets.all(10),
-                                      child: Image(
-                                        image: provider,
-                                        fit: BoxFit.contain,
-                                      ),
-                                    ),
-                                  ],
+                                    overflow: TextOverflow.visible,
+                                    textAlign: TextAlign.center,
+                                  ),
                                 ),
-                              ),
+                                SizedBox(height: 4,key: Key(
+                                    'beauty_product_spacing_2'),),
+                                Semantics(
+                                  label:
+                                  'beauty_product_price_${product.selprodPrice}_$index',
+                                  child: Text(
+                                    key: Key(
+                                        'beauty_product_price_$index'),
+                                    product.selprodPrice ?? "",
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w700,
+                                      fontFamily: "Nunito",
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ],
                             ),
-                            SizedBox(height: 4),
-                            Text(
-                              product.productName ?? "",
-                              maxLines: 2,
-                              style: TextStyle(
-                                fontSize: 10,
-                                fontWeight: FontWeight.w600,
-                                fontFamily: "Nunito",
-                              ),
-                              overflow: TextOverflow.visible,
-                              textAlign: TextAlign.center,
-                            ),
-                            SizedBox(height: 4),
-                            Text(
-                              product.selprodPrice ?? "",
-                              maxLines: 1,
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w700,
-                                fontFamily: "Nunito",
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
+                          ),
                         ),
+                        onTap: () {
+                          controller.goToProductDetailView(
+                            product.selprodId ?? "",
+                            product.productName ?? "",
+                          );
+                        },
                       ),
-                    ),
-                    onTap: () {
-                      controller.goToProductDetailView(
-                        product.selprodId ?? "",
-                        product.productName ?? "",
-                      );
-                    },
-                  );
-                },
+                    );
+                  },
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

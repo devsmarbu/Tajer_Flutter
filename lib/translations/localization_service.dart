@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import '../app/firebase/one_signal_notification.dart';
 import '../utils/pref_store.dart';
 import '../app/core/constants/app_constants.dart';
 
@@ -56,6 +57,7 @@ class LocalizationService extends GetxService implements Translations {
       // Tell GetX to refresh translations
       Get.updateLocale(appLocale.value);
 
+
       debugPrint("✅ Translations updated for $localeKey");
 
     } catch (e) {
@@ -73,6 +75,8 @@ class LocalizationService extends GetxService implements Translations {
 
     await loadCurrentLocaleFile();
     Get.updateLocale(locale);
+
+    await OneSignalNotification.setLanguage(locale.languageCode);
   }
 }
 

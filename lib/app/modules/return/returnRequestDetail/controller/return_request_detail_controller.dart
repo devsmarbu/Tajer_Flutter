@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:image/image.dart';
 import 'package:tajer/app/core/routes/app_routes.dart';
@@ -49,10 +50,16 @@ class ReturnRequestDetailController extends GetxController with ReturnRequestApi
     screenTitle.value = args['title'] ?? '';
 
     // Call appropriate API
-    if (screenTitle.value == AppStrings.app_return_request) {
+    debugPrint(screenTitle.value);
+    debugPrint('requestId $requestId');
+    if (screenTitle.value == 'APP_RETURN_REQUEST_DETAILS'.tr) {
       getReturnRequestDetail(requestId);
-    } else {
+    }else if (screenTitle.value == 'APP_EXCHANGE_REQUEST_DETAILS'.tr) {
       getExchangeRequestDetail(requestId);
+    }else if (screenTitle.value == 'APP_MISSING_REQUEST_DETAIL'.tr) {
+      getMissingRequestDetail(requestId);
+    } else {
+      getCancelRequestDetail(requestId);
     }
   }
 
@@ -207,6 +214,143 @@ class ReturnRequestDetailController extends GetxController with ReturnRequestApi
     }
   }
 
+  Future<void> getMissingRequestDetail(String requestId) async {
+
+    //  if (currentPage >= lastPage) return;
+    this.requestId=requestId;
+
+    if(await AppFunction.isInternetAvailable()){
+      try {
+        isLoading.value = true;
+
+        final response = await getMissingRequestDetailApi(requestId);
+
+        dynamic body = response.data;
+        if (body is String) body = json.decode(body);
+
+        final requestData = BaseResponse<RequestDetailResponse>.fromJson(
+          body,
+          fromJsonT: (data) => RequestDetailResponse.fromJson(data),
+        );
+
+        if(requestData.responseCode=="200"){
+          if(requestData.status==AppConstants.SUCCESS){
+
+            final requestResponse = requestData.data!;
+            setAddressValue(requestResponse.vendorReturnAddress);
+
+            canWithdrawRequest.value=requestResponse.canWithdrawRequest??"";
+            downloadLink=requestResponse.requestdetail?.attachmentFile??"";
+            requestReference.value=requestResponse.requestdetail?.orrequestReference??"";
+            qty.value= requestResponse.requestdetail?.orrequestQty??"";
+            date.value=AppFunction.getDateFormat(requestResponse.requestdetail?.orrequestDate??"", "dd-MMM-yyyy, HH:mm");
+
+            final detail = requestResponse.requestdetail;
+            productName.value = [
+              detail?.opSelprodTitle,
+              (detail?.opBrandName?.trim().isNotEmpty ?? false)
+                  ? "Brand: ${detail!.opBrandName}"
+                  : null,
+              (detail?.opSelprodSku?.trim().isNotEmpty ?? false)
+                  ? "SKU: ${detail!.opSelprodSku}"
+                  : null,
+              (detail?.opProductModel?.toString().trim().isNotEmpty ?? false)
+                  ? "Model: ${detail!.opProductModel}"
+                  : null,
+            ]
+
+                .where((e) => e != null && e.trim().isNotEmpty)
+                .join('\n');
+
+            reasonTitle.value=requestResponse.requestdetail?.orReasonTitle??"";
+            requestType.value=requestResponse.requestdetail?.orrequestTypeTitle??"";
+            amount.value=requestResponse.requestdetail?.opRefundAmount??"";
+            requestStatusTitle.value=requestResponse.requestdetail?.orRequestStatusTitle??"";
+
+          }else{
+            AppDialog.showMessage(requestData.msg);
+          }
+        }else{
+          AppDialog.showMessage(requestData.msg);
+        }
+
+      } catch (e) {
+        print('❌ Exception in fetchSplashScreenData: $e');
+      } finally {
+        isLoading.value = false;
+      }
+    }
+  }
+
+  Future<void> getCancelRequestDetail(String requestId) async {
+
+    //  if (currentPage >= lastPage) return;
+    this.requestId=requestId;
+
+    if(await AppFunction.isInternetAvailable()){
+      try {
+        isLoading.value = true;
+
+        final response = await getCancelRequestDetailApi(requestId);
+
+        dynamic body = response.data;
+        if (body is String) body = json.decode(body);
+
+        final requestData = BaseResponse<RequestDetailResponse>.fromJson(
+          body,
+          fromJsonT: (data) => RequestDetailResponse.fromJson(data),
+        );
+
+        if(requestData.responseCode=="200"){
+          if(requestData.status==AppConstants.SUCCESS){
+
+            final requestResponse = requestData.data!;
+            setAddressValue(requestResponse.vendorReturnAddress);
+
+            canWithdrawRequest.value=requestResponse.canWithdrawRequest??"";
+            downloadLink=requestResponse.requestdetail?.attachmentFile??"";
+            requestReference.value=requestResponse.requestdetail?.orrequestReference??"";
+            qty.value= requestResponse.requestdetail?.orrequestQty??"";
+            date.value=AppFunction.getDateFormat(requestResponse.requestdetail?.orrequestDate ?? requestResponse.requestdetail?.ocrequestDate??"", "dd-MMM-yyyy, HH:mm");
+
+            final detail = requestResponse.requestdetail;
+            productName.value = [
+              detail?.opSelprodTitle,
+              (detail?.opBrandName?.trim().isNotEmpty ?? false)
+                  ? "Brand: ${detail!.opBrandName}"
+                  : null,
+              (detail?.opSelprodSku?.trim().isNotEmpty ?? false)
+                  ? "SKU: ${detail!.opSelprodSku}"
+                  : null,
+              (detail?.opProductModel?.toString().trim().isNotEmpty ?? false)
+                  ? "Model: ${detail!.opProductModel}"
+                  : null,
+            ]
+
+                .where((e) => e != null && e.trim().isNotEmpty)
+                .join('\n');
+
+            reasonTitle.value=requestResponse.requestdetail?.orReasonTitle??"";
+            requestType.value=requestResponse.requestdetail?.orrequestTypeTitle??"";
+            amount.value=requestResponse.requestdetail?.opRefundAmount??"";
+            requestStatusTitle.value=requestResponse.requestdetail?.orRequestStatusTitle??"";
+
+          }else{
+            AppDialog.showMessage(requestData.msg);
+          }
+        }else{
+          AppDialog.showMessage(requestData.msg);
+        }
+
+      } catch (e) {
+        print('❌ Exception in fetchSplashScreenData: $e');
+      } finally {
+        isLoading.value = false;
+      }
+    }
+  }
+
+
   Future<void> getTempToken() async {
 
     if(await AppFunction.isInternetAvailable()){
@@ -275,9 +419,9 @@ class ReturnRequestDetailController extends GetxController with ReturnRequestApi
       try {
         isLoading.value = true;
 
-        final response = screenTitle==AppStrings.app_return_request?
-        await withdrawReturnReqApi(id):
-        await withdrawOrderExchangeReturnReqApi(id);
+        final response = screenTitle.value == 'APP_RETURN_REQUEST_DETAILS'.tr?
+        await withdrawReturnReqApi(id): screenTitle.value == 'APP_EXCHANGE_REQUEST_DETAILS'.tr?
+        await withdrawOrderExchangeReturnReqApi(id) : await withdrawReturnReqApi(id) ;
 
         dynamic body = response.data;
         if (body is String) body = json.decode(body);
@@ -290,9 +434,9 @@ class ReturnRequestDetailController extends GetxController with ReturnRequestApi
         if(requestData.responseCode=="200"){
           if(requestData.status==AppConstants.SUCCESS){
 
-            screenTitle==AppStrings.app_return_request?
-            await getReturnRequestDetail(requestId):
-            await getExchangeRequestDetail(requestId);
+            screenTitle.value=='APP_RETURN_REQUEST_DETAILS'.tr?
+            await getReturnRequestDetail(requestId) : screenTitle.value == 'APP_EXCHANGE_REQUEST_DETAILS'.tr?
+            await getExchangeRequestDetail(requestId) : await getMissingRequestDetail(requestId);
 
           }else{
             AppDialog.showMessage(requestData.msg);

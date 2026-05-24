@@ -1,4 +1,6 @@
 import 'package:get/get.dart';
+import 'package:tajer/app/modules/authentication/registrationSuccess/employee_success_screen.dart';
+import 'package:tajer/app/modules/authentication/registrationSuccess/registration_success_screen.dart';
 import 'package:tajer/app/modules/categories/brands_list/brands_list_view.dart';
 import 'package:tajer/app/modules/contactUs/contact_us_screen.dart';
 import 'package:tajer/app/modules/home/reel_page_view/reel_page_controller.dart';
@@ -71,7 +73,6 @@ class AppRoutes {
   static const String searchView = '/search-view';
   static const String cartPage = '/cart-page-view';
   static const String myOrders = '/my-orders';
-  static const String orderDetails = '/order-details';
   static const String shippingAddress = '/shipping-address';
   static const String addNewAddress = '/add-new-address';
   static const String changeEmail = '/change-email';
@@ -101,6 +102,8 @@ class AppRoutes {
   static const String ratingScreen = '/ratingScreen';
   static const String reviewScreen = '/reviewScreen';
   static const String paymentMethods = '/paymentMethods';
+  static const String registrationSuccessScreen = '/registrationSuccessScreen';
+  static const String employeeSuccessScreen = '/employeeSuccessScreen';
 
   static final routes = [
     GetPage(name: splash, page: () => SplashView()),
@@ -122,12 +125,8 @@ class AppRoutes {
     GetPage(name: searchView, page: () => SearchView()),
     GetPage(name: cartPage, page: () => MainCartView()),
     GetPage(name: myOrders, page: () => MyOrdersView()),
-    GetPage(
-      name: orderDetails,
-      page: () => OrderDetailsScreen(orderId: '', orderProductId:'',orderNumber: ''),
-    ),
-    GetPage(name: shippingAddress, page: () => AddressListScreen()),
-    GetPage(name: addNewAddress, page: () => AddNewAddressScreen()),
+    GetPage(name: shippingAddress, page: () => AddressListScreen(),binding: AddressBinding()),
+    GetPage(name: addNewAddress, page: () => AddNewAddressScreen(),binding: AddAddressBinding()),
     GetPage(name: changeEmail, page: () => ChangeEmailScreen()),
     GetPage(name: returnRequest, page: () => ReturnRequestsScreen()),
     GetPage(name: returnRequestDetail, page: () => ReturnRequestDetailScreen()),
@@ -169,6 +168,8 @@ class AppRoutes {
     GetPage(name: ratingScreen, page: () => RatingScreen()),
     GetPage(name: reviewScreen, page: () => WriteReviewScreen()),
     GetPage(name: paymentMethods, page: () => PaymentMethodsScreen()),
+    GetPage(name: registrationSuccessScreen, page: () => RegistrationSuccessScreen()),
+    GetPage(name: employeeSuccessScreen, page: () => EmployeeSuccessScreen()),
   ];
 
   static void goToProductListPage({
@@ -196,10 +197,10 @@ class AppRoutes {
     );
   }
 
-  static void goToBrandsListViewPage({String? collectionId}) {
+  static void goToBrandsListViewPage({String? collectionId,String? title}) {
     Get.toNamed(
       brandsListView,
-      parameters: {"collectionId": collectionId ?? ""},
+      parameters: {"collectionId": collectionId ?? "",'title':title??''},
     );
   }
 

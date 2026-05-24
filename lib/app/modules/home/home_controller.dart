@@ -10,6 +10,7 @@ import '../../../utils/pref_store.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/routes/app_routes.dart';
 import '../../data/respository/home_respository.dart';
+import '../../firebase/one_signal_notification.dart';
 import '../Account/controller/account_controller.dart';
 import '../navigation/bottom_navigation.dart';
 import 'change_location_view/country_model.dart';
@@ -27,23 +28,13 @@ class HomeController extends GetxController with AppLoader {
   bool isPageLoading = false;
   final isLoading = false.obs;
   var refreshHome = false.obs;
+  var isFirstTimeBannerImage = "1";
+  RxString firstTimeBannerImageURL = "".obs;
+  RxString bannerRedirectURL = "".obs;
 
   @override
   void onInit() {
     super.onInit();
-
-    // 🔥 Listen to bottom tab changes
-    ever(Get.find<BottomNavController>().currentIndex, (index) {
-      if (index == 0) {
-        if (PrefStore().loadBoolean(AppParams.refreshHome) == true) {
-          showLoader(Get.context!);
-          reloadHomeData();
-          PrefStore().saveBoolean(AppParams.refreshHome, false);
-        }
-      }
-    });
-
-
     loadFirstPage();
   }
 
@@ -52,7 +43,7 @@ class HomeController extends GetxController with AppLoader {
     posts.clear();
     currentPage = 1;
     isLastPage = false;
-    currencySymbol.value = _repository.currencyCode ;
+    currencySymbol.value = _repository.currencyCode;
     await loadNextPage();
     hideLoader(Get.context!);
     isLoading(false);
@@ -65,7 +56,9 @@ class HomeController extends GetxController with AppLoader {
     update(); // refresh loader widget
 
     final newCollections = await _repository.fetchHomePage(currentPage);
-
+    isFirstTimeBannerImage = _repository.isFirstTimeBannerImage;
+    firstTimeBannerImageURL.value = _repository.firstTimeBannerImageURL;
+    bannerRedirectURL.value = _repository.bannerRedirectURL;
     if (newCollections.isEmpty) {
       isLastPage = true;
     } else {
@@ -75,14 +68,12 @@ class HomeController extends GetxController with AppLoader {
 
     isPageLoading = false;
     update(); // refresh loader widget
-
   }
 
-
-  Future<void> setCountry(String countryId,String countryName) async {
+  Future<void> setCountry(String countryId, String countryName) async {
     try {
       isLoading(true);
-      final response = await _repository.setCountry(countryId,countryName);
+      final response = await _repository.setCountry(countryId, countryName);
       countryModel.value = response;
       reloadHomeData();
     } catch (e) {
@@ -96,10 +87,57 @@ class HomeController extends GetxController with AppLoader {
     await loadFirstPage();
   }
 
+  Future<String?> addRemoveToWishlist(
+    String productId,
+    String wishlistId,
+    String isInAnyWishlist,
+    String collectionLayoutType,
+    String productIndex,
+  ) async {
+    try {
+      final response = await _repository.addRemoveToWishList(
+        productId,
+        wishlistId,
+        isInAnyWishlist,
+      );
+      if (response != null) {
+        debugPrint("✅ item add/remove to wishlist");
+        updateFav(isInAnyWishlist, collectionLayoutType, productIndex);
+        return isInAnyWishlist;
+      }
+    } catch (e) {
+      debugPrint("❌ add/remove wishlist error: $e");
+    }
+    return null;
+  }
+
+  void updateFav(
+    String isInAnyWishlist,
+    String collectionLayoutType,
+    String productIndex,
+  ) {
+    // 🔁 toggle value
+    String newValue = isInAnyWishlist == '0' ? '0' : '1';
+
+    // find matching collection by layoutType
+    final int collectionIndex = posts.indexWhere(
+          (collection) => collection.collectionId == collectionLayoutType,
+    );
+
+    int cIndex = collectionIndex;
+    int pIndex = int.parse(productIndex);
+
+    // ✅ update inside posts
+    posts[cIndex].products[pIndex] = posts[cIndex].products[pIndex]
+        .copyWith(is_in_any_wishlist: newValue);
+
+    posts.refresh(); // 🔥 important for UI update
+  }
+
   void goToProductDetailView(String productId, String productName) {
     Get.toNamed(
       AppRoutes.productDetail,
-      arguments: {'productId': productId,'productName': productName},
+      arguments: {'productId': productId, 'productName': productName},
     );
   }
 

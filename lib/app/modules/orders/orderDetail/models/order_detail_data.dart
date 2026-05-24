@@ -14,6 +14,7 @@ class OrderDetailData {
   OrderDetailAccount? orderDetail;
   String? totalFavouriteItems;
   List<ChildOrderDetailItem>? childOrderDetail;
+  List<OtherOrderProduct>? otherOrderProducts;
   String? primaryOrder;
   List<PriceDetail>? orderSummary;
 
@@ -27,6 +28,7 @@ class OrderDetailData {
     this.childOrderDetail,
     this.primaryOrder,
     this.orderSummary,
+    this.otherOrderProducts,
   });
 
   factory OrderDetailData.fromJson(Map<String, dynamic> json) {
@@ -41,12 +43,23 @@ class OrderDetailData {
       totalFavouriteItems: json['totalFavouriteItems'],
       childOrderDetail: json['childOrderDetail'] != null
           ? List<ChildOrderDetailItem>.from(
-          json['childOrderDetail'].map((x) => ChildOrderDetailItem.fromJson(x)))
+              json['childOrderDetail'].map(
+                (x) => ChildOrderDetailItem.fromJson(x),
+              ),
+            )
+          : [],
+      otherOrderProducts: json['otherOrderProducts'] != null
+          ? List<OtherOrderProduct>.from(
+              json['otherOrderProducts'].map(
+                (x) => OtherOrderProduct.fromJson(x),
+              ),
+            )
           : [],
       primaryOrder: json['primaryOrder'],
       orderSummary: json['orderSummary'] != null
           ? List<PriceDetail>.from(
-          json['orderSummary'].map((x) => PriceDetail.fromJson(x)))
+              json['orderSummary'].map((x) => PriceDetail.fromJson(x)),
+            )
           : [],
     );
   }
@@ -58,12 +71,10 @@ class OrderDetailData {
     "cartItemsCount": cartItemsCount,
     "orderDetail": orderDetail?.toJson(),
     "totalFavouriteItems": totalFavouriteItems,
-    "childOrderDetail":
-    childOrderDetail?.map((x) => x.toJson()).toList() ?? [],
+    "childOrderDetail": childOrderDetail?.map((x) => x.toJson()).toList() ?? [],
+    "otherOrderProducts":
+        otherOrderProducts?.map((x) => x.toJson()).toList() ?? [],
     "primaryOrder": primaryOrder,
     "orderSummary": orderSummary?.map((x) => x.toJson()).toList() ?? [],
   };
 }
-
-
-

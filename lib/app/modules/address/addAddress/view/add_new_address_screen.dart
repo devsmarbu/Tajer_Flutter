@@ -9,6 +9,7 @@ import '../../../../../common/widgets/common_text_field.dart';
 import '../../../../../common/widgets/phone_field.dart';
 import '../../../../../../utils/app_colors.dart';
 import '../../../../../../utils/app_strings.dart';
+import '../../addressList/controller/address_controller.dart';
 import '../controller/add_address_controller.dart';
 import '../models/country_item.dart';
 import '../models/state_item.dart';
@@ -18,7 +19,7 @@ class AddNewAddressScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(AddAddressController());
+    final controller = Get.find<AddAddressController>();
 
     return Scaffold(
       appBar: AppBar(
@@ -282,6 +283,7 @@ class AddNewAddressScreen extends StatelessWidget {
                                 style: TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.w600,
+                                  fontFamily: 'Nunito'
                                 ),
                               ),
                             ),
@@ -293,6 +295,12 @@ class AddNewAddressScreen extends StatelessWidget {
                 ),
 
                 const SizedBox(height: 20),
+
+                // Obx(() {
+                //   return controller.addressIsDefault.value == "1"
+                //       ? infoBox()
+                //       : const SizedBox.shrink();
+                // }),
 
                 Obx(() {
                   if (!controller.isOtpShow.value) {
@@ -323,7 +331,7 @@ class AddNewAddressScreen extends StatelessWidget {
                 // --- Address Label ---
                 Text(
                   AppStrings.appAddressLabel.toUpperCase().tr,
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  style: TextStyle(fontWeight: FontWeight.bold,fontFamily: 'Nunito'),
                 ),
                 const SizedBox(height: 10),
                 Obx(
@@ -333,7 +341,7 @@ class AddNewAddressScreen extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.only(right: 10),
                           child: ChoiceChip(
-                            label: Text(label),
+                            label: Text(label,style: TextStyle(fontFamily: 'Nunito')),
                             selected: controller.selectedLabel.value == label,
                             onSelected: (value) {
                               controller.selectedLabel.value = label;
@@ -350,7 +358,7 @@ class AddNewAddressScreen extends StatelessWidget {
                 Obx(
                   () => CheckboxListTile(
                     contentPadding: EdgeInsets.zero,
-                    title: Text(AppStrings.appMarkAsDefaultAddress.toUpperCase().tr),
+                    title: Text(AppStrings.appMarkAsDefaultAddress.toUpperCase().tr,style: TextStyle(fontFamily: 'Nunito',fontWeight: FontWeight.w500,fontSize: 14)),
                     value: controller.isDefault.value,
                     controlAffinity: ListTileControlAffinity.leading,
                     onChanged: (value) {
@@ -376,7 +384,7 @@ class AddNewAddressScreen extends StatelessWidget {
                     ),
                     child: Text(
                       AppStrings.appSaveContinue.toUpperCase().tr,
-                      style: TextStyle(fontSize: 16),
+                      style: TextStyle(fontSize: 16,fontFamily: 'Nunito'),
                     ),
                   ),
                 ),
@@ -386,5 +394,50 @@ class AddNewAddressScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget infoBox() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: const Color(0xFF86B3FF).withOpacity(0.2), // 20%
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: const Color(0xFF86B3FF),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const Icon(
+            Icons.info_outline,
+            size: 16,
+            color: Color(0xFF86B3FF),
+          ),
+          const SizedBox(width: 8),
+
+          Expanded(
+            child: Text(
+              AppStrings.appPleaseNoteChangingThisWill.toUpperCase().tr,
+              style: const TextStyle(
+                fontFamily: 'Nunito',
+                fontWeight: FontWeight.w500,
+                fontSize: 13,
+                height: 1.4,
+                color: Colors.black87,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class AddAddressBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut<AddAddressController>(() => AddAddressController());
   }
 }

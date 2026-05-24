@@ -89,8 +89,12 @@ class _BrandListViewState extends State<BrandsListView> {
         padding: const EdgeInsets.all(12.0),
         child: Obx(() {
           if (controller.isLoading.value) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator(color: Colors.black));
           }
+
+          final width = MediaQuery.of(context).size.width;
+
+          final bool isFolded = width <= 400;
 
           return NotificationListener<ScrollNotification>(
             onNotification: (scrollInfo) {
@@ -108,11 +112,11 @@ class _BrandListViewState extends State<BrandsListView> {
               itemCount: (widget.index == "1" || widget.index == "3")
                   ? controller.brandList.length
                   : controller.shopList.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
                 mainAxisSpacing: 16,
                 crossAxisSpacing: 16,
-                childAspectRatio: 0.7,
+                childAspectRatio: isFolded ? 0.68 :0.7,
               ),
               itemBuilder: (context, index) {
                 if ((widget.index == "1") || (widget.index == "3")) {

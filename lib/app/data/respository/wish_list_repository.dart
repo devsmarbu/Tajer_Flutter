@@ -1,8 +1,12 @@
 
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:get/get.dart';
 import 'package:tajer/app/data/service/wish_list_api_client.dart';
 import 'package:tajer/app/modules/wish_list/wish_list_model.dart';
+
+import '../../../common/widgets/app_dialog.dart';
+import '../../core/constants/app_constants.dart';
 
 class WishListRepository {
   final WishListApiClient _apiClient = WishListApiClient();
@@ -23,9 +27,16 @@ class WishListRepository {
         debugPrint("⚠️ Unexpected status: ${response.statusCode}");
         return null;
       }
-    } on DioException catch (e) {
-      debugPrint("❌ Dio Error in wishlist: ${e.message}");
-      return null;
+    } on DioException catch (e, s) {
+      if (e.type == DioExceptionType.connectionError) {
+        Get.snackbar(AppConstants.appName, "APP_ERROR_INTERNET_CONNECTION".tr);
+        return null;
+      }
+      else {
+        debugPrint("❌ Error in repository: $e");
+        debugPrint("$s");
+        return null;
+      }
     } catch (e, s) {
       debugPrint("❌ Unknown error in wishlist: $e");
       debugPrint("$s");
@@ -49,9 +60,16 @@ class WishListRepository {
         debugPrint("⚠️ Unexpected status: ${response.statusCode}");
         return null;
       }
-    } on DioException catch (e) {
-      debugPrint("❌ Dio Error in wishlist item: ${e.message}");
-      return null;
+    } on DioException catch (e, s) {
+      if (e.type == DioExceptionType.connectionError) {
+        Get.snackbar(AppConstants.appName, "APP_ERROR_INTERNET_CONNECTION".tr);
+        return null;
+      }
+      else {
+        debugPrint("❌ Error in repository: $e");
+        debugPrint("$s");
+        return null;
+      }
     } catch (e, s) {
       debugPrint("❌ Unknown error in wishlist item: $e");
       debugPrint("$s");
@@ -73,9 +91,16 @@ class WishListRepository {
         debugPrint("⚠️ Unexpected status: ${response.statusCode}");
         return null;
       }
-    } on DioException catch (e) {
-      debugPrint("❌ Dio Error in CreateWishListModel: ${e.message}");
-      return null;
+    } on DioException catch (e, s) {
+      if (e.type == DioExceptionType.connectionError) {
+        Get.snackbar(AppConstants.appName, "APP_ERROR_INTERNET_CONNECTION".tr);
+        return null;
+      }
+      else {
+        debugPrint("❌ Error in repository: $e");
+        debugPrint("$s");
+        return null;
+      }
     } catch (e, s) {
       debugPrint("❌ Unknown error in CreateWishListModel: $e");
       debugPrint("$s");
@@ -97,9 +122,16 @@ class WishListRepository {
         debugPrint("⚠️ Unexpected status: ${response.statusCode}");
         return null;
       }
-    } on DioException catch (e) {
-      debugPrint("❌ Dio Error in CreateWishListModel: ${e.message}");
-      return null;
+    } on DioException catch (e, s) {
+      if (e.type == DioExceptionType.connectionError) {
+        Get.snackbar(AppConstants.appName, "APP_ERROR_INTERNET_CONNECTION".tr);
+        return null;
+      }
+      else {
+        debugPrint("❌ Error in repository: $e");
+        debugPrint("$s");
+        return null;
+      }
     } catch (e, s) {
       debugPrint("❌ Unknown error in CreateWishListModel: $e");
       debugPrint("$s");
@@ -122,9 +154,16 @@ class WishListRepository {
         debugPrint("⚠️ Unexpected status: ${response.statusCode}");
         return null;
       }
-    } on DioException catch (e) {
-      debugPrint("❌ Dio Error in CreateWishListModel: ${e.message}");
-      return null;
+    } on DioException catch (e, s) {
+      if (e.type == DioExceptionType.connectionError) {
+        Get.snackbar(AppConstants.appName, "APP_ERROR_INTERNET_CONNECTION".tr);
+        return null;
+      }
+      else {
+        debugPrint("❌ Error in repository: $e");
+        debugPrint("$s");
+        return null;
+      }
     } catch (e, s) {
       debugPrint("❌ Unknown error in CreateWishListModel: $e");
       debugPrint("$s");

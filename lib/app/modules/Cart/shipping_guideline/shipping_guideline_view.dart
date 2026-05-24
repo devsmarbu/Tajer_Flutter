@@ -1,31 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
+import 'package:tajer/app/core/constants/app_constants.dart';
 import 'package:tajer/app/modules/Cart/cart_shipping/cart_listing_model/cart_listing_model.dart';
 import 'package:tajer/utils/app_strings.dart';
+import 'package:flutter/gestures.dart';
+import 'package:tajer/utils/pref_store.dart';
 
-// const String htmlContent = """
-// <h2>Delivery and Shipping:</h2>
-//
-// <h3>Local Delivery &amp; Shipping</h3>
-// <ul>
-//   <li>Delivery within the State of Qatar takes up to 3 days.</li>
-// </ul>
-//
-// <h3>International Delivery &amp; Shipping:</h3>
-// <ul>
-//   <li>Delivery time varies by country and ranges between 7 to 12 days.</li>
-// </ul>
-//
-// <p>
-//   You acknowledge and understand that taxes are not included in the listed price or shipping charges.
-//   Taxes and other charges, such as fees, duties, levies, and customs charges, are determined by your
-//   country’s tax regulations and policies. You undertake to pay all these charges, which are billed
-//   separately. These additional costs must be paid directly to the delivery service provider before
-//   you receive the products or services. If these additional costs are not paid, the products or
-//   services will not be delivered. Furthermore, you will be responsible for any return costs incurred.
-// </p>
-// """;
+import '../../../../utils/app_params.dart';
+import '../../../core/routes/app_routes.dart';
 
 class DeliveryHtmlPage extends StatefulWidget {
   final bool isAgreed;
@@ -44,7 +27,6 @@ class DeliveryHtmlPage extends StatefulWidget {
 }
 
 class _DeliveryHtmlPageState extends State<DeliveryHtmlPage> {
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -76,28 +58,97 @@ class _DeliveryHtmlPageState extends State<DeliveryHtmlPage> {
                 ),
               ),
             ),
-            DeliveryHtmlContent(htmlContent: widget.shippingGuidelines?.epageContent ?? ""),
+            DeliveryHtmlContent(
+              htmlContent: widget.shippingGuidelines?.epageContent ?? "",
+            ),
             // will auto-fit height
-            Row(
-              children: [
-                Padding(
-                  padding: EdgeInsets.fromLTRB(8, 0, 0, 0),
-                  child: Checkbox(
-                    activeColor: Colors.black,
-                    value: widget.isAgreed,
-                    onChanged: (bool? newValue) {
-                      setState(() {
-                        widget.onAgreeBtnTap?.call(newValue ?? false);
-                      });
-                    },
+            // Padding(
+            //   padding: EdgeInsets.fromLTRB(8, 0, 0, 0),
+            //   child: Checkbox(
+            //     activeColor: Colors.black,
+            //     value: widget.isAgreed,
+            //     onChanged: (bool? newValue) {
+            //       setState(() {
+            //         widget.onAgreeBtnTap?.call(newValue ?? false);
+            //       });
+            //     },
+            //   ),
+            // ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(20, 10, 20, 30),
+              child: RichText(
+                text: TextSpan(
+                  style: TextStyle(
+                    fontFamily: "Nunito",
+                    fontSize: 14,
+                    fontWeight: FontWeight.w300,
                   ),
+                  children: [
+                    const TextSpan(
+                      text: "By placing order, you agree to tajershop's ",
+                      style: TextStyle(color: Colors.black),
+                    ),
+                    TextSpan(
+                      text: "APP_TERMS".tr,
+                      style: const TextStyle(
+                        fontFamily: 'Nunito',
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black,
+                        decoration: TextDecoration.underline,
+                      ),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () {
+                          debugPrint('APP_TERMS'.tr);
+                          final termsConditionLink = PrefStore().loadString(
+                            AppConstants.termsConditionLink,
+                          );
+                          navigateToWebView(
+                            AppStrings.appTermCondition.toUpperCase().tr,
+                            termsConditionLink ??
+                                'https://tajershops.com/terms',
+                          );
+                        },
+                    ),
+                    const TextSpan(
+                      text: " and ",
+                      style: TextStyle(color: Colors.black),
+                    ),
+                    TextSpan(
+                      text: "APP_PRIVACY_POLICY".tr,
+                      style: const TextStyle(
+                        fontFamily: 'Nunito',
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black,
+                        decoration: TextDecoration.underline,
+                      ),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () {
+                          debugPrint('APP_PRIVACY_POLICY'.tr);
+                          final privacyPolicyLink = PrefStore().loadString(
+                            AppConstants.privacyLink,
+                          );
+                          navigateToWebView(
+                            AppStrings.appPrivacy.toUpperCase().tr,
+                            privacyPolicyLink ??
+                                'https://tajershops.com/privacy-policies',
+                          );
+                          // Get.to(() => PrivacyPolicyScreen());
+                        },
+                    ),
+                  ],
                 ),
-                Text(AppStrings.appIAgree.toUpperCase().tr),
-              ],
+              ),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  void navigateToWebView(String title, String url) {
+    Get.toNamed(
+      AppRoutes.webViewScreen,
+      arguments: {AppParams.title: title, AppParams.webViewUrl: url},
     );
   }
 }

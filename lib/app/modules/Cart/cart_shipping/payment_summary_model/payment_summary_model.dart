@@ -276,20 +276,24 @@ class ProdTaxOption {
 class NetPayable {
   final String? key;
   final String? value;
+  final String? colorCode;
 
   NetPayable({
     this.key,
     this.value,
+    this.colorCode,
   });
 
   factory NetPayable.fromJson(Map<String, dynamic> json) => NetPayable(
     key: json["key"],
     value: json["value"],
+    colorCode: json["colorCode"],
   );
 
   Map<String, dynamic> toJson() => {
     "key": key,
     "value": value,
+    "colorCode": colorCode,
   };
 }
 

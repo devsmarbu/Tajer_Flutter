@@ -10,6 +10,7 @@ class SplashDataModel {
   final String? confMinOrderValueForFreeShipping;
   final String? confSmsPluginEnabled;
   final String? confSignupWithPhoneEnable;
+  final String? confSigninWithPhoneEnable;
   final String? confEnableWithdrawals;
   final LanguageLabels? languageLabels;
   final AppThemeSetting? appThemeSetting;
@@ -35,6 +36,7 @@ class SplashDataModel {
     this.confMinOrderValueForFreeShipping,
     this.confSmsPluginEnabled,
     this.confSignupWithPhoneEnable,
+    this.confSigninWithPhoneEnable,
     this.confEnableWithdrawals,
     this.languageLabels,
     this.appThemeSetting,
@@ -63,6 +65,7 @@ class SplashDataModel {
       json['CONF_MIN_ORDER_VALUE_FOR_FREE_SHIPPING'],
       confSmsPluginEnabled: json['CONF_SMS_PLUGIN_ENABLED'],
       confSignupWithPhoneEnable: json['CONF_SIGNUP_WITH_PHONE_ENABLE'],
+      confSigninWithPhoneEnable: json['CONF_SIGNIN_WITH_PHONE_ENABLE'],
       confEnableWithdrawals: json['CONF_ENABLE_WITHDRAWALS'],
       languageLabels: json['languageLabels'] != null
           ? LanguageLabels.fromJson(json['languageLabels'])
@@ -97,6 +100,7 @@ class SplashDataModel {
     confMinOrderValueForFreeShipping,
     "CONF_SMS_PLUGIN_ENABLED": confSmsPluginEnabled,
     "CONF_SIGNUP_WITH_PHONE_ENABLE": confSignupWithPhoneEnable,
+    "CONF_SIGNIN_WITH_PHONE_ENABLE": confSigninWithPhoneEnable,
     "CONF_ENABLE_WITHDRAWALS": confEnableWithdrawals,
     "languageLabels": languageLabels?.toJson(),
     "appThemeSetting": appThemeSetting?.toJson(),

@@ -20,6 +20,7 @@ class DualBannerCellView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
+      key: const Key('dual_banner_view'),
       padding: EdgeInsets.symmetric(horizontal: 8),
       child: Row(
         children: [

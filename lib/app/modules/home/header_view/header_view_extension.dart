@@ -125,6 +125,9 @@ class HeaderViewHelper {
       case CollectionLayoutType.spacer:
         // TODO: Handle this case.
         throw UnimplementedError();
+      case CollectionLayoutType.homePageBannerStripe:
+        // TODO: Handle this case.
+        throw UnimplementedError();
     }
     return Text("data");
   }

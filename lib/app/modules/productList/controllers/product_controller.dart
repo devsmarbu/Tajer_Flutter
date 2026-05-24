@@ -2,8 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+import '../../../core/routes/app_routes.dart';
 import '../../../data/respository/product_list_repository.dart';
 import '../../home/home_model.dart';
+import '../../product_detail/shop_detail_view/shop_detail_controller.dart';
 import '../models/filtered_product.dart';
 
 
@@ -134,4 +136,53 @@ class ProductController extends GetxController {
       isLoading(false);
     }
   }
+
+  Future<String?> addRemoveToWishlist(
+      String productId,
+      String wishlistId,
+      String isInAnyWishlist,
+      String productIndex,
+      ) async {
+    try {
+      final response = await _repository.addRemoveToWishList(
+        productId,
+        wishlistId,
+        isInAnyWishlist,
+      );
+      if (response != null) {
+        debugPrint("✅ item add/remove to wishlist");
+        if (Get.currentRoute == AppRoutes.shopDetailView) {
+          final shopController = Get.put(ShopDetailController());
+          shopController.updateFav(
+            isInAnyWishlist,
+            productIndex,
+          );
+        }
+        else  {
+          updateFav(isInAnyWishlist, productIndex);
+        }
+
+        return isInAnyWishlist;
+      }
+    } catch (e) {
+      debugPrint("❌ add/remove wishlist error: $e");
+    }
+    return null;
+  }
+
+  void updateFav(
+      String isInAnyWishlist,
+      String productIndex,
+      ) {
+    // 🔁 toggle value
+    String newValue = isInAnyWishlist == '0' ? '0' : '1';
+    int pIndex = int.parse(productIndex);
+
+    // ✅ update inside posts
+   products[pIndex] = products[pIndex]
+        .copyWith(is_in_any_wishlist: newValue);
+
+    products.refresh(); // 🔥 important for UI update
+  }
+
 }

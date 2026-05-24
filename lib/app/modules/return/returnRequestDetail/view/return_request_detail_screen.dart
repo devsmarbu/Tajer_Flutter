@@ -26,6 +26,7 @@ class ReturnRequestDetailScreen extends StatelessWidget {
             color: Colors.black,
             fontWeight: FontWeight.w600,
             fontSize: 18,
+            fontFamily: 'Nunito'
           ),
         )),
         leading: IconButton(
@@ -37,7 +38,7 @@ class ReturnRequestDetailScreen extends StatelessWidget {
       /// Reactive UI
       body: Obx(() {
         if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator(color: Colors.black));
         }
 
         return SingleChildScrollView(
@@ -50,6 +51,7 @@ class ReturnRequestDetailScreen extends StatelessWidget {
                 style: TextStyle(
                   fontWeight: FontWeight.w700,
                   fontSize: 16,
+                  fontFamily: 'Nunito'
                 ),
               ),
               const SizedBox(height: 10),
@@ -71,6 +73,7 @@ class ReturnRequestDetailScreen extends StatelessWidget {
                         style: const TextStyle(
                           fontWeight: FontWeight.w600,
                           fontSize: 15,
+                          fontFamily: 'Nunito'
                         ),
                       ),
                     if (controller.address.value.isNotEmpty)
@@ -97,7 +100,7 @@ class ReturnRequestDetailScreen extends StatelessWidget {
               const SizedBox(height: 20),
 
               // ✅ Buttons (Reactive)
-              Obx(() {
+               Obx(() {
                 return Column(
                   children: [
                     if (controller.canWithdrawRequest.value == "1")
@@ -117,7 +120,7 @@ class ReturnRequestDetailScreen extends StatelessWidget {
                       ),
                   ],
                 );
-              }),
+               }),
             ],
           ),
         );
@@ -136,10 +139,11 @@ class ReturnRequestDetailScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildRow("Request ID:", controller.requestReference.value),
-          _buildRow("Date:", controller.date.value),
+          if (controller.requestReference.value.isNotEmpty)
+          _buildRow('APP_REQUEST_ID'.tr, controller.requestReference.value),
+          _buildRow('APP_DATE'.tr, controller.date.value),
           if (controller.productName.value.isNotEmpty)
-            _buildRow(AppStrings.appQuantity.toUpperCase().tr, controller.productName.value),
+            _buildRow('APP_LABEL_PRODUCT'.tr, controller.productName.value),
           if (controller.qty.value.isNotEmpty)
             _buildRow(AppStrings.appQuantity.toUpperCase().tr, controller.qty.value),
           if (controller.reasonTitle.value.isNotEmpty)
@@ -150,7 +154,7 @@ class ReturnRequestDetailScreen extends StatelessWidget {
               controller.amount.value.isNotEmpty)
             _buildRow(AppStrings.appLabelAmount, controller.amount.value),
           if (controller.requestStatusTitle.value.isNotEmpty)
-            _buildRow(AppStrings.appLabelStatus, controller.requestStatusTitle.value),
+            _buildRow(AppStrings.appLabelStatus.toUpperCase().tr, controller.requestStatusTitle.value),
         ],
       ),
     );

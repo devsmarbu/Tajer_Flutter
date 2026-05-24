@@ -61,6 +61,7 @@ class AddAddressController extends GetxController with AddressApiClient, AppLoad
   // For backend IDs (if needed)
   String addCountryId = "";
   String addStateId = "";
+  RxString addressIsDefault = "0".obs;
   Map<String, String> verifiedNumbers = {};
 
   // -------------------- Other Fields --------------------
@@ -69,16 +70,20 @@ class AddAddressController extends GetxController with AddressApiClient, AppLoad
 
   // -------------------- Form Key --------------------
   final formKey = GlobalKey<FormState>();
-
+ // init
   @override
   void onInit() {
     super.onInit();
     // Receive verified numbers map from previous screen
     final args = Get.arguments;
+
     if (args != null && args['verifiedNumbers'] != null) {
       verifiedNumbers = Map<String, String>.from(args['verifiedNumbers']);
     }
-     
+    if (args != null && args['addressIsDefault'] != null) {
+      addressIsDefault.value = args["addressIsDefault"].toString();
+    }
+
     if (args != null && args['addressDetail'] != null) {
       final address = args?["addressDetail"] as Address?;
       updateAddress(address!);
@@ -86,6 +91,11 @@ class AddAddressController extends GetxController with AddressApiClient, AppLoad
     else {
       selectedCountryCode.value = getDialCodeFromISO(getDeviceISO());
     }
+
+    // 🔹 Listen whenever country code changes
+    ever(selectedCountryCode, (code) {
+      validatePhone(phoneController.text);
+    });
 
     getCountryList();
   }
@@ -102,6 +112,7 @@ class AddAddressController extends GetxController with AddressApiClient, AppLoad
     buildingNoController.text=address.addrBuildingNo.toString();
     unitNoController.text=address.addrUnitNo.toString();
     phoneController.text=address.addrPhone.toString();
+    validatePhone(phoneController.text);
     // If the backend stores the dial code (e.g. "+91" or "91"), use it.
     if (address.addrPhoneDcode != "") {
       selectedCountryCode.value = (address.addrPhoneDcode ?? "+91").split('-')[0];
@@ -166,7 +177,7 @@ class AddAddressController extends GetxController with AddressApiClient, AppLoad
 
     // Always clear any phone error (we don't want validation errors shown).
     phoneError.value = '';
-
+    int requiredLength = getPhoneLength(selectedCountryCode.value);
     // Build full number for verification check
     String fullPhone = selectedCountryCode.contains('-')
         ? selectedCountryCode.split('-')[0] + trimmed
@@ -181,7 +192,7 @@ class AddAddressController extends GetxController with AddressApiClient, AppLoad
 
     // Show Verify button only when user typed 10 or more characters.
     // Otherwise hide/disable it.
-    if (trimmed.length >= 7) {
+    if (trimmed.length == requiredLength) {
       isPhoneValid.value = true;
     } else {
       isPhoneValid.value = false;
@@ -387,7 +398,6 @@ class AddAddressController extends GetxController with AddressApiClient, AppLoad
         fromJsonT: (data) => CommonData.fromJson(data),
       );
 
-      // ✅ Hide loader before showing dialog
       hideLoader(context);
 
       if (addressData.responseCode == "200" &&
@@ -397,7 +407,7 @@ class AddAddressController extends GetxController with AddressApiClient, AppLoad
           Get.snackbar(
             AppConstants.appName,
             addressData.msg,
-            snackPosition: SnackPosition.BOTTOM,
+            snackPosition: SnackPosition.TOP,
             duration: const Duration(seconds: 2),
           );
         });
@@ -487,6 +497,31 @@ class AddAddressController extends GetxController with AddressApiClient, AppLoad
         hideLoader(Get.context!);
       }
     }
+  }
+
+  int getPhoneLength(String dialCode) {
+    debugPrint("check dial code...."+dialCode);
+    switch (dialCode) {
+      case "+974": // Qatar
+      case "+968": // Oman
+      case "+965": // Kuwait
+      case "+973": // Bahrain
+        return 8;
+
+      case "+966": // Saudi
+      case "+971": // UAE
+        return 9;
+
+      default:
+        return 10; // fallback (India etc.)
+    }
+  }
+
+  void onCountryCodeChanged(String code) {
+    selectedCountryCode.value = code;
+
+    // Re-validate current phone number
+    validatePhone(phoneController.text);
   }
 
   // -------------------- Add State API --------------------

@@ -2,14 +2,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:tajer/app/core/constants/app_constants.dart';
+import 'package:tajer/app/data/events/app_analytics_service.dart';
 import 'package:tajer/app/data/respository/wish_list_repository.dart';
 import 'package:tajer/utils/pref_store.dart';
+import 'package:tiktok_events_sdk/tiktok_events_sdk.dart';
 import '../../core/routes/app_routes.dart';
 import '../../data/respository/product_repository.dart';
 import 'product_detail_model.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:facebook_app_events/facebook_app_events.dart';
-
 
 class ProductDetailController extends GetxController {
   final ProductRepository _repository = ProductRepository();
@@ -26,10 +27,11 @@ class ProductDetailController extends GetxController {
   RxString productTitle = "".obs;
   RxString productDescription = "".obs;
   RxString imageURL = "".obs;
-  RxString inStock = "1".obs;
+  RxString inStock = "".obs;
   int page = 1;
   RxString isInAnyWishlist = "0".obs;
   var listId = "";
+  List<String>? selectedSelProdIdForBoxContent;
 
   @override
   void onInit() {
@@ -61,6 +63,10 @@ class ProductDetailController extends GetxController {
       await _repository.fetchAllProductPages(
         productId,
         onPageLoaded: (newSections) async {
+          if (isClosed) {
+            isLoading(false);
+            return;
+          }
           productSections.addAll(newSections);
 
           // ✅ Hide loader after first page loaded
@@ -71,6 +77,14 @@ class ProductDetailController extends GetxController {
             final productImagesSection = productSections.firstWhereOrNull(
               (d) => d.customType == ProductDetailType.productImages,
             );
+            final productBoxContent = productSections.firstWhereOrNull(
+              (d) => d.customType == ProductDetailType.boxContent,
+            );
+
+            final items = productBoxContent?.content?.boxContent ?? [];
+            prepareSelectedVariants(items);
+            debugPrint("this is for in loop");
+            productSections.refresh();
             inStock.value =
                 productDetailSection?.content?.productDetail?.inStock ?? "0";
             isInAnyWishlist.value =
@@ -92,48 +106,36 @@ class ProductDetailController extends GetxController {
                     ?.productDetail
                     ?.productDescription ??
                 "";
-            imageURL.value =
-                productImagesSection
-                    ?.content
-                    ?.productImagesArr
-                    ?.first
-                    .productImageUrl ??
-                "";
+            debugPrint("imageURL before");
+            final images = productImagesSection?.content?.productImagesArr;
+
+            imageURL.value = (images != null && images.isNotEmpty)
+                ? images.first.productImageUrl ?? ""
+                : "";
+            "";
             debugPrint(
               "------------------------${imageURL.value}--------------------",
             );
+
+            debugPrint(
+              "selected product box content ids $selectedSelProdIdForBoxContent",
+            );
             if (selProductId.isNotEmpty) {
-              final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
-              await analytics.logViewItem(
-                currency: PrefStore().loadString(AppConstants.currencySymbol),
-                value: double.tryParse(productDetailSection
-                    ?.content
-                    ?.productDetail?.selprodPrice ?? '0') ?? 0,
-                items: [
-                  AnalyticsEventItem(
-                    itemId: selProductId,
-                    itemName: productTitle.value,
-                    itemCategory: productDetailSection
-                        ?.content
-                        ?.productDetail?.prodcatName,
-                  ),
-                ],
+              AppAnalyticsService.viewItem(
+                productId: selProductId,
+                name: productTitle.value,
+                currency:
+                    PrefStore().loadString(AppConstants.currencySymbol) ?? '\$',
+                value:
+                    double.tryParse(
+                      productDetailSection
+                              ?.content
+                              ?.productDetail
+                              ?.selprodPrice ??
+                          '0',
+                    ) ??
+                    0,
               );
-              final facebookAppEvents = FacebookAppEvents();
-
-              facebookAppEvents.logEvent(
-                name: 'ViewContent',
-                parameters: {
-                  'content_id': selProductId,
-                  'content_name': productTitle.value,
-                  'content_type': 'product',
-                  'value': double.tryParse(productDetailSection
-                      ?.content
-                      ?.productDetail?.selprodPrice ?? '0') ?? 0,
-                  'currency': PrefStore().loadString(AppConstants.currencySymbol),
-                },
-              );
-
             }
             firstPageLoaded = true;
             isLoading(false);
@@ -150,6 +152,58 @@ class ProductDetailController extends GetxController {
     } finally {
       isLoading(false);
       _isRequesting = false;
+    }
+  }
+
+  void prepareSelectedVariants(List<BoxContent> items) {
+    selectedSelProdIdForBoxContent ??= [];
+
+    for (var entry in items.asMap().entries) {
+      final index = entry.key;
+      final item = entry.value;
+
+      final availableItems = item.availableVariants ?? [];
+      final currentOptions = item.currentOptionValues ?? [];
+
+      String? selectedSelprodId;
+
+      // 🟢 CASE 1: only one variant → auto select
+      if (availableItems.length == 1) {
+        final singleVariant = availableItems.first;
+
+        if (singleVariant.optionValues.isNotEmpty) {
+          // normal variant with option
+          final selectedOption = singleVariant.optionValues.first;
+          item.currentOptionValues = [selectedOption];
+          item.currentOptionValues!.first.inStock = singleVariant.inStock;
+          selectedSelprodId = selectedOption.selprodoptionSelprodId;
+        } else {
+          // ✅ fallback (like Serena bag case)
+          selectedSelprodId = singleVariant.selprodId;
+        }
+      }
+      // 🟡 CASE 2: multiple variants → match selected option
+      else if (currentOptions.isNotEmpty) {
+        for (var innerItem in availableItems) {
+          if (innerItem.optionValues.isEmpty) continue;
+
+          if (currentOptions.first.optionvalueId ==
+              innerItem.optionValues.first.optionvalueId) {
+            currentOptions.first.inStock = innerItem.inStock;
+            selectedSelprodId = currentOptions.first.selprodoptionSelprodId;
+            break;
+          }
+        }
+      }
+
+      // 🧾 SAVE RESULT
+      if (selectedSelprodId != null) {
+        if (index < selectedSelProdIdForBoxContent!.length) {
+          selectedSelProdIdForBoxContent![index] = selectedSelprodId;
+        } else {
+          selectedSelProdIdForBoxContent!.add(selectedSelprodId);
+        }
+      }
     }
   }
 
@@ -210,9 +264,19 @@ class ProductDetailController extends GetxController {
     await loadProductDetail();
   }
 
-  void goToAskAQuestionView(String shopId, String shopName) => Get.toNamed(
+  void goToAskAQuestionView(
+    String shopId,
+    String shopName,
+    String productId,
+    String productName,
+  ) => Get.toNamed(
     AppRoutes.askAQuestionView,
-    arguments: {"shopId": shopId, "shopName": shopName},
+    arguments: {
+      "shopId": shopId,
+      "shopName": shopName,
+      "productId": productId,
+      "productName": productName,
+    },
   );
 
   void goToShopDetailView(String shopId, String shopUserId) => Get.toNamed(
@@ -234,7 +298,7 @@ class ProductDetailController extends GetxController {
 
   @override
   void onClose() {
-    productSections.close();
+    debugPrint("ProductDetailController disposed");
     super.onClose();
   }
 }

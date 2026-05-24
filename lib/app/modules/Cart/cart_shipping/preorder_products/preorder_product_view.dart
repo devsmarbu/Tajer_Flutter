@@ -1,10 +1,13 @@
+import 'package:adaptive_platform_ui/adaptive_platform_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tajer/app/Extensions/convert_extension.dart';
 import 'package:tajer/app/modules/Cart/MainCartView.dart';
 import 'package:tajer/app/modules/Cart/cart_shipping/regular_products/regular_product_controller.dart';
 import 'package:tajer/utils/app_strings.dart';
+import '../../../../../utils/pref_store.dart';
 import '../../../../Extensions/alert.dart';
+import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/app_labels.dart';
 import '../../../../core/routes/app_routes.dart';
 import '../../../address/addressList/view/address_list_screen.dart';
@@ -60,10 +63,13 @@ class _PreOrderCartPageState extends State<PreOrderCartPage> {
         if (controller.isLoading.value) {
           return SizedBox(
             height: Get.height,
-            child: const Center(child: CircularProgressIndicator()),
+            child: const Center(
+              child: CircularProgressIndicator(color: Colors.black),
+            ),
           );
         }
-        if (controller.cartListingModel.value?.status == "0") {
+        if ((controller.cartListingModel.value?.status == "0") ||
+            (controller.cartListingModel.value == null)) {
           if (controller.groupedCombo.isEmpty) {
             return Center(
               child: EmptyCartWidget(
@@ -157,9 +163,17 @@ class _PreOrderCartPageState extends State<PreOrderCartPage> {
                         ?.products
                         ?.saveForLater ??
                     [],
-                onSelected: (selProductId, quantity) {
-                  debugPrint(selProductId);
-                  controller.moveItemToCart(selProductId, "1");
+                onSelected: (cartItem, quantity) async {
+                  await controller.moveItemToCart(cartItem.selprodId ?? '', "1",isRemovingSaveForLater: '1');
+                  controller.addRemoveSaveForLaterItem(
+                      cartItem.fulfillmentType ?? "2",
+                      cartItem.selprodId ?? "",
+                      cartItem.uwlpUwlistId ?? "",
+                      "0",
+                      cartItem.key ?? "",
+                      false,
+                      cartItem
+                  );
                 },
                 removeItem: (cartItem) {
                   showAlertMessage(
@@ -174,7 +188,7 @@ class _PreOrderCartPageState extends State<PreOrderCartPage> {
                         "0",
                         cartItem.key ?? "",
                         false,
-                        cartItem
+                        cartItem,
                       );
                     },
                     onCancel: () {
@@ -187,91 +201,137 @@ class _PreOrderCartPageState extends State<PreOrderCartPage> {
               Obx(
                 () => Column(
                   children: [
-                    // (controller.paymentSummaryModel.value?.data != null)
-                    //     ?
-                    AddressView(
-                      address: controller
-                          .cartListingModel
-                          .value
-                          ?.data
-                          ?.cartSelectedShippingAddress,
-                      isSelected: true,
-                      onEdit: () async {
-                        final result = await Get.to(
-                          () => AddressListScreen(),
-                          arguments: {"comeFromCart": "1"},
-                        );
-                        if (result == "1") {
-                          controller.getCartListing(
-                            (controller.isDeliverAllTogether.value == true
-                                ? "1"
-                                : "0"),
-                            "4",
-                          );
-                        }
-                      },
-                      onLabelTap: () {},
-                    ),
-                    // :
-                    // Padding(
-                    //         padding: EdgeInsets.all(12),
-                    //         child: Container(
-                    //           width: double.infinity,
-                    //           padding: const EdgeInsets.all(15),
-                    //           margin: const EdgeInsets.symmetric(
-                    //             vertical: 8,
-                    //           ),
-                    //           decoration: BoxDecoration(
-                    //             color: Colors.red.withValues(alpha: 0.2),
-                    //             // background color
-                    //             borderRadius: BorderRadius.circular(8),
-                    //           ),
-                    //           child: Text(
-                    //             controller
-                    //                     .paymentSummaryModel
-                    //                     .value
-                    //                     ?.msg ??
-                    //                 "",
-                    //             style: const TextStyle(
-                    //               fontSize: 14,
-                    //               fontWeight: FontWeight.w500,
-                    //               fontFamily: "Nunito",
-                    //               color: Colors.black87,
-                    //             ),
-                    //           ),
-                    //         ),
-                    //       ),
+                    (controller
+                                .cartListingModel
+                                .value
+                                ?.data
+                                ?.cartSelectedShippingAddress
+                                ?.addrRecordId !=
+                            null)
+                        ? AddressView(
+                            address: controller
+                                .cartListingModel
+                                .value
+                                ?.data
+                                ?.cartSelectedShippingAddress,
+                            isSelected: true,
+                            onEdit: () async {
+                              final result = await Get.to(
+                                () => AddressListScreen(),
+                                arguments: {"comeFromCart": "1"},
+                              );
+                              debugPrint(result);
+                              if (result == "1") {
+                                controller.getCartListing(
+                                  (controller.isDeliverAllTogether.value == true
+                                      ? "1"
+                                      : "0"),
+                                  "4",
+                                );
+                              }
+                            },
+                            onLabelTap: () {},
+                          )
+                        : (PrefStore().loadString(AppConstants.sessionToken) !=
+                              "")
+                        ? Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 20,
+                            ),
+                            child: ElevatedButton.icon(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.black,
+                                foregroundColor: Colors.white,
+                                minimumSize: const Size(double.infinity, 50),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                              ),
+                              onPressed: () async {
+                                final result = await Get.to(
+                                  () => AddressListScreen(),
+                                  arguments: {"comeFromCart": "1"},
+                                );
+                                if (result == "1") {
+                                  controller.getCartListing(
+                                    (controller.isDeliverAllTogether.value ==
+                                            true
+                                        ? "1"
+                                        : "0"),
+                                    "4",
+                                  );
+                                }
+                              },
+                              icon: const Icon(Icons.add),
+                              label: Text(
+                                'APP_ADD_ADDRESS'.tr,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          )
+                        : Padding(
+                            padding: const EdgeInsets.fromLTRB(15, 20, 15, 12),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.red.withValues(alpha: 0.15),
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(10),
+                                ),
+                              ),
+                              height: 40,
+                              width: double.infinity,
+                              alignment: Alignment.center,
+                              // 👈 CENTER CONTENT
+                              child: Text(
+                                controller.paymentSummaryModel.value?.msg ?? "",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  fontFamily: "Nunito",
+                                ),
+                              ),
+                            ),
+                          ),
                   ],
                 ),
               ),
+
               SizedBox(height: 10),
               if (controller.paymentSummaryModel.value?.data != null)
                 SizedBox(
                   height: 120,
                   child: CouponInput(
                     couponCode: controller.appliedCouponCode,
+                    errorMessage: controller.couponErrorMessage.value,
+                    onTextChanged: () {
+                      controller.couponErrorMessage.value = "";
+                    },
                     onApplyingCoupon: (coupon) {
                       controller.applyCouponCode(coupon, "2");
                     },
                     onRemovingCoupon: () {
                       controller.removeCoupon("2");
-                    },
+                    }, isLoading: controller.isCouponLoading.value,
                   ),
                 ),
               SizedBox(height: 10),
-              if (controller.paymentSummaryModel.value?.data != null)
-                DeliveryHtmlPage(
-                  onAgreeBtnTap: (agree) {
-                    setState(() {
-                      _isAgreed = agree;
-                    });
-                  },
-                  shippingGuidelines: controller
-                      .cartListingModel
-                      .value
-                      ?.data
-                      ?.shippingGuidelines, isAgreed: controller.isAgreed.value,
-                ),
+              // if (controller.paymentSummaryModel.value?.data != null)
+              //   DeliveryHtmlPage(
+              //     onAgreeBtnTap: (agree) {
+              //       setState(() {
+              //         _isAgreed = agree;
+              //       });
+              //     },
+              //     shippingGuidelines: controller
+              //         .cartListingModel
+              //         .value
+              //         ?.data
+              //         ?.shippingGuidelines,
+              //     isAgreed: controller.isAgreed.value,
+              //   ),
               if (controller.paymentSummaryModel.value?.data != null)
                 SizedBox(
                   child: OrderPriceDetailView(
@@ -323,8 +383,8 @@ class _PreOrderCartPageState extends State<PreOrderCartPage> {
                     _scrollToBottom(cards);
                   },
                   paymentSummaryModel: controller.paymentSummaryModel.value,
-                  walletMethodSelected: () {
-                    controller.getpaymentSummary(
+                  walletMethodSelected: () async {
+                    await controller.getpaymentSummary(
                       redeemPoints: controller.usedRewardPoints,
                       orderId: controller.cartOrderId,
                       payFromWallet: "1",
@@ -335,12 +395,15 @@ class _PreOrderCartPageState extends State<PreOrderCartPage> {
               if (controller.paymentSummaryModel.value?.data != null)
                 NotesView(),
               if (controller.paymentSummaryModel.value?.data != null)
-                PlaceOrderView(
-                  isAgreed: _isAgreed,
-                  paymentSummaryModel: controller.paymentSummaryModel.value,
-                  orderId: controller.cartOrderId,
-                  usedRewardPoint: controller.usedRewardPoints,
+                Obx(
+                  () => PlaceOrderView(
+                    isAgreed: _isAgreed,
+                    paymentSummaryModel: controller.paymentSummaryModel.value,
+                    orderId: controller.cartOrderId,
+                    usedRewardPoint: controller.usedRewardPoints,
+                  ),
                 ),
+              PlatformInfo.isIOS26OrHigher() ? SizedBox(height: 90) : SizedBox.shrink()
             ],
           ),
         );
@@ -405,7 +468,7 @@ class _PreOrderCartPageState extends State<PreOrderCartPage> {
               title: AppLabels.APP_NAME,
               message: "Are you sure want to remove this?",
               onOk: () {
-                controller.deleteCartItem(item.key ?? "", "2",item);
+                controller.deleteCartItem(item.key ?? "", "2", item);
               },
               onCancel: () {},
             );
@@ -419,7 +482,7 @@ class _PreOrderCartPageState extends State<PreOrderCartPage> {
                 "1",
                 item.key ?? "",
                 true,
-                item
+                item,
               );
             } else {
               showAlertMessage(
@@ -491,6 +554,7 @@ class _PreOrderCartPageState extends State<PreOrderCartPage> {
                     bottom: 10,
                   ),
                   child: CartItemCard(
+                    controller: controller,
                     item: item,
                     onComment: () async {
                       final comment = await showCommentDialog(context);
@@ -527,7 +591,7 @@ class _PreOrderCartPageState extends State<PreOrderCartPage> {
                         title: AppLabels.APP_NAME,
                         message: "Are you sure want to remove this?",
                         onOk: () {
-                          controller.deleteCartItem(item.key ?? "", "2",item);
+                          controller.deleteCartItem(item.key ?? "", "2", item);
                         },
                         onCancel: () {
                           debugPrint("dismissed");
@@ -546,7 +610,7 @@ class _PreOrderCartPageState extends State<PreOrderCartPage> {
                           "1",
                           item.key ?? "",
                           true,
-                          item
+                          item,
                         );
                       } else {
                         showAlertMessage(

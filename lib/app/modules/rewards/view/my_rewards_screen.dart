@@ -39,7 +39,7 @@ class MyRewardsScreen extends StatelessWidget {
       ),
       body: Obx(() {
         if (controller.isInitialLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator(color: Colors.black));
         }
 
         if (controller.rewards.isEmpty) {

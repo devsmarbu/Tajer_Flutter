@@ -52,7 +52,7 @@ class MessageListScreen extends StatelessWidget {
             if (index == controller.messages.length) {
               return const Padding(
                 padding: EdgeInsets.all(16.0),
-                child: Center(child: CircularProgressIndicator()),
+                child: Center(child: CircularProgressIndicator(color: Colors.black)),
               );
             }
 
@@ -97,22 +97,29 @@ class MessageListScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 2),
                           Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
                                 "${AppStrings.appSubject.toUpperCase().tr}:-",
-                                style: TextStyle(
-                                    fontFamily: 'Nunito',
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 13),
+                                style: const TextStyle(
+                                  fontFamily: 'Nunito',
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 13,
+                                ),
                               ),
                               const SizedBox(width: 4),
-                              Text(
-                                msg.threadSubject.toString(),
-                                style: const TextStyle(
+                              Expanded(
+                                child: Text(
+                                  msg.threadSubject.toString(),
+                                  style: const TextStyle(
                                     fontSize: 13,
                                     fontFamily: 'Nunito',
                                     fontWeight: FontWeight.w300,
-                                    color: Colors.grey),
+                                    color: Colors.grey,
+                                  ),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               ),
                             ],
                           ),

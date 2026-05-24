@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -225,8 +226,6 @@ class SocialController extends GetxController{
             Get.delete<BottomNavController>(force: true);
 
             // ✅ Recreate BottomNav with index 0
-            final bottomNav = Get.put(BottomNavController());
-            bottomNav.changeTab(0);
 
             // ✅ Reset navigation stack
             Get.offAllNamed(AppRoutes.bottomNavigation);
@@ -269,6 +268,7 @@ class SocialController extends GetxController{
 
     // optional: store entire object as JSON string
 
+     debugPrint("THIS IS SAVED TOKEN: ${pref.loadString(AppConstants.sessionToken)})");
 
     await pref.saveString(
       AppConstants.loginData,

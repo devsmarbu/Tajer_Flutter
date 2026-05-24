@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="facebook_app_id">1198178208421881</string>
-    <string name="facebook_client_token">df75118e795252de5154151a05a18dcf</string>
+<string name="facebook_app_id">1198178208421881</string>
+<string name="facebook_client_token">df75118e795252de5154151a05a18dcf</string>
+<string name="fb_login_protocol_scheme">fb1198178208421881</string>
+<string name="app_name">Tajer</string>
 </resources>

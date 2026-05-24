@@ -14,6 +14,7 @@ class OrderPriceDetailView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      key: Key("order_price_detail_view"),
       // spacing: 40,
       children: [
         HeaderView(
@@ -40,20 +41,52 @@ class OrderPriceDetailView extends StatelessWidget {
                 itemCount: paymentSummaryModel?.data?.priceDetail?.length ?? 0,
                 separatorBuilder: (_, __) => SizedBox(height: 12),
                 itemBuilder: (context, index) {
+                  final item = paymentSummaryModel?.data?.priceDetail?[index];
+
+                  final keyText = item?.key ?? "";
+                  final valueText = item?.value ?? "";
+
+                  // Check if row is Shipping Free
+                  final isShippingFree =
+                  keyText.toLowerCase().contains("shipping free") || keyText.toLowerCase().contains("الشحن مجاني");
+                  //
+                  // final isCouponDiscount =
+                  // keyText.toLowerCase().contains("discount");
+
+                 // final isGreenRow = isShippingFree || isCouponDiscount;
+
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        paymentSummaryModel?.data?.priceDetail?[index].key ??
-                            "",
-                        style: TextStyle(fontFamily: "Nunito"),
+                       keyText,
+                        style: TextStyle(fontFamily: "Nunito",
+                          color: Color(
+                            int.parse(
+                              (paymentSummaryModel?.data?.priceDetail?[index].colorCode ?? "0xFF000000")
+                                  .replaceFirst("#", "0xFF"),
+                            ),
+                          ),
+                          fontWeight: FontWeight.w600),
                       ),
                       Text(
-                        paymentSummaryModel?.data?.priceDetail?[index].value ??
-                            "",
+                        valueText,
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
                           fontFamily: "Nunito",
+                          color: Color(
+                            int.parse(
+                              (paymentSummaryModel?.data?.priceDetail?[index].colorCode ?? "0xFF000000")
+                                  .replaceFirst("#", "0xFF"),
+                            ),
+                          ),
+
+                          decoration: isShippingFree
+                              ? TextDecoration.lineThrough
+                              : TextDecoration.none,
+                          decorationColor:
+                          isShippingFree ? Colors.green : Colors.transparent,
+                            decorationThickness: 2.5
                         ),
                       ),
                     ],

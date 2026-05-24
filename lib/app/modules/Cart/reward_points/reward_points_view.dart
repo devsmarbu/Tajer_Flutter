@@ -28,7 +28,7 @@ class RewardPointsView extends StatefulWidget {
 
 class _RewardPointsViewState extends State<RewardPointsView> {
   final TextEditingController _controller = TextEditingController();
-  bool showApply = false;
+  RxBool showApply = false.obs;
 
   @override
   void initState() {
@@ -41,16 +41,18 @@ class _RewardPointsViewState extends State<RewardPointsView> {
     }
 
     _controller.addListener(() {
+      debugPrint("dfg");
       setState(() {
         final txt = _controller.text.trim();
 
-        showApply = txt.isNotEmpty &&
-            txt != "0" &&
-            widget.usedRewardPoints == "0";
+        showApply.value =
+            txt.isNotEmpty && txt != "0" && widget.usedRewardPoints == "0";
       });
     });
 
-    debugPrint("this is the applied reward points :- ${widget.usedRewardPoints}");
+    debugPrint(
+      "this is the applied reward points :- '${widget.usedRewardPoints}'",
+    );
     debugPrint("is controller text empty :- ${_controller.text.isNotEmpty}");
     debugPrint("controller text :- ${_controller.text}");
   }
@@ -67,9 +69,7 @@ class _RewardPointsViewState extends State<RewardPointsView> {
       setState(() {
         final txt = _controller.text.trim();
 
-        showApply = txt.isNotEmpty &&
-            txt != "0" &&
-            newCode == "0";
+        showApply.value = txt.isNotEmpty && txt != "0" && newCode == "0";
       });
     }
   }
@@ -77,6 +77,7 @@ class _RewardPointsViewState extends State<RewardPointsView> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      key: Key("reward_point_view"),
       children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(15, 10, 15, 6),
@@ -144,7 +145,9 @@ class _RewardPointsViewState extends State<RewardPointsView> {
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: Colors.white,
-                      hintText: AppStrings.appEnterPointsToRedeem.toUpperCase().tr,
+                      hintText: AppStrings.appEnterPointsToRedeem
+                          .toUpperCase()
+                          .tr,
                       hintStyle: const TextStyle(
                         color: Colors.grey,
                         fontFamily: "Nunito",
@@ -154,40 +157,40 @@ class _RewardPointsViewState extends State<RewardPointsView> {
                         Icons.confirmation_num_outlined,
                         color: Colors.grey.shade800,
                       ),
-                      suffixIcon: (widget.usedRewardPoints != "0")
+                      suffixIcon: showApply.value
                           ? Padding(
-                        padding: const EdgeInsets.only(right: 10),
-                        child: TextButton(
-                          onPressed: widget.onRemovingCoupon,
-                          child: Text(
-                            AppStrings.appRemove.toUpperCase().tr,
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              fontFamily: "Nunito",
-                            ),
-                          ),
-                        ),
-                      )
-                          : (_controller.text.isNotEmpty
-                          ? Padding(
-                        padding: const EdgeInsets.only(right: 10),
-                        child: TextButton(
-                          onPressed: () =>
-                              widget.applyRewardPoints(_controller.text),
-                          child: Text(
-                            AppStrings.appApply.toUpperCase().tr,
-                            style: TextStyle(
-                              color: Colors.red,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              fontFamily: "Nunito",
-                            ),
-                          ),
-                        ),
-                      )
-                          : null),
+                              padding: const EdgeInsets.only(right: 10),
+                              child: TextButton(
+                                onPressed: () =>
+                                    widget.applyRewardPoints(_controller.text),
+                                child: Text(
+                                  AppStrings.appApply.toUpperCase().tr,
+                                  style: const TextStyle(
+                                    color: Colors.red,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    fontFamily: "Nunito",
+                                  ),
+                                ),
+                              ),
+                            )
+                          : (widget.usedRewardPoints != "0"
+                                ? Padding(
+                                    padding: const EdgeInsets.only(right: 10),
+                                    child: TextButton(
+                                      onPressed: widget.onRemovingCoupon,
+                                      child: Text(
+                                        AppStrings.appRemove.toUpperCase().tr,
+                                        style: const TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                          fontFamily: "Nunito",
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                : null),
 
                       contentPadding: const EdgeInsets.symmetric(
                         vertical: 16.0,

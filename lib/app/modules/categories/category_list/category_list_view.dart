@@ -67,7 +67,7 @@ class _CategoryListViewState extends State<CategoryListView> {
 
       body: Obx(() {
         if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator(color: Colors.black));
         }
 
         if (category.children == null || category.children!.isEmpty) {
@@ -86,34 +86,34 @@ class _CategoryListViewState extends State<CategoryListView> {
           child: CustomScrollView(
             controller: _scrollController, // 🔥 REQUIRED FOR SCROLL FAB
             slivers: [
-              if (category.icon != null && category.icon!.isNotEmpty)
-                SliverToBoxAdapter(
-                  child: GestureDetector(
-                    onTap: () {
-                      AppRoutes.goToProductListPage(
-                        brandId: "",
-                        productVideoAvailable: "",
-                        titleHeader: "APP_COMING_SOON".tr,
-                        condition: "4",
-                        prodCatId: '',
-                      );
-                    },
-                    child: ClipRRect(
-                      borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(18),
-                      ),
-                      child: Image.asset(
-                        (PrefStore().loadString(AppConstants.languageCode) ==
-                                "AR")
-                            ? "assets/images/coming_soon_banner_arabic.png"
-                            : "assets/images/coming_soon_banner.png",
-                        height: 95,
-                        width: double.infinity,
-                        fit: BoxFit.fill,
-                      ),
-                    ),
-                  ),
-                ),
+              // if (category.icon != null && category.icon!.isNotEmpty)
+              //   SliverToBoxAdapter(
+              //     child: GestureDetector(
+              //       onTap: () {
+              //         AppRoutes.goToProductListPage(
+              //           brandId: "",
+              //           productVideoAvailable: "",
+              //           titleHeader: "APP_COMING_SOON".tr,
+              //           condition: "4",
+              //           prodCatId: '',
+              //         );
+              //       },
+              //       child: ClipRRect(
+              //         borderRadius: const BorderRadius.only(
+              //           bottomLeft: Radius.circular(18),
+              //         ),
+              //         child: Image.asset(
+              //           (PrefStore().loadString(AppConstants.languageCode) ==
+              //                   "AR")
+              //               ? "assets/images/coming_soon_banner_arabic.png"
+              //               : "assets/images/coming_soon_banner.png",
+              //           height: 95,
+              //           width: double.infinity,
+              //           fit: BoxFit.fill,
+              //         ),
+              //       ),
+              //     ),
+              //   ),
 
               const SliverToBoxAdapter(child: SizedBox(height: 10)),
 
@@ -155,19 +155,20 @@ class _CategoryListViewState extends State<CategoryListView> {
                 sliverGroup.add(
                   const SliverToBoxAdapter(child: SizedBox(height: 20)),
                 );
-
                 final childrenCount = subCat.children?.length ?? 0;
+                final width = MediaQuery.of(context).size.width;
+                final bool isFolded = width <= 400;
 
                 sliverGroup.add(
                   SliverPadding(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     sliver: SliverGrid(
                       gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
+                           SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 3,
                             mainAxisSpacing: 12,
                             crossAxisSpacing: 8,
-                            childAspectRatio: 0.7,
+                            childAspectRatio: isFolded ? 0.6:0.7,
                           ),
                       delegate: SliverChildBuilderDelegate((context, index) {
                         if (index == 0) {

@@ -4,10 +4,14 @@ import 'package:tajer/app/Extensions/alert.dart';
 import 'package:tajer/app/Extensions/convert_extension.dart';
 import 'package:tajer/app/core/constants/app_constants.dart';
 import 'package:tajer/app/core/constants/app_labels.dart';
+import 'package:tajer/app/data/events/app_analytics_service.dart';
 import 'package:tajer/app/data/respository/cart_listing_repository.dart';
 import 'package:tajer/app/modules/Cart/cart_shipping/payment_summary_model/payment_summary_model.dart';
 import 'package:tajer/app/modules/Cart/choose_payment/choose_payment_view.dart';
+import 'package:tajer/common/widgets/app_dialog.dart';
+import 'package:tajer/utils/app_loader.dart';
 import 'package:tajer/utils/pref_store.dart';
+import 'package:tiktok_events_sdk/tiktok_events_sdk.dart';
 import '../../../../core/routes/app_routes.dart';
 import '../../../authentication/login/login_screen.dart';
 import '../../payment_web_view/payment_web_view.dart';
@@ -25,7 +29,7 @@ class ComboProductWithSelectedShippingMethod {
   });
 }
 
-class RegularProductController extends GetxController {
+class RegularProductController extends GetxController with AppLoader {
   final CartListingRepository _repository = CartListingRepository();
 
   RxList<ComboProductWithSelectedShippingMethod> groupedCombo =
@@ -33,9 +37,9 @@ class RegularProductController extends GetxController {
   var cartListingModel = Rxn<CartListingModel>();
   var paymentSummaryModel = Rxn<PaymentSummaryModel>();
   List<Token>? cardTokens;
-  var isLoading = true.obs;
+  var isLoading = false.obs;
   var cartOrderId = "";
-  var usedRewardPoints = "";
+  var usedRewardPoints = "0";
   var isDeliverAllTogether = false.obs;
   var appliedCouponCode = "";
   var pluginId = "";
@@ -45,8 +49,22 @@ class RegularProductController extends GetxController {
   String orderType = "1";
   String isUseWalletPayment = "1";
   String userId = "";
-  RxBool isAgreed = false.obs;
+  RxBool isAgreed = true.obs;
+  RxBool isLoggedIn = true.obs;
+  RxInt displayLoginForm = 0.obs;
 
+  RxBool useWallet = false.obs;
+  RxBool useCard = false.obs;
+  RxBool isWalletLoading = false.obs;
+  String? selectedMethod;
+  RxString couponErrorMessage = "".obs;
+  RxBool isCouponLoading = false.obs;
+
+  @override
+  void onInit() {
+    resetVariables();
+    super.onInit();
+  }
 
   void goToOrderSuccess({required String? orderId}) {
     Get.offAllNamed(AppRoutes.orderSuccess, arguments: {"orderId": orderId});
@@ -57,15 +75,18 @@ class RegularProductController extends GetxController {
     String cartType,
   ) async {
     cartTypee = cartType;
-    isLoading(true);
+   // isLoading(true);
+    showLoader(Get.context!);
     try {
       final response = await _repository.getCartListingData(
         cartType: cartType,
         isDeliverAllTogether: isDeliverAllTogether,
       );
+      isLoading(false);
+      hideLoader(Get.context!);
       if (response != null) {
-        isLoading(false);
         print("✅ $response");
+        debugPrint('this is cart lising page ${PrefStore().loadString(AppConstants.sessionId)}');
         cartListingModel.value = response;
         if (response.data?.cartItemsCount != null) {
           cartItemCounts.value = response.data?.cartItemsCount ?? "0";
@@ -92,7 +113,6 @@ class RegularProductController extends GetxController {
             true) {
           getpaymentSummary(payFromWallet: "1");
         }
-        final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
         final products = cartListingModel.value?.data?.products;
         final totalAmount =
         (cartListingModel.value?.data?.products?.available ?? [])
@@ -103,21 +123,11 @@ class RegularProductController extends GetxController {
               ((double.tryParse(item.selprodPrice ?? '0') ?? 0.0) *
                   item.quantity.toIntSafe()),
         );
-        await analytics.logViewCart(
-          currency: PrefStore().loadString(AppConstants.currencySymbol),
-          value: totalAmount,
-          items: (products?.available)?.map((item) {
-            return AnalyticsEventItem(
-              itemId: item.productId,
-              itemName: item.productName,
-              quantity: item.quantity.toIntSafe(),
-              price: double.tryParse(item.selprodPrice ?? '0'),
-            );
-          }).toList(),
-        );
+        AppAnalyticsService.viewCart(currency: PrefStore().loadString(AppConstants.currencySymbol) ?? '\$', totalValue: totalAmount, items: products?.available);
       }
     } catch (e) {
-      isLoading(false);
+      //isLoading(false);
+      hideLoader(Get.context!);
       print("❌ cart listing fetch error: $e");
     }
   }
@@ -144,6 +154,8 @@ class RegularProductController extends GetxController {
         shippingMethods: mutableShippingMethods,
       );
       if (response?.status == "1") {
+        debugPrint('this is payment summary api ${PrefStore().loadString(AppConstants.sessionId)}');
+
         cartListingModel.value?.data?.cartSummary?.cartRewardPoints =
             redeemPoints;
 
@@ -192,9 +204,15 @@ class RegularProductController extends GetxController {
         isUseWalletPayment = payFromWallet ?? "0";
         debugPrint("-------------------$payFromWallet");
       } else {
-        isLoading(false);
+        debugPrint('this is payment summary api ${PrefStore().loadString(AppConstants.sessionId)}');
+       // isLoading(false);
+        hideLoader(Get.context!);
         paymentSummaryModel.value = response;
         if (response?.displayLoginForm == 1) {
+
+          displayLoginForm.value = 1;
+          isLoggedIn.value = false;
+
           Get.bottomSheet(
             LoginScreen(isEmail: true, isBottomSheet: true),
             isScrollControlled: true,
@@ -263,7 +281,7 @@ class RegularProductController extends GetxController {
     }
   }
 
-  Future<void> moveItemToCart(String selProductId, String quantity) async {
+  Future<void> moveItemToCart(String selProductId, String quantity,{String isRemovingSaveForLater = ''}) async {
     isLoading(true);
     try {
       final response = await _repository.moveItemToCart(
@@ -271,10 +289,14 @@ class RegularProductController extends GetxController {
         quantity: quantity,
       );
       if (response?.status == "1") {
-        getCartListing(
+        if (isRemovingSaveForLater == '') {
+          getCartListing(
           isDeliverAllTogether.value == true ? "1" : "0",
           cartTypee,
         );
+        }else {
+          isLoading(false);
+        }
         print("✅ $response");
       } else {
         isLoading(false);
@@ -290,30 +312,36 @@ class RegularProductController extends GetxController {
     }
   }
 
-  Future<void> productQuantityUpdate(String key, String quantity) async {
-    isLoading(true);
+  Future<bool> productQuantityUpdate(String key, String quantity) async {
+    //isLoading(true);
+    showLoader(Get.context!);
     try {
       final response = await _repository.updateCartQuantity(
         key: key,
         quantity: quantity,
       );
       if (response?.status != "0") {
-        getCartListing(
+        await getCartListing(
           isDeliverAllTogether.value == true ? "1" : "0",
           cartTypee,
         );
         print("✅ $response");
+        return true;
       } else {
-        isLoading(false);
+        //isLoading(false);
+        hideLoader(Get.context!);
         showAlertMessage(
           Get.context!,
           title: "Error",
           message: response?.msg ?? "",
         );
+        return false;
       }
     } catch (e) {
-      isLoading(false);
+     // isLoading(false);
+      hideLoader(Get.context!);
       print("❌ cart listing fetch error: $e");
+      return false;
     }
   }
 
@@ -325,19 +353,7 @@ class RegularProductController extends GetxController {
         fulfilmentType: fulfilmentType,
       );
       if (response?.status != "0") {
-
-        /// 🔥 GA4 Remove From Cart Event
-        await FirebaseAnalytics.instance.logRemoveFromCart(
-          items: [
-            AnalyticsEventItem(
-              itemId: key, // product ID
-              itemName: item.productName, // optional but recommended
-              quantity: 1,
-              price: double.tryParse(item.total ?? '0'),
-            ),
-          ],
-        );
-
+        AppAnalyticsService.removeFromCart(productId: key, name: item.productName??'', value: double.tryParse(item.total ?? '0')??0);
         getCartListing(
           isDeliverAllTogether.value == true ? "1" : "0",
           cartTypee,
@@ -358,44 +374,45 @@ class RegularProductController extends GetxController {
   }
 
   Future<void> applyCouponCode(String couponCode, String fulfilmentType) async {
-    isLoading(true);
+    isCouponLoading(true);
     try {
       final response = await _repository.applyCouponCode(
         couponCode: couponCode,
         fulfilmentType: fulfilmentType,
       );
       if (response?.status != "0") {
-        isLoading(false);
+        isCouponLoading(false);
         appliedCouponCode = couponCode;
         getpaymentSummary();
         debugPrint("✅ $response");
       } else {
-        isLoading(false);
-        showAlertMessage(
-          Get.context!,
-          title: "Error",
-          message: response?.msg ?? "",
-        );
+        isCouponLoading(false);
+        // showAlertMessage(
+        //   Get.context!,
+        //   title: "Error",
+        //   message: response?.msg ?? "",
+        // );
+        couponErrorMessage.value = response?.msg ?? '';
       }
     } catch (e) {
-      isLoading(false);
+      isCouponLoading(false);
       debugPrint("❌  fetch error: $e");
     }
   }
 
   Future<void> removeCoupon(String fulfilmentType) async {
-    isLoading(true);
+    // isLoading(true);
     try {
       final response = await _repository.removeCoupon(
         fulfilmentType: fulfilmentType,
       );
       if (response?.status != "0") {
-        isLoading(false);
+        // isLoading(false);
         appliedCouponCode = "";
         getpaymentSummary();
         debugPrint("✅ $response");
       } else {
-        isLoading(false);
+        // isLoading(false);
         showAlertMessage(
           Get.context!,
           title: "Error",
@@ -403,8 +420,40 @@ class RegularProductController extends GetxController {
         );
       }
     } catch (e) {
-      isLoading(false);
+      // isLoading(false);
       debugPrint("❌  fetch error: $e");
+    }
+  }
+
+  Future<void> removeCardItem(String fulfilmentType, String tokenId) async {
+    isLoading(true);
+    try {
+      final response = await _repository.removeCardItem(
+        fulfilmentType: fulfilmentType,
+        tokenId: tokenId,
+      );
+
+      if (response?.status.toString() != "0") {
+        debugPrint("✅ Card deleted successfully");
+
+        /// 🔥 IMPORTANT: Refresh payment summary
+        await getpaymentSummary(
+          redeemPoints: usedRewardPoints,
+          orderId: cartOrderId,
+          payFromWallet: isUseWalletPayment,
+        );
+
+      } else {
+        showAlertMessage(
+          Get.context!,
+          title: "Error",
+          message: response?.msg ?? "",
+        );
+      }
+    } catch (e) {
+      debugPrint("❌ remove card error: $e");
+    } finally {
+      isLoading(false);
     }
   }
 
@@ -427,10 +476,11 @@ class RegularProductController extends GetxController {
         debugPrint("✅ $response");
         final orderNetAmount =
             paymentSummaryModel.value?.data?.orderNetAmount.toIntSafe() ?? 0;
-        if ((isUseWalletPayment == "1") && (walletBalance > orderNetAmount)) {
+        if ((isUseWalletPayment == "1") && (walletBalance >= orderNetAmount)) {
           debugPrint("here is pay from wallet");
           payFromWallet(orderId);
         } else if (selectedPlugin != null) {
+          debugPrint(selectedPlugin?.pluginCode ?? '');
           final result = await Get.to(
             () => PaymentWebProcessPage(
               webUrl: response?.data?.orderPayment ?? "",
@@ -448,6 +498,9 @@ class RegularProductController extends GetxController {
             debugPrint(orderId);
             debugPrint("-------------------");
             if (status == "back") {
+
+              resetVariables();
+
               getCartListing(
                 isDeliverAllTogether.value == true ? "1" : "0",
                 cartTypee,
@@ -456,6 +509,9 @@ class RegularProductController extends GetxController {
               goToOrderSuccess(orderId: orderId);
             }
           }
+        }
+        else{
+          debugPrint("sfbsfbsbfsdfvs......jsbfbsfs");
         }
       } else {
         isLoading(false);
@@ -570,4 +626,20 @@ class RegularProductController extends GetxController {
   getRatesForCombo(String shippingCode, ShippingRatesResponse? ratesMap) {
     return ratesMap?.rates?[shippingCode];
   }
+
+  bool get isWalletSufficient {
+    final wallet = paymentSummaryModel.value?.data?.userWalletBalance.toIntSafe() ?? 0;
+    final total = paymentSummaryModel.value?.data?.orderNetAmount.toIntSafe() ?? 0;
+    return wallet >= total;
+  }
+
+  void resetVariables(){
+    useWallet.value = false;
+    useCard.value = false;
+    isWalletLoading.value = false;
+    couponErrorMessage.value = "";
+    isCouponLoading.value = false;
+  }
+
+
 }

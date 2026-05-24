@@ -1,16 +1,18 @@
 import 'dart:convert';
-
 import 'package:get/get.dart';
+import 'package:tajer/app/modules/Cart/order_success_page/order_success_model.dart';
 import 'package:tajer/app/modules/orders/orderDetail/models/child_order_detail_item.dart';
 import 'package:tajer/app/modules/orders/orderDetail/models/order_detail_data.dart';
 import 'package:tajer/utils/app_loader.dart';
-
 import '../../../../../common/functions/app_function.dart';
 import '../../../../../common/widgets/app_dialog.dart';
+import '../../../../../utils/app_params.dart';
+import '../../../../../utils/app_strings.dart';
 import '../../../../../utils/base_response.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/routes/app_routes.dart';
 import '../../../../data/service/order_api_client.dart';
+import 'package:flutter/material.dart';
 
 class OrderDetailsController extends GetxController with OrderApiClient, AppLoader {
 
@@ -19,6 +21,7 @@ class OrderDetailsController extends GetxController with OrderApiClient, AppLoad
   var orderModel = Rxn<OrderDetailData>();
   var paymentConfirmedTime = "2025-09-28 15:02:14".obs;
   var cancelledTime = "2025-09-28 15:07:36".obs;
+  var selProdId = ''.obs;
 
   // Rating
   var rating = 0.0.obs;
@@ -31,6 +34,7 @@ class OrderDetailsController extends GetxController with OrderApiClient, AppLoad
   Future<void> fetchOrders(String orderId) async {
 
     //  if (currentPage >= lastPage) return;
+    orderModel.value = null;
 
     if(await AppFunction.isInternetAvailable()){
       try {
@@ -134,7 +138,7 @@ class OrderDetailsController extends GetxController with OrderApiClient, AppLoad
       try {
         showLoader(Get.context!);
 
-        final response =await reOrderProductApi(orderId.value);
+        final response =await reOrderProductApi(productId: selProdId.value, quantity: '1');
 
         dynamic body = response.data;
         if (body is String) body = json.decode(body);
@@ -146,7 +150,17 @@ class OrderDetailsController extends GetxController with OrderApiClient, AppLoad
 
         hideLoader(Get.context!);
         if(responseOrder.responseCode=="200"){
-          AppDialog.showMessage(responseOrder.msg);
+          Get.showSnackbar(
+            GetSnackBar(
+              message: responseOrder.msg,
+              backgroundColor: Colors.black87,
+              duration: Duration(seconds: 2),
+              snackPosition: SnackPosition.BOTTOM,
+              margin: EdgeInsets.all(12),
+              borderRadius: 8,
+              isDismissible: true,
+            ),
+          );
         }
         else if(responseOrder.displayLoginForm=="1"){
           Get.toNamed(AppRoutes.login);
@@ -165,4 +179,13 @@ class OrderDetailsController extends GetxController with OrderApiClient, AppLoad
 
   }
 
+  void openMessages(String requestId, String screen, String screenTitle) {
+    Get.toNamed(AppRoutes.chatScreen,arguments: {
+      AppParams.threadId:'',
+      AppParams.orRequestId: requestId,
+      AppParams.getCanWithdrawRequest:'',
+      AppParams.screenTitle:screen,
+      'title':screenTitle,
+    });
+  }
 }

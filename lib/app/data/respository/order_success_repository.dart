@@ -1,7 +1,11 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:get/get.dart';
 import 'package:tajer/app/modules/Cart/order_success_page/order_success_model.dart';
 import 'package:tajer/app/modules/orders/myOrders/models/order_list_response.dart';
 import 'package:tajer/app/modules/wish_list/wish_list_model.dart';
+import '../../../common/widgets/app_dialog.dart';
+import '../../core/constants/app_constants.dart';
 import '../service/order_success_api_client.dart';
 
 class OrderSuccessRepository {
@@ -19,10 +23,16 @@ class OrderSuccessRepository {
         debugPrint("⚠️ Failed to order success data: ${response.statusCode}");
         return null;
       }
-    } catch (e, s) {
-      debugPrint("❌ Error in repository with params $orderId: $e");
-      debugPrint("$s");
-      return null;
+    } on DioException catch (e, s) {
+      if (e.type == DioExceptionType.connectionError) {
+        Get.snackbar(AppConstants.appName, "APP_ERROR_INTERNET_CONNECTION".tr);
+        return null;
+      }
+      else {
+        debugPrint("❌ Error in repository: $e");
+        debugPrint("$s");
+        return null;
+      }
     }
   }
 
@@ -38,10 +48,16 @@ class OrderSuccessRepository {
         debugPrint("⚠️ Failed to load temp token data: ${response.statusCode}");
         return null;
       }
-    } catch (e, s) {
-      debugPrint("❌ Error in repository: $e");
-      debugPrint("$s");
-      return null;
+    } on DioException catch (e, s) {
+      if (e.type == DioExceptionType.connectionError) {
+        Get.snackbar(AppConstants.appName, "APP_ERROR_INTERNET_CONNECTION".tr);
+        return null;
+      }
+      else {
+        debugPrint("❌ Error in repository: $e");
+        debugPrint("$s");
+        return null;
+      }
     }
   }
 }

@@ -7,8 +7,12 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:tajer/utils/app_strings.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../../utils/pref_store.dart';
+import '../../../core/constants/app_constants.dart';
+
 class AppUpdateService {
   static final AppUpdateService instance = AppUpdateService._();
+
   AppUpdateService._();
 
   final Dio _dio = Dio();
@@ -21,10 +25,11 @@ class AppUpdateService {
     final bundleId = info.packageName;
     final currentVersion = info.version;
 
+    debugPrint("is force update: $isForceUpdate");
     if (Platform.isIOS) {
       await _checkIOS(bundleId, currentVersion, isForceUpdate);
     } else {
-      await _checkAndroid(bundleId, currentVersion, isForceUpdate);
+        await _checkAndroid(bundleId, currentVersion, isForceUpdate);
     }
   }
 
@@ -32,7 +37,10 @@ class AppUpdateService {
   // 📱 iOS App Store Lookup
   // -------------------------------
   Future<void> _checkIOS(
-      String bundleId, String currentVersion, bool isForce) async {
+    String bundleId,
+    String currentVersion,
+    bool isForce,
+  ) async {
     final url = "https://itunes.apple.com/lookup?bundleId=$bundleId";
 
     debugPrint("url: $url");
@@ -50,10 +58,20 @@ class AppUpdateService {
     final trackUrl = json["results"][0]["trackViewUrl"];
     debugPrint("current version: $currentVersion");
     debugPrint("store version: $storeVersion");
-
-    if (_isNewer(storeVersion, currentVersion)) {
+    final checkLatestVersion = (_isNewer(storeVersion, currentVersion));
+    debugPrint("check latest version or not $checkLatestVersion");
+    if (checkLatestVersion) {
+      debugPrint("yes newer version available");
+       if (isForce) {
       _showUpdateDialog(
-          "New version ($storeVersion) is available.", trackUrl, isForce);
+        (PrefStore().loadString(AppConstants.languageCode) ==
+            "AR") ?
+        "الإصدار الجديد ($storeVersion) متوفر." :
+        "New version ($storeVersion) is available.",
+        trackUrl,
+        isForce,
+      );
+       }
     }
   }
 
@@ -61,9 +79,11 @@ class AppUpdateService {
   // 🤖 Android Play Store Scrape
   // -------------------------------
   Future<void> _checkAndroid(
-      String package, String currentVersion, bool isForce) async {
-    final url =
-        "https://play.google.com/store/apps/details?id=$package&hl=en";
+    String package,
+    String currentVersion,
+    bool isForce,
+  ) async {
+    final url = "https://play.google.com/store/apps/details?id=$package&hl=en";
 
     final response = await _dio.get(url);
 
@@ -76,12 +96,22 @@ class AppUpdateService {
     if (match == null) return;
 
     final storeVersion = match.group(1)!;
-    final playUrl =
-        "https://play.google.com/store/apps/details?id=$package";
+    final playUrl = "https://play.google.com/store/apps/details?id=$package";
 
-    if (_isNewer(storeVersion, currentVersion)) {
+    final checkLatestVersion = (_isNewer(storeVersion, currentVersion));
+    debugPrint("check latest version or not $checkLatestVersion");
+    if (checkLatestVersion) {
+      debugPrint("yes newer version available");
+       if (isForce) {
       _showUpdateDialog(
-          "New version ($storeVersion) is available.", playUrl, isForce);
+        (PrefStore().loadString(AppConstants.languageCode) ==
+            "AR") ?
+        "الإصدار الجديد ($storeVersion) متوفر." :
+        "New version ($storeVersion) is available.",
+        playUrl,
+        isForce,
+      );
+       }
     }
   }
 
@@ -92,43 +122,63 @@ class AppUpdateService {
     final s = store.split('.').map(int.parse).toList();
     final c = current.split('.').map(int.parse).toList();
 
-    for (int i = 0; i < s.length; i++) {
-      if (s[i] > c[i]) return true;
-      if (s[i] < c[i]) return false;
+    final maxLen = s.length > c.length ? s.length : c.length;
+
+    for (int i = 0; i < maxLen; i++) {
+      final sv = i < s.length ? s[i] : 0;
+      final cv = i < c.length ? c[i] : 0;
+
+      if (sv > cv) return true;
+      if (sv < cv) return false;
     }
     return false;
   }
-
   // -------------------------------
   // 🔔 Update Dialog
   // -------------------------------
   void _showUpdateDialog(String message, String url, bool isForce) {
+    if (forceUpdateRequired.value && Get.isDialogOpen == true) return;
+
     if (isForce) {
-      forceUpdateRequired.value = true; // 🔥 BLOCK EVERYTHING
+      forceUpdateRequired.value = true;
     }
 
-    Get.dialog(
-      AlertDialog(
-        title: const Text("New Version Available"),
-        content: Text(message),
-        actions: [
-          if (!isForce)
-            TextButton(
-              onPressed: () => Get.back(),
-              child: Text("Later",style: TextStyle(color: Colors.black)),
-            ),
-          TextButton(
-            onPressed: () async {
-              final uri = Uri.parse(url);
-              if (await canLaunchUrl(uri)) {
-                launchUrl(uri, mode: LaunchMode.externalApplication);
-              }
-            },
-            child: Text("Update",style: TextStyle(color: Colors.black)),
-          ),
-        ],
-      ),
+    final context = Get.overlayContext;
+    if (context == null) return;
+
+    showGeneralDialog(
+      context: context,
       barrierDismissible: !isForce,
+      barrierLabel: "APP_UPDATE".tr,
+      barrierColor: Colors.black54,
+      transitionDuration: const Duration(milliseconds: 200),
+      pageBuilder: (ctx, anim1, anim2) {
+        return PopScope(
+          canPop: !isForce, // ⛔ disable back
+          child: AlertDialog(
+            title: Text((PrefStore().loadString(AppConstants.languageCode) ==
+                "AR") ? 'الإصدار الجديد متاح' :
+            'New Version Available' ,style: TextStyle(fontFamily: 'Nunito',fontSize: 15,fontWeight: FontWeight.w600)),
+            content: Text(message,style: TextStyle(fontFamily: 'Nunito',fontSize: 12,fontWeight: FontWeight.w500)),
+            actions: [
+               if (!isForce)
+                TextButton(
+                  onPressed: () => Get.back(),
+                  child: Text("APP_LATER".tr,style: TextStyle(fontFamily: 'Nunito',fontSize: 15,fontWeight: FontWeight.w600,color: Colors.black)),
+                ),
+              TextButton(
+                onPressed: () async {
+                  final uri = Uri.parse(url);
+                  if (await canLaunchUrl(uri)) {
+                    launchUrl(uri, mode: LaunchMode.externalApplication);
+                  }
+                },
+                child: Text("APP_UPDATE".tr,style: TextStyle(fontFamily: 'Nunito',fontSize: 15,fontWeight: FontWeight.w600,color: Colors.black)),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

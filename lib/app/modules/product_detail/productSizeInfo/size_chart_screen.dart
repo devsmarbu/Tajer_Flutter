@@ -42,7 +42,7 @@ class _SizeChartScreenState extends State<SizeChartScreen> {
   bool _scrollHintShown = false;
   final ScrollController _horizontalScrollController = ScrollController();
 
-  static const _kFirstColWidth = 120.0;
+ // static const _kFirstColWidth = 120.0;
   static const _kColWidth = 80.0;
 
   double cmToInch(num cm) => cm / 2.54;
@@ -56,6 +56,30 @@ class _SizeChartScreenState extends State<SizeChartScreen> {
       ..loadProductDetail(widget.productId);
 
   }
+
+  double _calculateFirstColumnWidth(
+      List<MergedChartRow> mergedRows,
+      TextStyle style,
+      ) {
+    double maxWidth = 0;
+
+    for (final row in mergedRows) {
+      final text = row.chartValues.first.value ?? "";
+      final tp = TextPainter(
+        text: TextSpan(text: text, style: style),
+        maxLines: 1,
+        textDirection: TextDirection.ltr,
+      )..layout();
+
+      if (tp.width > maxWidth) {
+        maxWidth = tp.width;
+      }
+    }
+
+    // Add space for Radio button + padding
+    return maxWidth + 60;
+  }
+
 
   void _runScrollHintAfterBuild() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -127,8 +151,10 @@ class _SizeChartScreenState extends State<SizeChartScreen> {
       ),
 
       body: Obx(() {
+
+
         if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator(color: Colors.black));
         }
 
         final data = controller.sizeChartModel.value?.data;
@@ -144,6 +170,15 @@ class _SizeChartScreenState extends State<SizeChartScreen> {
         final mergedRows = _mergeChartWithOptions(
           chartRows: tables.first.chartData?.values ?? [],
           options: widget.productOptions,
+        );
+
+
+        final firstColumnWidth = _calculateFirstColumnWidth(
+          mergedRows,
+          const TextStyle(
+            fontFamily: "Nunito",
+            fontWeight: FontWeight.w600,
+          ),
         );
 
         selectedSizeIndex ??= mergedRows.indexWhere(
@@ -206,9 +241,9 @@ class _SizeChartScreenState extends State<SizeChartScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              _tableHeader(chartData),
+                              _tableHeader(chartData,firstColumnWidth),
                               const Divider(),
-                              ..._buildRows(mergedRows),
+                              ..._buildRows(mergedRows,firstColumnWidth),
                             ],
                           ),
                         ),
@@ -326,7 +361,7 @@ class _SizeChartScreenState extends State<SizeChartScreen> {
     );
   }
 
-  Widget _tableHeader(ChartData chartData) {
+  Widget _tableHeader(ChartData chartData,double firstColumnWidth) {
     final titles = chartData.titles;
     if (titles == null || titles.isEmpty) return const SizedBox.shrink();
 
@@ -336,7 +371,7 @@ class _SizeChartScreenState extends State<SizeChartScreen> {
         children: [
           for (int i = 0; i < titles.length; i++)
             SizedBox(
-              width: i == 0 ? _kFirstColWidth : _kColWidth,
+              width: i == 0 ? firstColumnWidth : _kColWidth,
               child: Center(
                 child: Text(
                   (titles[i].title ?? "").toUpperCase(),
@@ -356,14 +391,14 @@ class _SizeChartScreenState extends State<SizeChartScreen> {
     );
   }
 
-  List<Widget> _buildRows(List<MergedChartRow> mergedRows) {
+  List<Widget> _buildRows(List<MergedChartRow> mergedRows,double firstColumnWidth) {
     return [
       for (int rowIndex = 0; rowIndex < mergedRows.length; rowIndex++)
-        _buildRow(mergedRows, rowIndex),
+        _buildRow(mergedRows, rowIndex,firstColumnWidth),
     ];
   }
 
-  Widget _buildRow(List<MergedChartRow> mergedRows, int rowIndex) {
+  Widget _buildRow(List<MergedChartRow> mergedRows, int rowIndex,double firstColumnWidth) {
     final row = mergedRows[rowIndex];
     final isDisabled = row.option?.isAvailable == "0";
 
@@ -392,6 +427,7 @@ class _SizeChartScreenState extends State<SizeChartScreen> {
                 colIndex,
                 rowIndex,
                 isDisabled,
+                firstColumnWidth,
                 onSizeSelected,
               ),
           ],
@@ -404,12 +440,12 @@ class _SizeChartScreenState extends State<SizeChartScreen> {
     ChartValue cell,
     int colIndex,
     int rowIndex,
-    bool isDisabled,
+    bool isDisabled, double firstColumnWidth,
     void Function(int?) onChanged,
   ) {
     if (colIndex == 0) {
       return SizedBox(
-        width: _kFirstColWidth,
+        width: firstColumnWidth,
         child: Row(
           children: [
             Radio<int>(

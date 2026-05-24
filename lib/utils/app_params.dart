@@ -25,6 +25,7 @@ class AppParams{
   static const String orderId = "orderId";
   static const String orderNumber = "orderNumber";
   static const String isExchange = "isExchange";
+  static const String returnType = "returnType";
   static const String productName = "productName";
   static const String imageUrl = "imageUrl";
   static const String amount = "amount";

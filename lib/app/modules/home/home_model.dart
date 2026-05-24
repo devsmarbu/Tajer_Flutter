@@ -4,6 +4,10 @@
 
 import 'dart:convert';
 
+import '../product_detail/product_detail_model.dart';
+import 'package:marquee_widget/marquee_widget.dart';
+import 'package:flutter/material.dart';
+
 HomeModel setupHomeModelFromJson(dynamic jsonInput) {
   if (jsonInput is String) {
     return HomeModel.fromJson(json.decode(jsonInput));
@@ -22,12 +26,7 @@ class HomeModel {
   final HomeData? data;
   final String? responseCode;
 
-  HomeModel({
-    this.status,
-    this.msg,
-    this.data,
-    this.responseCode,
-  });
+  HomeModel({this.status, this.msg, this.data, this.responseCode});
 
   factory HomeModel.fromJson(Map<String, dynamic> json) => HomeModel(
     status: json["status"],
@@ -54,6 +53,11 @@ class HomeData {
   final String? page;
   final List<Collection>? collections;
   final String? currencySymbol;
+  final String? home_promotion_popup_available;
+  final String? home_promotion_popup_image_url;
+  final String? home_promotion_popup_redirect_url;
+  final String? promo_banner_enabled;
+  final String? promo_banner_text;
 
   HomeData({
     this.totalUnreadNotificationCount,
@@ -65,6 +69,11 @@ class HomeData {
     this.page,
     this.collections,
     this.currencySymbol,
+    this.home_promotion_popup_available,
+    this.home_promotion_popup_image_url,
+    this.home_promotion_popup_redirect_url,
+    this.promo_banner_text,
+    this.promo_banner_enabled,
   });
 
   factory HomeData.fromJson(Map<String, dynamic> json) => HomeData(
@@ -75,8 +84,18 @@ class HomeData {
     pageSize: json["pageSize"],
     totalFavouriteItems: json["totalFavouriteItems"],
     page: json["page"],
-    collections: json["collections"] == null ? [] : List<Collection>.from(json["collections"]!.map((x) => Collection.fromJson(x))),
+    collections: json["collections"] == null
+        ? []
+        : List<Collection>.from(
+            json["collections"]!.map((x) => Collection.fromJson(x)),
+          ),
     currencySymbol: json["currencySymbol"],
+    home_promotion_popup_available: json["home_promotion_popup_available"],
+    home_promotion_popup_image_url: json["home_promotion_popup_image_url"],
+    home_promotion_popup_redirect_url:
+        json["home_promotion_popup_redirect_url"],
+    promo_banner_enabled: json["promo_banner_enabled"],
+    promo_banner_text: json["promo_banner_text"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -87,8 +106,15 @@ class HomeData {
     "pageSize": pageSize,
     "totalFavouriteItems": totalFavouriteItems,
     "page": page,
-    "collections": collections == null ? [] : List<dynamic>.from(collections!.map((x) => x.toJson())),
+    "collections": collections == null
+        ? []
+        : List<dynamic>.from(collections!.map((x) => x.toJson())),
     "currencySymbol": currencySymbol,
+    "home_promotion_popup_available": home_promotion_popup_available,
+    "home_promotion_popup_image_url": home_promotion_popup_image_url,
+    "home_promotion_popup_redirect_url": home_promotion_popup_redirect_url,
+    "promo_banner_text": promo_banner_text,
+    "promo_banner_enabled": promo_banner_enabled,
   };
 }
 
@@ -117,6 +143,7 @@ class Collection {
   final String? totProducts;
   final String? collectionUrlTitle;
   final String? collectionUrlType;
+  final String? homePageStripeSVGUrl;
 
   Collection({
     this.collectionDescription,
@@ -142,7 +169,8 @@ class Collection {
     this.totProducts,
     this.collectionUrlTitle,
     this.collectionUrlType,
-    this.brands
+    this.brands,
+    this.homePageStripeSVGUrl,
   });
 
   factory Collection.fromJson(Map<String, dynamic> json) => Collection(
@@ -163,7 +191,9 @@ class Collection {
         : List<Slide>.from(json["slides"]!.map((x) => Slide.fromJson(x))),
     shops: json["shops"] == null
         ? []
-        : List<HomePageShops>.from(json["shops"]!.map((x) => HomePageShops.fromJson(x))),
+        : List<HomePageShops>.from(
+            json["shops"]!.map((x) => HomePageShops.fromJson(x)),
+          ),
     collectionName: json["collection_name"],
     collectionDisplayMediaOnly: json["collection_display_media_only"],
     collectionUpdatedOn: json["collection_updated_on"] == null
@@ -171,19 +201,21 @@ class Collection {
         : DateTime.parse(json["collection_updated_on"]),
     layoutType: CollectionLayoutType.fromValue(json["collection_layout_type"]),
 
-    banners: json["banners"] == null
-        ? null
-        : Banners.fromJson(json["banners"]),
+    banners: json["banners"] == null ? null : Banners.fromJson(json["banners"]),
     brands: json["brands"] == null
         ? null
-        : List<HomeBrand>.from(json["brands"]!.map((x) => HomeBrand.fromJson(x))),
+        : List<HomeBrand>.from(
+            json["brands"]!.map((x) => HomeBrand.fromJson(x)),
+          ),
     products: json["products"] == null
         ? []
         : List<HomeProduct>.from(
-        json["products"]!.map((x) => HomeProduct.fromJson(x))),
+            json["products"]!.map((x) => HomeProduct.fromJson(x)),
+          ),
     totProducts: json["totProducts"],
     collectionUrlTitle: json["collection_url_title"],
     collectionUrlType: json["collection_url_type"],
+    homePageStripeSVGUrl: json["home_page_stripe_svg_url"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -199,8 +231,12 @@ class Collection {
     "collection_full_width": collectionFullWidth,
     "collection_display_order": collectionDisplayOrder,
     "collection_link_caption": collectionLinkCaption,
-    "slides": slides == null ? [] : List<dynamic>.from(slides!.map((x) => x.toJson())),
-    "shops": shops == null ? [] : List<dynamic>.from(shops!.map((x) => x.toJson())),
+    "slides": slides == null
+        ? []
+        : List<dynamic>.from(slides!.map((x) => x.toJson())),
+    "shops": shops == null
+        ? []
+        : List<dynamic>.from(shops!.map((x) => x.toJson())),
     "collection_name": collectionName,
     "collection_display_media_only": collectionDisplayMediaOnly,
     "collection_updated_on": collectionUpdatedOn?.toIso8601String(),
@@ -212,6 +248,7 @@ class Collection {
     "totProducts": totProducts,
     "collection_url_title": collectionUrlTitle,
     "collection_url_type": collectionUrlType,
+    "home_page_stripe_svg_url": homePageStripeSVGUrl,
   };
 }
 
@@ -220,11 +257,7 @@ class HomeBrand {
   final String? brandImage;
   final String? brandId;
 
-  HomeBrand({
-    this.brandName,
-    this.brandImage,
-    this.brandId,
-  });
+  HomeBrand({this.brandName, this.brandImage, this.brandId});
 
   factory HomeBrand.fromJson(Map<String, dynamic> json) => HomeBrand(
     brandName: json["brand_name"],
@@ -238,7 +271,6 @@ class HomeBrand {
     "brand_id": brandId,
   };
 }
-
 
 class Banners {
   final String? bldimensionBlocationId;
@@ -271,7 +303,11 @@ class Banners {
     bldimensionBlocationId: json["bldimension_blocation_id"],
     blocationIdentifier: json["blocation_identifier"],
     bldimensionDeviceType: json["bldimension_device_type"],
-    banners: json["banners"] == null ? [] : List<HomeBanner>.from(json["banners"]!.map((x) => HomeBanner.fromJson(x))),
+    banners: json["banners"] == null
+        ? []
+        : List<HomeBanner>.from(
+            json["banners"]!.map((x) => HomeBanner.fromJson(x)),
+          ),
     blocationPromotionCost: json["blocation_promotion_cost"],
     blocationId: json["blocation_id"],
     blocationActive: json["blocation_active"],
@@ -285,7 +321,9 @@ class Banners {
     "bldimension_blocation_id": bldimensionBlocationId,
     "blocation_identifier": blocationIdentifier,
     "bldimension_device_type": bldimensionDeviceType,
-    "banners": banners == null ? [] : List<dynamic>.from(banners!.map((x) => x.toJson())),
+    "banners": banners == null
+        ? []
+        : List<dynamic>.from(banners!.map((x) => x.toJson())),
     "blocation_promotion_cost": blocationPromotionCost,
     "blocation_id": blocationId,
     "blocation_active": blocationActive,
@@ -348,7 +386,9 @@ class HomeBanner {
     promotionName: json["promotion_name"],
     bannerTarget: json["banner_target"],
     monthlyCost: json["monthly_cost"],
-    bannerUpdatedOn: json["banner_updated_on"] == null ? null : DateTime.parse(json["banner_updated_on"]),
+    bannerUpdatedOn: json["banner_updated_on"] == null
+        ? null
+        : DateTime.parse(json["banner_updated_on"]),
     bannerUrlTitle: json["banner_url_title"],
     bannerBlocationId: json["banner_blocation_id"],
     dailyCost: json["daily_cost"],
@@ -402,7 +442,7 @@ class HomeProduct {
   final String? selprodStock;
   final String? theprice;
   final String? selprodCondition;
-  final List<ProductOption>? productOptions;
+  final List<ProductOptions>? productOptions;
   final String? prodRating;
   final String? shopId;
   final String? selprod_user_id;
@@ -422,6 +462,8 @@ class HomeProduct {
   final String? splpriceDisplayDisVal;
   final String? availableInLocation;
   final String? productVideoUrl;
+  final String? product_video_gif_url;
+  final String? is_in_any_wishlist;
   final List<dynamic>? ribbons;
 
   HomeProduct({
@@ -458,7 +500,9 @@ class HomeProduct {
     this.splpriceDisplayDisVal,
     this.availableInLocation,
     this.productVideoUrl,
+    this.product_video_gif_url,
     this.ribbons,
+    this.is_in_any_wishlist,
   });
 
   factory HomeProduct.fromJson(Map<String, dynamic> json) => HomeProduct(
@@ -466,7 +510,9 @@ class HomeProduct {
     splpriceDisplayDisType: json["splprice_display_dis_type"],
     productId: json["product_id"],
     productImageUrl: json["product_image_url"],
-    productUpdatedOn: json["product_updated_on"] == null ? null : DateTime.parse(json["product_updated_on"]),
+    productUpdatedOn: json["product_updated_on"] == null
+        ? null
+        : DateTime.parse(json["product_updated_on"]),
     selprodMinOrderQty: json["selprod_min_order_qty"],
     brandId: json["brand_id"],
     shopName: json["shop_name"],
@@ -475,7 +521,11 @@ class HomeProduct {
     selprodStock: json["selprod_stock"],
     theprice: json["theprice"],
     selprodCondition: json["selprod_condition"],
-    productOptions: json["product_options"] == null ? [] : List<ProductOption>.from(json["product_options"]!.map((x) => ProductOption.fromJson(x))),
+    productOptions: json["product_options"] == null
+        ? []
+        : List<ProductOptions>.from(
+            json["product_options"]!.map((x) => ProductOptions.fromJson(x)),
+          ),
     prodRating: json["prod_rating"],
     shopId: json["shop_id"],
     selprod_user_id: json["selprod_user_id"],
@@ -495,7 +545,11 @@ class HomeProduct {
     splpriceDisplayDisVal: json["splprice_display_dis_val"],
     availableInLocation: json["availableInLocation"],
     productVideoUrl: json["product_video_url"],
-    ribbons: json["ribbons"] == null ? [] : List<dynamic>.from(json["ribbons"]!.map((x) => x)),
+    product_video_gif_url: json["product_video_gif_url"],
+    is_in_any_wishlist: json["is_in_any_wishlist"],
+    ribbons: json["ribbons"] == null
+        ? []
+        : List<dynamic>.from(json["ribbons"]!.map((x) => x)),
   );
 
   Map<String, dynamic> toJson() => {
@@ -512,7 +566,9 @@ class HomeProduct {
     "selprod_stock": selprodStock,
     "theprice": theprice,
     "selprod_condition": selprodCondition,
-    "product_options": productOptions == null ? [] : List<dynamic>.from(productOptions!.map((x) => x.toJson())),
+    "product_options": productOptions == null
+        ? []
+        : List<dynamic>.from(productOptions!.map((x) => x.toJson())),
     "prod_rating": prodRating,
     "shop_id": shopId,
     "selprod_user_id": selprod_user_id,
@@ -532,7 +588,11 @@ class HomeProduct {
     "splprice_display_dis_val": splpriceDisplayDisVal,
     "availableInLocation": availableInLocation,
     "product_video_url": productVideoUrl,
-    "ribbons": ribbons == null ? [] : List<dynamic>.from(ribbons!.map((x) => x)),
+    "product_video_gif_url": product_video_gif_url,
+    "is_in_any_wishlist": is_in_any_wishlist,
+    "ribbons": ribbons == null
+        ? []
+        : List<dynamic>.from(ribbons!.map((x) => x)),
   };
 }
 
@@ -553,32 +613,30 @@ class ProductOption {
     optionIsColor: json["option_is_color"],
     optionId: json["option_id"],
     // ✅ Safely map option name
-    optionName: optionNameValues.map[json["option_name"]] ??
+    optionName:
+        optionNameValues.map[json["option_name"]] ??
         OptionName.UNKNOWN, // default fallback
     // ✅ Guard null values list
     values: json["values"] == null
         ? []
         : List<Value>.from(
-      (json["values"] as List)
-          .whereType<Map<String, dynamic>>()
-          .map((x) => Value.fromJson(x)),
-    ),
+            (json["values"] as List).whereType<Map<String, dynamic>>().map(
+              (x) => Value.fromJson(x),
+            ),
+          ),
   );
 
   Map<String, dynamic> toJson() => {
     "option_is_color": optionIsColor,
     "option_id": optionId,
     "option_name": optionNameValues.reverse[optionName],
-    "values": values == null ? [] : List<dynamic>.from(values!.map((x) => x.toJson())),
+    "values": values == null
+        ? []
+        : List<dynamic>.from(values!.map((x) => x.toJson())),
   };
 }
 
-enum OptionName {
-  SELECT_SIZE,
-  COLOR,
-  MATERIAL,
-  UNKNOWN,
-}
+enum OptionName { SELECT_SIZE, COLOR, MATERIAL, UNKNOWN }
 
 final optionNameValues = EnumValues({
   "Select Size": OptionName.SELECT_SIZE,
@@ -683,28 +741,35 @@ class MakeupViewModel {
     this.collectionUpdatedOn,
   });
 
-  factory MakeupViewModel.fromJson(Map<String, dynamic> json) => MakeupViewModel(
-    collectionLayoutType: json["collection_layout_type"],
-    collectionDisplayOrder: json["collection_display_order"],
-    collectionLinkCaption: json["collection_link_caption"],
-    collectionPrimaryRecords: json["collection_primary_records"],
-    collectionId: json["collection_id"],
-    collectionUrlTitle: json["collection_url_title"],
-    collectionForWeb: json["collection_for_web"],
-    collectionDescription: json["collection_description"],
-    collectionDisplayMediaOnly: json["collection_display_media_only"],
-    collectionLinkUrl: json["collection_link_url"],
-    collectionForApp: json["collection_for_app"],
-    collectionType: json["collection_type"],
-    totProducts: json["totProducts"],
-    collectionUrlType: json["collection_url_type"],
-    collectionCriteria: json["collection_criteria"],
-    collectionFullWidth: json["collection_full_width"],
-    products: json["products"] == null ? [] : List<Product>.from(json["products"]!.map((x) => Product.fromJson(x))),
-    collectionChildRecords: json["collection_child_records"],
-    collectionName: json["collection_name"],
-    collectionUpdatedOn: json["collection_updated_on"] == null ? null : DateTime.parse(json["collection_updated_on"]),
-  );
+  factory MakeupViewModel.fromJson(Map<String, dynamic> json) =>
+      MakeupViewModel(
+        collectionLayoutType: json["collection_layout_type"],
+        collectionDisplayOrder: json["collection_display_order"],
+        collectionLinkCaption: json["collection_link_caption"],
+        collectionPrimaryRecords: json["collection_primary_records"],
+        collectionId: json["collection_id"],
+        collectionUrlTitle: json["collection_url_title"],
+        collectionForWeb: json["collection_for_web"],
+        collectionDescription: json["collection_description"],
+        collectionDisplayMediaOnly: json["collection_display_media_only"],
+        collectionLinkUrl: json["collection_link_url"],
+        collectionForApp: json["collection_for_app"],
+        collectionType: json["collection_type"],
+        totProducts: json["totProducts"],
+        collectionUrlType: json["collection_url_type"],
+        collectionCriteria: json["collection_criteria"],
+        collectionFullWidth: json["collection_full_width"],
+        products: json["products"] == null
+            ? []
+            : List<Product>.from(
+                json["products"]!.map((x) => Product.fromJson(x)),
+              ),
+        collectionChildRecords: json["collection_child_records"],
+        collectionName: json["collection_name"],
+        collectionUpdatedOn: json["collection_updated_on"] == null
+            ? null
+            : DateTime.parse(json["collection_updated_on"]),
+      );
 
   Map<String, dynamic> toJson() => {
     "collection_layout_type": collectionLayoutType,
@@ -723,7 +788,9 @@ class MakeupViewModel {
     "collection_url_type": collectionUrlType,
     "collection_criteria": collectionCriteria,
     "collection_full_width": collectionFullWidth,
-    "products": products == null ? [] : List<dynamic>.from(products!.map((x) => x.toJson())),
+    "products": products == null
+        ? []
+        : List<dynamic>.from(products!.map((x) => x.toJson())),
     "collection_child_records": collectionChildRecords,
     "collection_name": collectionName,
     "collection_updated_on": collectionUpdatedOn?.toIso8601String(),
@@ -798,8 +865,12 @@ class Product {
     selprodCondition: json["selprod_condition"],
     brandName: json["brand_name"],
     splpriceDisplayDisVal: json["splprice_display_dis_val"],
-    productOptions: json["product_options"] == null ? [] : List<dynamic>.from(json["product_options"]!.map((x) => x)),
-    productUpdatedOn: json["product_updated_on"] == null ? null : DateTime.parse(json["product_updated_on"]),
+    productOptions: json["product_options"] == null
+        ? []
+        : List<dynamic>.from(json["product_options"]!.map((x) => x)),
+    productUpdatedOn: json["product_updated_on"] == null
+        ? null
+        : DateTime.parse(json["product_updated_on"]),
     selprodSoldCount: json["selprod_sold_count"],
     selprodPrice: json["selprod_price"],
     productId: json["product_id"],
@@ -813,7 +884,9 @@ class Product {
     shopId: json["shop_id"],
     prodcatName: json["prodcat_name"],
     selprodStock: json["selprod_stock"],
-    ribbons: json["ribbons"] == null ? [] : List<dynamic>.from(json["ribbons"]!.map((x) => x)),
+    ribbons: json["ribbons"] == null
+        ? []
+        : List<dynamic>.from(json["ribbons"]!.map((x) => x)),
     splpriceDisplayDisType: json["splprice_display_dis_type"],
     selprodMinOrderQty: json["selprod_min_order_qty"],
     theprice: json["theprice"],
@@ -830,7 +903,9 @@ class Product {
     "selprod_condition": selprodCondition,
     "brand_name": brandName,
     "splprice_display_dis_val": splpriceDisplayDisVal,
-    "product_options": productOptions == null ? [] : List<dynamic>.from(productOptions!.map((x) => x)),
+    "product_options": productOptions == null
+        ? []
+        : List<dynamic>.from(productOptions!.map((x) => x)),
     "product_updated_on": productUpdatedOn?.toIso8601String(),
     "selprod_sold_count": selprodSoldCount,
     "selprod_price": selprodPrice,
@@ -845,7 +920,9 @@ class Product {
     "shop_id": shopId,
     "prodcat_name": prodcatName,
     "selprod_stock": selprodStock,
-    "ribbons": ribbons == null ? [] : List<dynamic>.from(ribbons!.map((x) => x)),
+    "ribbons": ribbons == null
+        ? []
+        : List<dynamic>.from(ribbons!.map((x) => x)),
     "splprice_display_dis_type": splpriceDisplayDisType,
     "selprod_min_order_qty": selprodMinOrderQty,
     "theprice": theprice,
@@ -857,7 +934,6 @@ class Product {
     "selprod_id": selprodId,
   };
 }
-
 
 class Slide {
   final String? totalCost;
@@ -992,20 +1068,21 @@ enum CollectionLayoutType {
   dualSquareBanner('39'),
   reelCollectionLayout('40'),
   spacer('50'),
+  homePageBannerStripe('42'),
   unknown('0'); // fallback for unrecognized values
 
   final String value;
+
   const CollectionLayoutType(this.value);
 
   /// Factory to create enum from API string value
   static CollectionLayoutType fromValue(String? value) {
     return CollectionLayoutType.values.firstWhere(
-          (e) => e.value == value,
+      (e) => e.value == value,
       orElse: () => CollectionLayoutType.unknown,
     );
   }
 }
-
 
 class HomePageShops {
   final String? ctrDisplayOrder;
@@ -1056,5 +1133,155 @@ class HomePageShops {
       'shop_logo': shopLogo,
       'shop_banner': shopBanner,
     };
+  }
+}
+
+extension HomeProductCopy on HomeProduct {
+  HomeProduct copyWith({String? is_in_any_wishlist}) {
+    return HomeProduct(
+      prodcatName: prodcatName,
+      splpriceDisplayDisType: splpriceDisplayDisType,
+      productId: productId,
+      productImageUrl: productImageUrl,
+      productUpdatedOn: productUpdatedOn,
+      selprodMinOrderQty: selprodMinOrderQty,
+      brandId: brandId,
+      shopName: shopName,
+      selprodSoldCount: selprodSoldCount,
+      productDetailUrl: productDetailUrl,
+      selprodStock: selprodStock,
+      theprice: theprice,
+      selprodCondition: selprodCondition,
+      productOptions: productOptions,
+      prodRating: prodRating,
+      shopId: shopId,
+      selprod_user_id: selprod_user_id,
+      selprodId: selprodId,
+      splpriceDisplayListPrice: splpriceDisplayListPrice,
+      brandName: brandName,
+      productName: productName,
+      prodcatId: prodcatId,
+      discount: discount,
+      afilePhysicalPath: afilePhysicalPath,
+      isComingsoon: isComingsoon,
+      shopLogoUrl: shopLogoUrl,
+      inStock: inStock,
+      selprodPrice: selprodPrice,
+      selprodTitle: selprodTitle,
+      specialPriceFound: specialPriceFound,
+      splpriceDisplayDisVal: splpriceDisplayDisVal,
+      availableInLocation: availableInLocation,
+      productVideoUrl: productVideoUrl,
+      product_video_gif_url: product_video_gif_url,
+      ribbons: ribbons,
+      is_in_any_wishlist: is_in_any_wishlist ?? this.is_in_any_wishlist,
+    );
+  }
+}
+
+// extension MarqueeWidgetExtension on Widget {
+//   Widget marqueeWidget({
+//     double height = 30,
+//
+//     Color backgroundColor = Colors.transparent,
+//
+//     EdgeInsets padding = const EdgeInsets.symmetric(horizontal: 12),
+//   }) {
+//     return Container(
+//       width: double.infinity,
+//
+//       height: height,
+//
+//       color: backgroundColor,
+//
+//       alignment: Alignment.centerLeft,
+//
+//       padding: padding,
+//
+//       child: Marquee(
+//         animationDuration: const Duration(seconds: 20),
+//         child: this,
+//       ),
+//     );
+//   }
+// }
+
+class InfiniteScrollBanner extends StatefulWidget {
+  final Widget child;
+  final double height;
+  final Duration duration;
+
+  const InfiniteScrollBanner({
+    super.key,
+    required this.child,
+    this.height = 40,
+    this.duration = const Duration(seconds: 8),
+  });
+
+  @override
+  State<InfiniteScrollBanner> createState() =>
+      _InfiniteScrollBannerState();
+}
+
+class _InfiniteScrollBannerState
+    extends State<InfiniteScrollBanner>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  // total scrolling distance
+  final double scrollDistance = 2000;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = AnimationController(
+      vsync: this,
+      duration: widget.duration,
+    )..repeat();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isRTL =
+        Directionality.of(context) == TextDirection.rtl;
+    return SizedBox(
+      height: widget.height,
+      width: double.infinity,
+      child: ClipRect(
+        child: AnimatedBuilder(
+          animation: _controller,
+          builder: (context, child) {
+            return OverflowBox(
+              alignment: Alignment.centerRight,
+              minWidth: 0,
+              maxWidth: double.infinity,
+              child: Transform.translate(
+                offset: Offset(
+                  (scrollDistance * _controller.value),
+                  0,
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: List.generate(
+                    20,
+                        (index) => Padding(
+                      padding:
+                      const EdgeInsets.only(right: 0),
+                      child: widget.child,
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 }

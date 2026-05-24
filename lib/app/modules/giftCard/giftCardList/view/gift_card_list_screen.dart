@@ -57,7 +57,7 @@ class GiftCardListScreen extends StatelessWidget {
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator(color: Colors.black));
         }
 
         if (controller.giftCards.isEmpty) {
@@ -85,7 +85,7 @@ class GiftCardListScreen extends StatelessWidget {
               if (index == controller.giftCards.length) {
                 return const Padding(
                   padding: EdgeInsets.all(16.0),
-                  child: Center(child: CircularProgressIndicator()),
+                  child: Center(child: CircularProgressIndicator(color: Colors.black)),
                 );
               }
 

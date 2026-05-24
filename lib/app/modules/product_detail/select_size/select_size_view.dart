@@ -1,16 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide Value;
 import 'package:get/get_core/src/get_main.dart';
+import 'package:tajer/app/Extensions/convert_extension.dart';
 import 'package:tajer/app/modules/product_detail/select_size/select_size_controller.dart';
+import 'package:tajer/utils/app_colors.dart';
 import 'package:tajer/utils/app_strings.dart';
+import '../../../../utils/pref_store.dart';
+import '../../../core/constants/app_constants.dart';
 import '../../home/home_model.dart';
+import '../productSizeInfo/size_chart_screen.dart';
+import '../product_detail_model.dart';
+import '../product_detail_view.dart';
 
 class SelectSizeView extends StatefulWidget {
-  final List<Value>? productOptions;
+  final List<ProductOptions>? productOptions;
   final String price;
   final String productName;
   final String productId;
   final String currencyCode;
+  final String isSizeChartAvailable;
 
   const SelectSizeView({
     super.key,
@@ -19,6 +27,7 @@ class SelectSizeView extends StatefulWidget {
     required this.productId,
     required this.currencyCode,
     required this.productName,
+    required this.isSizeChartAvailable,
   });
 
   @override
@@ -40,156 +49,318 @@ class _SelectSizeSheetState extends State<SelectSizeView> {
       tag: widget.productId,
     );
     selectedSizePrice = widget.price.replaceAll(RegExp(r'[A-Za-z]'), '');
-
-    setState(() {
-      selectedSize = widget.productOptions?.first.optionvalueName ?? "";
-      selectedSizePrice = widget.productOptions?.first.theprice ?? "";
-      selectedSizeProductId = widget.productOptions?.first.selprodId ?? "";
-    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(20),
+    return
+      Obx(() =>
+      Container(
+        key: Key("select_size_view"),
+      padding: const EdgeInsets.symmetric(vertical: 10),
       decoration: const BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       child: Column(
+        key: Key("select_size_column"),
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            AppStrings.appSelectSize.toUpperCase().tr,
-            style: TextStyle(
-              fontSize: 16,
-              fontFamily: "Nunito",
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 30),
+           ListView.builder(
+             key: Key("select_size_list"),
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              scrollDirection: Axis.vertical,
+              itemCount: controller.productOptions.length,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemBuilder: (context, outerIndex) {
+                final productOption = controller.productOptions[outerIndex];
+                return Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 4),
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            productOption.optionName ?? '',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontFamily: "Nunito",
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          if ((controller.isSizeChartAvailable) == "1" &&
+                              productOption.optionIsColor == "0")
+                            GestureDetector(
+                              onTap: () {
+                                showDialog(
+                                  context: context,
+                                  barrierColor: Colors.black87,
+                                  // dark background
+                                  builder: (_) => SizeChartScreen(
+                                    productId: controller.productId,
+                                    productOptions: productOption.values ?? [],
+                                    productName: widget.productName,
+                                    productPrice: widget.price,
+                                  ),
+                                  //     SizeChartOverlay(
+                                  //   imageUrl: datum?.sizeChartImage ?? "",
+                                  // ),
+                                );
+                              },
+                              child: Text(
+                                (PrefStore().loadString(
+                                          AppConstants.languageCode,
+                                        ) ==
+                                        "AR")
+                                    ? "مخطط الحجم"
+                                    : "Size Chart",
+                                style: const TextStyle(
+                                  color: Colors.blue,
+                                  fontSize: 14,
+                                  fontFamily: "Nunito",
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      SizedBox(
+                        height: 40, // height of inner horizontal list
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: productOption.values?.length ?? 0,
+                          itemBuilder: (context, index) {
+                            final value = productOption.values?[index];
+                            if (productOption.optionIsColor == "0") {
+                              int stockValue = ((value?.stock ?? "0")
+                                  .toIntSafe());
 
-          /// Size buttons
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: (widget.productOptions ?? []).map((size) {
-                final isSelected = selectedSize == size.optionvalueName;
-                return Padding(
-                  padding: const EdgeInsets.only(right: 12),
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        selectedSize = size.optionvalueName ?? "";
-                        selectedSizePrice = size.theprice ?? "";
-                        selectedSizeProductId = size.selprodId ?? "";
-                      });
-                      controller.productId = size.selprodId ?? "";
-                      controller.fetchProductDetail();
-                    },
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 150),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 24,
-                        vertical: 18,
+                              return GestureDetector(
+                                onTap: () async {
+                                  if (stockValue > 0 &&
+                                      (value?.isSelected ?? "0") == "0") {
+                                    debugPrint(
+                                      "🟢 Selected option: ${value?.optionvalueName}",
+                                    );
+                                    controller.productId = value?.selprodId ?? "";
+                                    await controller.fetchProductDetail();
+                                  }
+                                },
+                                child: ClipRRect(
+                                  // 🔒 ADD THIS
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Stack(
+                                    children: [
+                                      Opacity(
+                                        opacity: stockValue > 0 ? 1 : 0.4,
+                                        child: Container(
+                                          margin: const EdgeInsets.only(
+                                            right: 8,
+                                          ),
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 10,
+                                            vertical: 8,
+                                          ),
+                                          constraints: const BoxConstraints(
+                                            minWidth: 40,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: value?.isSelected == "1"
+                                                ? Colors.black
+                                                : Colors.white,
+                                            border: Border.all(
+                                              color: Colors.black,
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              10,
+                                            ),
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              value?.optionvalueName ?? "",
+                                              style: TextStyle(
+                                                color: value?.isSelected == "1"
+                                                    ? Colors.white
+                                                    : Colors.black,
+                                                fontWeight: FontWeight.w500,
+                                                fontFamily: "Nunito",
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+
+                                      if (stockValue == 0)
+                                        Positioned.fill(
+                                          child: CustomPaint(
+                                            painter: DiagonalCrossPainter(),
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            } else {
+                              return GestureDetector(
+                                key: Key("selected_option_${value?.optionvalueName}"),
+                                onTap: () async {
+                                  if ((value?.isSelected ?? "0") == "0") {
+                                    debugPrint(
+                                      "🟢 Selected option: ${value?.optionvalueName}",
+                                    );
+                                    controller.productId = value?.selprodId ?? "";
+                                    await controller.fetchProductDetail();
+                                  }
+                                },
+                                child: AnimatedScale(
+                                  scale: value?.isSelected == "1" ? 1.15 : 1.0,
+                                  duration: const Duration(milliseconds: 200),
+                                  curve: Curves.easeOut,
+                                  child: Container(
+                                    margin: const EdgeInsets.all(0),
+                                    width: 56,
+                                    height: 56,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color: value?.isSelected == "1"
+                                            ? Colors.black
+                                            : Colors.grey.shade400,
+                                        width: value?.isSelected == "1"
+                                            ? 2.5
+                                            : 1,
+                                      ),
+                                    ),
+                                    child: Center(
+                                      child: Container(
+                                        width: value?.isSelected == "1"
+                                            ? 26
+                                            : 46,
+                                        height: value?.isSelected == "1"
+                                            ? 26
+                                            : 46,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color:
+                                              value
+                                                  ?.optionvalueColorCode
+                                                  ?.hexToColor ??
+                                              Colors.transparent,
+                                          border: Border.all(
+                                            color: Colors.white,
+                                            width: 1,
+                                          ),
+                                          boxShadow: value?.isSelected == "1"
+                                              ? [
+                                                  BoxShadow(
+                                                    color: Colors.black
+                                                        .withValues(alpha: 0.2),
+                                                    blurRadius: 6,
+                                                    spreadRadius: 1,
+                                                    offset: const Offset(0, 2),
+                                                  ),
+                                                ]
+                                              : [],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }
+                          },
+                        ),
                       ),
-                      decoration: BoxDecoration(
-                        color: isSelected
-                            ? Colors.black
-                            : const Color(0xFFF5F4F9),
-                        borderRadius: BorderRadius.circular(16),
-                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          SizedBox(height: 20),
+          Padding(padding: EdgeInsets.symmetric(horizontal: 16)
+          ,child:
+            Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    height: 58,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.black, width: 2),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Center(
                       child: Text(
-                        size.optionvalueName ?? "",
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: isSelected ? Colors.white : Colors.black,
-                          fontWeight: FontWeight.w500,
+                        "${widget.currencyCode}${selectedSizePrice ?? ""}",
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          fontFamily: "Nunito",
+                          color: Colors.black,
                         ),
                       ),
                     ),
                   ),
-                );
-              }).toList(),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Obx(() {
+                    return ElevatedButton(
+                      key: Key("add_to_cart_button"),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.black,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                      ),
+                      onPressed: controller.isLoading.value || controller.inStock.value != "1"
+                          ? null
+                          : () {
+                        controller.addToCart(
+                          controller.productId,
+                          widget.productName,
+                          selectedSizePrice ?? widget.price,
+                        );
+                      },
+                      child: controller.isLoading.value
+                          ? const SizedBox(
+                        height: 22,
+                        width: 22,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
+                          : Obx(
+                            () => Text(
+                          controller.inStock.value == "1"
+                              ? AppStrings.appAddToCart.tr
+                              : AppStrings.appSoldOut.tr,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontFamily: "Nunito",
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    );
+                  }),
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: 30),
-
-          /// Price and Add to Cart Row
-          Row(
-            children: [
-              Expanded(
-                child: Container(
-                  height: 58,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black, width: 2),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Center(
-                    child: Text(
-                      "${widget.currencyCode}${selectedSizePrice ?? ""}",
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        fontFamily: "Nunito",
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Obx(() {
-                  return ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.black,
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 20),
-                    ),
-                    onPressed: controller.isLoading.value || controller.inStock.value != "1"
-                        ? null
-                        : () {
-                      controller.addToCart(
-                        selectedSizeProductId ?? "",
-                        widget.productName,
-                        selectedSizePrice ?? widget.price,
-                      );
-                    },
-                    child: controller.isLoading.value
-                        ? const SizedBox(
-                            height: 22,
-                            width: 22,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: Colors.white,
-                            ),
-                          )
-                        : Obx(
-                            () => Text(
-                              controller.inStock.value == "1"
-                                  ? AppStrings.appAddToCart.tr
-                                  : AppStrings.appSoldOut.tr,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontFamily: "Nunito",
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                  );
-                }),
-              ),
-            ],
-          ),
-          SizedBox(height: 5),
+          SizedBox(height: 20),
         ],
       ),
-    );
+      ));
   }
 
   @override

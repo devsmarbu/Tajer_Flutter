@@ -163,8 +163,8 @@ class SearchView extends StatelessWidget {
 
                 decoration: InputDecoration(
                   hintText: AppStrings.appIAmLookingFor.tr,
+                  hintStyle: TextStyle(fontWeight: FontWeight.w500,fontSize: 13,fontFamily: 'Nunito'),
                   prefixIcon: const Icon(Icons.search, color: Colors.black54),
-
                   suffixIcon: SizedBox(
                     width: 110,
                     child: Row(
@@ -230,8 +230,8 @@ class SearchView extends StatelessWidget {
                   ),
                 ),
 
-                autocorrect: false,
-                enableSuggestions: false,
+                autocorrect: true,
+                enableSuggestions: true,
                 textCapitalization: TextCapitalization.none,
               );
 
@@ -244,7 +244,7 @@ class SearchView extends StatelessWidget {
           Expanded(
             child: Obx(() {
               if (controller.isLoading.value) {
-                return const Center(child: CircularProgressIndicator());
+                return const Center(child: CircularProgressIndicator(color: Colors.black));
               }
 
               if (controller.products.isEmpty) {

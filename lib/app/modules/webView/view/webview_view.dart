@@ -31,7 +31,7 @@ class WebviewView extends GetView<WebviewController> {
 
           Obx(
                 () => controller.isLoading.value
-                ? const Center(child: CircularProgressIndicator())
+                ? const Center(child: CircularProgressIndicator(color: Colors.black))
                 : const SizedBox(),
           ),
         ],

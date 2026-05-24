@@ -1,3 +1,5 @@
+import 'package:tajer/app/modules/return/returnRequest/models/request_data.dart';
+
 class RequestItem {
   String? orrequestId;
   String? orrequestUserId;
@@ -32,6 +34,9 @@ class RequestItem {
   String? attachmentFile;
   String? oeRequestId;
   String? ocReasonTitle;
+  String? ocrequest_id;
+  String? request_type;
+
 
   RequestItem({
     this.orrequestId,
@@ -67,6 +72,8 @@ class RequestItem {
     this.attachmentFile,
     this.oeRequestId,
     this.ocReasonTitle,
+    this.ocrequest_id,
+    this.request_type,
   });
 
   factory RequestItem.fromJson(Map<String, dynamic> json) => RequestItem(
@@ -103,6 +110,8 @@ class RequestItem {
     attachmentFile: json['attachmentFile'],
     oeRequestId: json['oerequest_id'],
     ocReasonTitle: json['ocreason_title'],
+    ocrequest_id: json['ocrequest_id'],
+    request_type: json['request_type'],
   );
 
   Map<String, dynamic> toJson() => {
@@ -139,5 +148,24 @@ class RequestItem {
     'attachmentFile': attachmentFile,
     'oerequest_id': oeRequestId,
     'ocreason_title': ocReasonTitle,
+    'ocrequest_id': ocrequest_id,
+    'request_type': request_type,
   };
 }
+
+extension RequestItemExt on RequestItem {
+
+  String? getStatusColor(List<OrderReturnStatus>? statuses) {
+    if (statusName == null || statuses == null) return null;
+
+    return statuses
+        .firstWhere(
+          (e) =>
+      (e.label ?? '').toLowerCase().trim() ==
+          statusName!.toLowerCase().trim(),
+      orElse: () => OrderReturnStatus(),
+    )
+        .color;
+  }
+}
+

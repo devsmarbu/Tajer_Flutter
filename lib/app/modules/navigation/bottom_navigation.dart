@@ -6,7 +6,9 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:tajer/utils/app_dialog.dart';
 import 'package:tajer/utils/app_strings.dart';
+import '../../../common/widgets/app_dialog.dart';
 import '../../../main_extension.dart';
 import '../../modules/Account/account_screen.dart';
 import '../../modules/Cart/order_success_page/order_success_page.dart';
@@ -42,6 +44,39 @@ class _BottomNavigationState extends State<BottomNavigation> {
       AccountScreen(onCartTap: () => Get.find<BottomNavController>().changeTab(2)),
     ]);
 
+    final args = Get.arguments;
+
+    if (args != null && args is Map && args["tab"] != null) {
+      final tabIndex = args["tab"];
+
+      if (tabIndex is int) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          bottomNav.changeTab(tabIndex);
+        });
+      }
+    }
+
+    //
+    if (args != null &&
+        args is Map &&
+        args["msg"] != null &&
+        args["msg"].toString().trim().isNotEmpty) {
+
+      debugPrint(" Work Email Msg: ${args["msg"].toString()}");
+
+
+      Future.delayed(const Duration(milliseconds: 500), () {
+        Get.snackbar(
+          AppStrings.APP_ERROR.tr,
+          args["msg"].toString(),
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.black,
+          colorText: Colors.white,
+          margin: const EdgeInsets.all(12),
+          duration: const Duration(seconds: 3),
+        );
+      });
+    }
   }
 
   @override
@@ -159,9 +194,8 @@ class BottomNavController extends GetxController {
 
   @override
   void onInit() {
-    // TODO: implement onInit
     super.onInit();
-    currentIndex.value=0;
+    currentIndex.value = 0;
   }
 
   void changeTab(int index) {

@@ -6,7 +6,7 @@ plugins {
     id("com.google.gms.google-services") // Firebase plugin
 }
 
-//
+
 android {
     namespace = "com.tajershops.tajer"
     compileSdk = flutter.compileSdkVersion
@@ -28,8 +28,8 @@ android {
         applicationId = "com.tajershops.tajer"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
-        versionCode = 155
-        versionName = "7.5.8"
+        versionCode = 177
+        versionName = "7.7.9"
     }
 
     signingConfigs {
@@ -67,5 +67,14 @@ dependencies {
 
     // REQUIRED FIX for flutter_local_notifications
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.3")
+
+    implementation("com.github.tiktok:tiktok-business-android-sdk:1.4.0")
+
+    implementation("com.android.installreferrer:installreferrer:2.2")
+    // Google Play Billing required for IAP tracking
+//    implementation "com.android.billingclient:billing:6.0.1"
+// or if 1.4.0 still fails, try:
+ //   implementation("com.github.tiktok:tiktok-business-android-sdk:1.3.3")
+
 }
 

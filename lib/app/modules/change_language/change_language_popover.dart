@@ -9,6 +9,7 @@ import '../../../translations/localization_service.dart';
 import '../../../utils/app_params.dart';
 import '../../../utils/pref_store.dart';
 import '../authentication/splash/controller/splash_controller.dart';
+import '../home/home_controller.dart';
 
 class ChangeLanguagePopover extends StatefulWidget with AppLoader{
   final List<Language> languages;
@@ -46,80 +47,100 @@ class _ChangeLanguagePopoverState extends State<ChangeLanguagePopover> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      padding: const EdgeInsets.only(top: 16, bottom: 24),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Header
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  AppStrings.app_change_language.tr,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                    fontFamily: "Nunito",
+    return Semantics(
+      label: "change_language_bottom_sheet",
+      child: Container(
+        key: const ValueKey("change_language_container"),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        padding: const EdgeInsets.only(top: 16, bottom: 24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Header
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    key: const ValueKey("text_change_language_title"),
+                    AppStrings.app_change_language.tr,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      fontFamily: "Nunito",
+                    ),
                   ),
-                ),
-                IconButton(
-                  onPressed: () => Get.back(),
-                  icon: const Icon(Icons.close, color: Colors.black, size: 26),
-                ),
-              ],
-            ),
-          ),
-          const Divider(),
-
-          // Language List
-          ...widget.languages.map((lang) {
-            return RadioListTile<String>(
-              value: lang.languageName,
-              groupValue: selectedLanguage,
-              onChanged: (value) async {
-                setState(() => selectedLanguage = value);
-                await widget.pref.saveString(AppConstants.languageCode, lang.languageCode);
-                await widget.pref.saveString(AppConstants.languageId, lang.languageId);
-                await widget.pref.saveString(AppConstants.languageCountryCode,
-                    lang.languageCountryCode ?? "US");
-
-                // safe get or put
-                final controller = Get.isRegistered<SplashController>()
-                    ? Get.find<SplashController>()
-                    : Get.put(SplashController(), permanent: true);
-
-                controller.fromSplash.value = false;
-
-                // 1️⃣ Change locale
-                await LocalizationService.to.changeLocale(
-                  Locale(lang.languageCode, lang.languageCountryCode ?? "US"),
-                );
-                Get.back();
-
-                await controller.fetchSplashScreenData();
-                await LocalizationService.to.loadCurrentLocaleFile();
-
-                await PrefStore().saveBoolean(AppParams.refreshHome, true);
-              },
-              title: Text(
-                lang.languageName,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontFamily: "Nunito",
-                  fontWeight: FontWeight.w500,
-                ),
+                  Semantics(
+                    label: "btn_close_language_sheet",
+                    button: true,
+                    child: IconButton(
+                      key: const ValueKey("btn_close_language_sheet"),
+                      onPressed: () => Get.back(),
+                      icon: const Icon(Icons.close, color: Colors.black, size: 26),
+                    ),
+                  ),
+                ],
               ),
-              activeColor: AppColors.black1,
-            );
-          }),
-        ],
+            ),
+            const Divider(key: ValueKey("divider_language")),
+      
+            // Language List
+            ...widget.languages.map((lang) {
+              return Semantics(
+                label: "language_${lang.languageCode}",
+                button: true,
+                child: RadioListTile<String>(
+                  key: ValueKey("radio_language_${lang.languageCode}"),
+                  value: lang.languageName,
+                  groupValue: selectedLanguage,
+                  onChanged: (value) async {
+                    setState(() => selectedLanguage = value);
+                    await widget.pref.saveString(AppConstants.languageCode, lang.languageCode);
+                    await widget.pref.saveString(AppConstants.languageId, lang.languageId);
+                    await widget.pref.saveString(AppConstants.languageCountryCode,
+                        lang.languageCountryCode ?? "US");
+                      
+                    // safe get or put
+                    final controller = Get.isRegistered<SplashController>()
+                        ? Get.find<SplashController>()
+                        : Get.put(SplashController(), permanent: true);
+                      
+                    controller.fromSplash.value = false;
+                      
+                    // 1️⃣ Change locale
+                    await LocalizationService.to.changeLocale(
+                      Locale(lang.languageCode, lang.languageCountryCode ?? "US"),
+                    );
+                    Get.back();
+                      
+                    await controller.fetchSplashScreenData();
+                    await LocalizationService.to.loadCurrentLocaleFile();
+                      
+                    await PrefStore().saveBoolean(AppParams.refreshHome, true);
+                      
+                    if (Get.isRegistered<HomeController>()) {
+                      Get.find<HomeController>().reloadHomeData();
+                    }
+                  },
+                  title: Text(
+                    key: ValueKey("text_language_${lang.languageCode}"),
+                    lang.languageName,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontFamily: "Nunito",
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  activeColor: AppColors.black1,
+                ),
+              );
+            }),
+          ],
+        ),
       ),
     );
   }

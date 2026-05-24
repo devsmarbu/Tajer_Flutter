@@ -137,10 +137,10 @@ class _PerfumeCellViewState extends State<PerfumeCellView> {
                                           backgroundColor: Colors.transparent,
                                           builder: (context) => SelectSizeView(
                                             price: product.selprodPrice ?? "",
-                                            productId: product.productId ?? "",
-                                            productOptions: firstOptionValues,
+                                            productId: firstOptionValues.first.selprodId ?? "",
+                                            productOptions: options,
                                             currencyCode:
-                                                widget.currencyCode, productName: product.productName ?? '',
+                                                widget.currencyCode, productName: product.productName ?? '', isSizeChartAvailable: '',
                                           ),
                                         );
                                       } else {
@@ -148,7 +148,7 @@ class _PerfumeCellViewState extends State<PerfumeCellView> {
                                       }
                                     } else {
                                       final sizeController = Get.put(SelectSizeController(product.selprodId ?? ""));
-                                      sizeController.addToCart(product.selprodId ?? "",product.productName ?? '',product.selprodPrice ?? '');
+                                      sizeController.addToCart(product.selprodId ?? "",product.productName ?? '',product.selprodPrice ?? '',directAddedToCart: '1');
                                     }
                                   },
                                   style: TextButton.styleFrom(
@@ -159,23 +159,24 @@ class _PerfumeCellViewState extends State<PerfumeCellView> {
                                     ),
                                   ),
                                   child: Container(
+                                    width: 35,
+                                    height: 35,
                                     decoration: BoxDecoration(
                                       color: Colors.white,
-                                      borderRadius: BorderRadius.circular(8),
+                                      borderRadius: BorderRadius.circular(12),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: Colors.black12,
-                                          blurRadius: 6,
-                                          offset: Offset(0, 1),
+                                          color: Colors.black.withOpacity(0.12),
+                                          blurRadius: 10,
+                                          offset: const Offset(0, 4),
                                         ),
                                       ],
                                     ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8),
-                                      child: Image.asset(
-                                        "assets/images/AddToCart.png",
-                                        fit: BoxFit.contain,
+                                    child: const Center(
+                                      child: Icon(
+                                        Icons.shopping_bag_outlined,
                                         color: Colors.black,
+                                        size: 20,
                                       ),
                                     ),
                                   ),

@@ -66,8 +66,8 @@ class BrandListWidget extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 12,
                       color: AppColors.black1,
-                      fontFamily: "nunito",
-                      fontWeight: FontWeight.w300,
+                      fontFamily: "Nunito",
+                      fontWeight: FontWeight.w400,
                     ),
                   ),
                 ],

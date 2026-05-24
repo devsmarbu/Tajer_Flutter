@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -15,6 +17,7 @@ import '../../modules/Account/sections/profile_header.dart';
 import '../../modules/Account/sections/reach_out_section.dart';
 import '../../../../../utils/app_colors.dart';
 import '../../../../../utils/app_strings.dart';
+import '../address/addressList/view/address_list_screen.dart';
 import 'controller/account_controller.dart';
 import 'models/section.dart';
 import 'models/section_item.dart';
@@ -25,25 +28,31 @@ class AccountScreen extends StatefulWidget {
   const AccountScreen({super.key, this.onCartTap});
 
   Widget logoutButton(BuildContext context, AccountController controller) {
-    return ListTile(
-      leading: SvgPicture.asset(
-        "assets/icons/ic_logout.svg",
-        width: 24,
-        height: 24,
-      ),
-      title: Text(
-        AppStrings.appLogout.toUpperCase().tr,
-        style: const TextStyle(
-          fontSize: 14,
-          color: AppColors.redColor1,
-          fontFamily: 'Nunito',
-          fontWeight: FontWeight.w500,
+    return Semantics(
+      label: "logout_button",
+      button: true,
+      child: ListTile(
+        key: const ValueKey("logout_tile"),
+        leading: SvgPicture.asset(
+          "assets/icons/ic_logout.svg",
+          width: 24,
+          height: 24,
         ),
+        title: Text(
+          key: const ValueKey("logout_text"),
+          AppStrings.appLogout.toUpperCase().tr,
+          style: const TextStyle(
+            fontSize: 14,
+            color: AppColors.redColor1,
+            fontFamily: 'Nunito',
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        trailing: const Icon(Icons.chevron_right),
+        onTap: () {
+          controller.showLogoutDialog(context);
+        },
       ),
-      trailing: const Icon(Icons.chevron_right),
-      onTap: () {
-        controller.showLogoutDialog(context);
-      },
     );
   }
 
@@ -58,17 +67,17 @@ class _AccountScreenState extends State<AccountScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    controller.token= PrefStore().loadString(AppConstants.sessionToken)??"";
-    if(controller.token==""){
-      controller.isLogin.value=false;
-      controller.getAgreementUrl();
-    }else{
-      controller.isLogin.value=true;
+    controller.token = PrefStore().loadString(AppConstants.sessionToken) ?? "";
+    if (controller.token == "") {
+      controller.isLogin.value = false;
+      if (!deepLinkURL.contains('/guest-user/user-check-email-verification')) {
+        controller.getAgreementUrl();
+      }
+    } else {
+      controller.isLogin.value = true;
       controller.getProfileInfo();
     }
-
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -82,15 +91,244 @@ class _AccountScreenState extends State<AccountScreen> {
             child: Column(
               spacing: 0,
               children: [
-                Container(
-                  color: AppColors.black1,
-                  child: Image.asset(
-                    "assets/images/account_header_image.png",
-                    height: 160,
-                    width: Get.width,
-                    fit: BoxFit.fitWidth,
-                  ),
+                Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Image.asset(
+                      "assets/images/account_header_image.png",
+                      height: 220,
+                      width: Get.width,
+                      fit: BoxFit.cover,
+                    ),
+
+                    Obx(() {
+                      final membership = controller.memberShipInfo.value;
+
+                      if (membership == null ||
+                          (membership.membershipType.isEmpty)) {
+                        return const SizedBox();
+                      }
+                      final type =
+                          controller.memberShipInfo.value?.membershipType;
+
+                      // final m = controller.memberShipInfo.value;
+
+                      // double progress = 0.0;
+                      // if (m != null) {
+                      //   final used = double.tryParse(m.discountLimitRemaining ?? "0") ?? 0;
+                      //   final total = double.tryParse(m.discountLimitRemainingFormatted ?? "0") ?? 0;
+                      //
+                      //   if (total > 0) {
+                      //     progress = used / total;
+                      //   }
+                      // }
+
+                      return Positioned(
+                        left: 16,
+                        right: 16,
+                        top: 40,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            gradient: const LinearGradient(
+                              colors: [Color(0xFF2A2A2A), Color(0xFF1E1E1E)],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(20),
+                              topRight: Radius.circular(20),
+                            ),
+                            child: Stack(
+                              clipBehavior: Clip.none,
+                              children: [
+                                /// Background
+                                Positioned.fill(
+                                  child: ClipRRect(
+                                    borderRadius: const BorderRadius.only(
+                                      topLeft: Radius.circular(20),
+                                      topRight: Radius.circular(20),
+                                    ),
+                                    child: Stack(
+                                      fit: StackFit.expand,
+                                      children: [
+                                        SvgPicture.asset(
+                                          "assets/images/img_profile_header.svg",
+                                          fit: BoxFit.cover,
+                                        ),
+                                        BackdropFilter(
+                                          filter: ImageFilter.blur(
+                                            sigmaX: 10,
+                                            sigmaY: 10,
+                                          ),
+                                          child: Container(
+                                            color: Colors.black.withOpacity(
+                                              0.2,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+
+                                /// Spark icon
+                                Positioned(
+                                  top: 10,
+                                  right: 44,
+                                  child: Image.asset(
+                                    "assets/images/ic_spark.png",
+                                    height: 16,
+                                  ),
+                                ),
+
+                                /// Content
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                        16,
+                                        16,
+                                        16,
+                                        20,
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          const SizedBox(height: 14),
+
+                                          /// ✅ Dynamic text
+                                          Center(
+                                            child: Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 8,
+                                                    vertical: 4,
+                                                  ),
+                                              decoration: BoxDecoration(
+                                                color: const Color(0x33FFD24C),
+                                                borderRadius:
+                                                    BorderRadius.circular(40),
+                                              ),
+                                              child: RichText(
+                                                text: TextSpan(
+                                                  children: [
+                                                    TextSpan(
+                                                      text:
+                                                          "Enjoy ${controller.memberShipInfo.value?.membershipDiscount ?? ""} ",
+                                                      style: const TextStyle(
+                                                        fontFamily: 'Nunito',
+                                                        fontSize: 12,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                    TextSpan(
+                                                      text:
+                                                          type != null &&
+                                                              type.isNotEmpty
+                                                          ? "For $type Members"
+                                                          : "",
+                                                      style: const TextStyle(
+                                                        fontFamily: 'Nunito',
+                                                        fontSize: 11,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+
+                                          const SizedBox(height: 18),
+
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              const Text(
+                                                "Offer Claims For This Month",
+                                                style: TextStyle(
+                                                  fontFamily: 'Nunito',
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Color(0xFF939393),
+                                                  fontSize: 12,
+                                                ),
+                                              ),
+                                              Text(
+                                                "${controller.membershipUsed.value} / "
+                                                "${controller.membershipTotal.value}",
+                                                style: TextStyle(
+                                                  fontFamily: 'Nunito',
+                                                  color: Colors.white,
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+
+                                          const SizedBox(height: 10),
+
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(20),
+                                                child: LinearProgressIndicator(
+                                                  value: controller
+                                                      .membershipProgress
+                                                      .value
+                                                      .clamp(0.0, 1.0),
+                                                  minHeight: 6,
+                                                  backgroundColor:
+                                                      Colors.white12,
+                                                  valueColor:
+                                                      AlwaysStoppedAnimation<
+                                                        Color
+                                                      >(Color(0xFFF2C94C)),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+
+                                          /// (keep your progress UI here)
+                                        ],
+                                      ),
+                                    ),
+
+                                    Image.asset(
+                                      "assets/images/img_star.png",
+                                      height: 70,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    }),
+                  ],
                 ),
+                // Stack(
+                //   children: [
+                //     Image.asset(
+                //       "assets/images/account_header_image.png",
+                //       height: 160,
+                //       width: Get.width,
+                //       fit: BoxFit.fitWidth,
+                //     ),
+                //   ],
+                // ),
                 ProfileHeader(),
                 Container(
                   color: AppColors.colorAccountBackground,
@@ -108,6 +346,7 @@ class _AccountScreenState extends State<AccountScreen> {
                             HeaderNameEmail(
                               email: controller.emailId.value,
                               name: controller.userName.value,
+                              controller: controller,
                             ),
                             // const SizedBox(height: 20),
                             AccountQuickActions(
@@ -158,27 +397,33 @@ class _SignInButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton.icon(
-        onPressed: onPressed,
-        icon: SvgPicture.asset(
-          "assets/icons/ic_login.svg",
-          width: 24,
-          height: 24,
-          color: Colors.white,
-        ),
-        label: Text(
-          // AppStrings.appJoinUsSignIn.toUpperCase().tr,
-          "APP_SIGN_IN_JOIN".tr,
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-        ),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.black,
-          foregroundColor: Colors.white,
-          padding: const EdgeInsets.symmetric(vertical: 14),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+    return Semantics(
+      label: "sign_in_button",
+      button: true,
+      child: SizedBox(
+        key: const ValueKey("sign_in_button"),
+        width: double.infinity,
+        child: ElevatedButton.icon(
+          onPressed: onPressed,
+          icon: SvgPicture.asset(
+            "assets/icons/ic_login.svg",
+            width: 24,
+            height: 24,
+            color: Colors.white,
+          ),
+          label: Text(
+            key: const ValueKey("sign_in_text"),
+            // AppStrings.appJoinUsSignIn.toUpperCase().tr,
+            "APP_SIGN_IN_JOIN".tr,
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          ),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.black,
+            foregroundColor: Colors.white,
+            padding: const EdgeInsets.symmetric(vertical: 14),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
         ),
       ),
@@ -231,26 +476,32 @@ class SectionList extends StatelessWidget {
   }
 
   Widget buildSectionTile(BuildContext context, SectionItem item) {
-    return ListTile(
-      leading: SvgPicture.asset(
-        item.icon,
-        width: 24,
-        height: 24,
-        color: Colors.black,
-        semanticsLabel: "${item.title} icon",
-      ),
-      title: Text(
-        item.title,
-        style: const TextStyle(
-          fontSize: 12,
-          fontFamily: 'Nunito',
-          fontWeight: FontWeight.w500,
+    return Semantics(
+      label: "section_${item.key}",
+      button: true,
+      child: ListTile(
+        key: ValueKey("section_tile_${item.key}"),
+        leading: SvgPicture.asset(
+          item.icon,
+          width: 24,
+          height: 24,
+          color: Colors.black,
+          semanticsLabel: "${item.title} icon",
         ),
+        title: Text(
+          key: ValueKey("title_${item.key}"),
+          item.title,
+          style: const TextStyle(
+            fontSize: 12,
+            fontFamily: 'Nunito',
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        trailing: const Icon(Icons.chevron_right),
+        onTap: () {
+          _onSectionItemTap(context, item);
+        },
       ),
-      trailing: const Icon(Icons.chevron_right),
-      onTap: () {
-        _onSectionItemTap(context, item);
-      },
     );
   }
 

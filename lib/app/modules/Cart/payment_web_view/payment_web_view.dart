@@ -180,13 +180,14 @@ class _PaymentWebProcessPageState extends State<PaymentWebProcessPage> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text("Payment",style: TextStyle(fontFamily: "Nunito",fontWeight: FontWeight.w600,fontSize: 16)),
+          title: const Text("Payment", key: Key("payment_title"),style: TextStyle(fontFamily: "Nunito",fontWeight: FontWeight.w600,fontSize: 16)),
           leading: IconButton(
+            key: const Key("payment_back_button"),
             icon: const Icon(Icons.arrow_back),
             onPressed: _onBackPressed,
           ),
         ),
-        body: WebViewWidget(controller: controller),
+        body: Semantics(label: "Payment WebView",child: WebViewWidget(key: const Key("payment_webview"),controller: controller)),
       ),
     );
   }

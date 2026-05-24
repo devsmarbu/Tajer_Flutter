@@ -4,8 +4,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tajer/app/Extensions/convert_extension.dart';
+import 'package:tajer/marque_label.dart';
 import '../../../../../utils/app_colors.dart';
 import '../../../../utils/app_strings.dart';
+import '../../../../utils/pref_store.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/routes/app_routes.dart';
 import '../../Cart/MainCartView.dart';
@@ -34,7 +36,6 @@ class _ProductListPageState extends State<ProductListPage> {
   void initState() {
     super.initState();
 
-    /// 📌 FAB visibility listener
     _scrollController.addListener(() {
       if (_scrollController.offset > 800 && !showScrollToTop) {
         setState(() => showScrollToTop = true);
@@ -46,6 +47,9 @@ class _ProductListPageState extends State<ProductListPage> {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    final bool isFolded = width <= 400;
+
     return Scaffold(
       backgroundColor: AppColors.colorAccountBackground,
       appBar: AppBar(
@@ -55,38 +59,47 @@ class _ProductListPageState extends State<ProductListPage> {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(spacing: 10,children: [
-              Text(
-                controller.titleHeader,
-                style: const TextStyle(
-                  fontSize: 18,
-                  color: AppColors.black1,
-                  fontFamily: "Nunito",
-                  fontWeight: FontWeight.w600,
+            /// 🔥 TITLE ROW (FIXED OVERFLOW)
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    controller.titleHeader,
+                    maxLines: isFolded ? 1 : 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: AppColors.black1,
+                      fontFamily: "Nunito",
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                 ),
-              ),
-              // RIGHT SIDE: Small image thumbnail (only when available)
-              if (Get.parameters["imagePath"] != null &&
-                  Get.parameters["imagePath"]!.isNotEmpty)
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.black, // borderColor
-                      width: 1,            // borderWidth
+
+
+                /// RIGHT IMAGE (OPTIONAL)
+                if (Get.parameters["imagePath"] != null &&
+                    Get.parameters["imagePath"]!.isNotEmpty)
+                  Container(
+                    margin: const EdgeInsets.only(left: 8),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.black, width: 1),
+                      borderRadius: BorderRadius.circular(6),
                     ),
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(6),
-                    child: Image.file(
-                      File(Get.parameters["imagePath"]!),
-                      width: 24,
-                      height: 24,
-                      fit: BoxFit.cover,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(6),
+                      child: Image.file(
+                        File(Get.parameters["imagePath"]!),
+                        width: 24,
+                        height: 24,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
-                )
-            ]),
+              ],
+            ),
+
+            /// ITEM COUNT
             Obx(
               () => Text(
                 '${controller.productData.value?.recordCount ?? "0"} ${AppStrings.app_items.tr}',
@@ -105,14 +118,13 @@ class _ProductListPageState extends State<ProductListPage> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => SearchView(), // Your dynamic search page
-                ),
+                MaterialPageRoute(builder: (_) => SearchView()),
               );
             },
           ),
-          const SizedBox(width: 16),
-          /// CART ICON WITH COUNT
+          const SizedBox(width: 5),
+
+          /// CART ICON
           Padding(
             padding: const EdgeInsetsDirectional.only(end: 15),
             child: GestureDetector(
@@ -160,103 +172,169 @@ class _ProductListPageState extends State<ProductListPage> {
         ],
       ),
 
-      body: Stack(
+      body: Column(
         children: [
-          /// 🔥 PRODUCT LIST
-          Obx(() {
-            if (controller.isLoading.value && controller.page == 1) {
-              return const Center(child: CircularProgressIndicator());
-            }
+          /// 🔥 PROMO MARQUEE (FIXED – NOT SCROLLABLE)
+          if (PrefStore().loadString(AppConstants.promoBannerEnabled) == "1")
+            SizedBox(
+              height: 30,
+              width: double.infinity,
+              child:
+                  (PrefStore().loadString(AppConstants.promoBannerText) ?? '')
+                      .marqueeLabel(),
+            ),
 
-            if (controller.products.isEmpty) {
-              return Center(
-                child: EmptyCartWidget(
-                  imagePath: 'assets/images/no_data_image.png',
-                  message: AppStrings.appNoDataFound.tr,
-                ),
-              );
-            }
-
-            return NotificationListener<ScrollNotification>(
-              onNotification: (scrollInfo) {
-                if (!controller.isLoading.value &&
-                    controller.hasMore.value &&
-                    scrollInfo.metrics.pixels >=
-                        (scrollInfo.metrics.maxScrollExtent * 0.9)) {
-                  controller.loadMoreProducts();
-                }
-                return false;
-              },
-
-              child: GridView.builder(
-                controller: _scrollController,
-                // 🔥 REQUIRED for FAB visibility
-                physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.fromLTRB(10, 12, 10, 80),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 0.61,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
-                ),
-                itemCount: controller.products.length + 1,
-                // include loader
-                itemBuilder: (context, index) {
-                  if (index == controller.products.length) {
-                    return controller.isLoading.value
-                        ? const Center(child: CircularProgressIndicator())
-                        : const SizedBox.shrink();
+          /// PRODUCT LIST
+          Expanded(
+            child: Stack(
+              children: [
+                Obx(() {
+                  if (controller.isLoading.value && controller.page == 1) {
+                    return const Center(
+                      child: CircularProgressIndicator(color: Colors.black),
+                    );
                   }
 
-                  final product = controller.products[index];
+                  if (controller.products.isEmpty) {
+                    return Center(
+                      child: EmptyCartWidget(
+                        imagePath: 'assets/images/no_data_image.png',
+                        message: AppStrings.appNoDataFound.tr,
+                      ),
+                    );
+                  }
 
-                  return ProductCard(
-                    product: product,
-                    isVertical: true,
-                    onAddToCart: () {
-                      final options = product.productOptions;
-
-                      if (options != null &&
-                          options.isNotEmpty &&
-                          options.first.values != null) {
-                        showModalBottomSheet(
-                          context: context,
-                          isScrollControlled: true,
-                          backgroundColor: Colors.transparent,
-                          builder: (_) => SelectSizeView(
-                            price: product.selprodPrice ?? "",
-                            productId: product.productId ?? "",
-                            productOptions: options.first.values!,
-                            currencyCode:
-                                controller.productData.value?.currencySymbol ??
-                                "\$", productName: product.productName ?? "",
-                          ),
-                        );
-                      } else {
-                        Get.put(
-                          SelectSizeController(product.selprodId ?? ""),
-                        ).addToCart(product.selprodId ?? "",product.productName ?? '',product.selprodPrice ?? '');
+                  return NotificationListener<ScrollNotification>(
+                    onNotification: (scrollInfo) {
+                      if (!controller.isLoading.value &&
+                          controller.hasMore.value &&
+                          scrollInfo.metrics.pixels >=
+                              scrollInfo.metrics.maxScrollExtent * 0.9) {
+                        controller.loadMoreProducts();
                       }
+                      return false;
                     },
-                  );
-                },
-              ),
-            );
-          }),
+                    child: GridView.builder(
+                      controller: _scrollController,
+                      padding: const EdgeInsets.fromLTRB(10, 12, 10, 80),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 12,
+                        mainAxisSpacing: 12,
+                        childAspectRatio: isFolded ? 0.62 : 0.68,
+                      ),
+                      itemCount:
+                          controller.products.length,
+                      itemBuilder: (context, index) {
+                        if (index == controller.products.length) {
+                          return controller.isLoading.value
+                              ? const Center(
+                                  child: CircularProgressIndicator(
+                                    color: Colors.black,
+                                  ),
+                                )
+                              : const SizedBox.shrink();
+                        }
+                        final product = controller.products[index];
 
-          /// FILTER/SORT BAR (BOTTOM FIXED)
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 20,
-            child: Center(
-              child: FilterSortBar(categoryId: controller.prodCatId, brandId: controller.brandId),
+                        // 👇 Extract colors for THIS product only
+                        List<Color> colorList = [];
+
+                        if (product.productOptions != null) {
+                          for (var option in product.productOptions!) {
+                            if (option.optionIsColor == "1") {
+                              for (var value in option.values ?? []) {
+                                final hexCode = value.optionvalueColorCode;
+
+                                if (hexCode != null && hexCode.isNotEmpty) {
+                                  try {
+                                    final cleanedHex = hexCode.replaceAll("#", "");
+
+                                    // Add full opacity if only 6 characters
+                                    final formattedHex =
+                                    cleanedHex.length == 6 ? "FF$cleanedHex" : cleanedHex;
+
+                                    final color =
+                                    Color(int.parse(formattedHex, radix: 16));
+
+                                    colorList.add(color);
+                                  } catch (e) {
+                                    debugPrint("Invalid color code: $hexCode");
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+
+                        return ProductCard(
+                          product: product,
+                          isVertical: true,
+                          colorList: colorList,
+                          onAddToCart: () {
+                            final options = product.productOptions;
+
+                            if (options != null &&
+                                options.isNotEmpty &&
+                                options.first.values != null &&
+                                options.first.values!.isNotEmpty) {
+                              final firstOptionValues = options.first.values!;
+
+                              showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true,
+                                backgroundColor: Colors.transparent,
+                                builder: (_) => SelectSizeView(
+                                  price: product.selprodPrice ?? "",
+                                  productId:
+                                      firstOptionValues.first.selprodId ?? "",
+                                  productOptions: options,
+                                  currencyCode:
+                                      controller
+                                          .productData
+                                          .value
+                                          ?.currencySymbol ??
+                                      "\$",
+                                  productName: product.productName ?? "",
+                                  isSizeChartAvailable: '',
+                                ),
+                              );
+                            } else {
+                              Get.put(
+                                SelectSizeController(product.selprodId ?? ""),
+                              ).addToCart(
+                                product.selprodId ?? "",
+                                product.productName ?? '',
+                                product.selprodPrice ?? '',
+                                directAddedToCart: '1'
+                              );
+                            }
+                          }, productIndex: index.toString(),
+                        );
+                      },
+                    ),
+                  );
+                }),
+
+                /// FILTER BAR (still floating)
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 20,
+                  child: Center(
+                    child: FilterSortBar(
+                      categoryId: controller.prodCatId,
+                      brandId: controller.brandId,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
       ),
 
-      /// 🔥 FAB VISIBLE AFTER SCROLL DOWN
+      /// SCROLL TO TOP FAB
       floatingActionButton: showScrollToTop
           ? Padding(
               padding: EdgeInsets.only(bottom: Platform.isIOS ? 40 : 0),
@@ -277,7 +355,6 @@ class _ProductListPageState extends State<ProductListPage> {
               ),
             )
           : null,
-
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }

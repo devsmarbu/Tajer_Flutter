@@ -201,6 +201,8 @@ class OptionValue {
   final String? optionvalueId;
   final String? optionId;
   final String? isSelected;
+  final String? stock;
+
 
   OptionValue({
     this.productName,
@@ -215,6 +217,7 @@ class OptionValue {
     this.optionvalueId,
     this.optionId,
     this.isSelected,
+    this.stock
   });
 
   factory OptionValue.fromJson(Map<String, dynamic> json) => OptionValue(
@@ -230,6 +233,7 @@ class OptionValue {
     optionvalueId: json["optionvalue_id"],
     optionId: json["option_id"],
     isSelected: json["isSelected"],
+    stock: json["stock"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -245,6 +249,7 @@ class OptionValue {
     "optionvalue_id": optionvalueId,
     "option_id": optionId,
     "isSelected": isSelected,
+    "stock": stock,
   };
 }
 
@@ -727,7 +732,7 @@ class ProductImages {
   final String? afileRecordSubid;
   final String? afileAttributeAlt;
   final String? afileId;
-  final String? productImageUrl;
+  String? productImageUrl;
 
   ProductImages({
     this.afileDownloadedTimes,
@@ -1113,6 +1118,12 @@ class BoxContent {
   final String? boxDiscountAmount;
   final BoxContentImage? image;
   final String? imageURL;
+  final String? hasVariants;
+  final List<VariantOption>? variantOptions;
+  final List<AvailableVariant>? availableVariants;
+  List<AvailableOptionValue>? currentOptionValues;
+  final String? hasSizechart;
+
 
   BoxContent({
     this.boxSelprodId,
@@ -1135,7 +1146,13 @@ class BoxContent {
     this.boxDiscountedPrice,
     this.boxDiscountAmount,
     this.image,
-    this.imageURL
+    this.imageURL,
+    this.hasVariants,
+    this.variantOptions,
+    this.availableVariants,
+    this.currentOptionValues,
+    this.hasSizechart,
+
   });
 
   factory BoxContent.fromJson(Map<String, dynamic> json) => BoxContent(
@@ -1160,6 +1177,11 @@ class BoxContent {
     boxDiscountAmount: json["box_discount_amount"],
     imageURL: json["image_url"],
     image: json["image"] == null ? null : BoxContentImage.fromJson(json["image"]),
+    hasVariants: json["has_variants"],
+    variantOptions: List<VariantOption>.from(json["variant_options"].map((x) => VariantOption.fromJson(x))),
+    availableVariants: List<AvailableVariant>.from(json["available_variants"].map((x) => AvailableVariant.fromJson(x))),
+    currentOptionValues: List<AvailableOptionValue>.from(json["current_option_values"].map((x) => AvailableOptionValue.fromJson(x))),
+    hasSizechart: json["has_sizechart"]
   );
 
   Map<String, dynamic> toJson() => {
@@ -1184,6 +1206,11 @@ class BoxContent {
     "box_discount_amount": boxDiscountAmount,
     "image_url": imageURL,
     "image": image?.toJson(),
+    "has_variants": hasVariants,
+    "variant_options": List<dynamic>.from((variantOptions ?? []).map((x) => x.toJson())),
+    "available_variants": List<dynamic>.from((availableVariants ?? []).map((x) => x.toJson())),
+    "current_option_values": List<dynamic>.from((currentOptionValues ?? []).map((x) => x.toJson())),
+    "has_sizechart": hasSizechart,
   };
 }
 
@@ -1253,4 +1280,201 @@ class BoxContentImage {
     "afile_updated_at": afileUpdatedAt?.toIso8601String(),
     "afile_downloaded_times": afileDownloadedTimes,
   };
+}
+
+class AvailableVariant {
+  String selprodId;
+  String selprodCode;
+  String selprodStock;
+  String selprodPrice;
+  String selprodTitle;
+  String theprice;
+  String specialPriceFound;
+  String inStock;
+  List<AvailableOptionValue> optionValues;
+
+  AvailableVariant({
+    required this.selprodId,
+    required this.selprodCode,
+    required this.selprodStock,
+    required this.selprodPrice,
+    required this.selprodTitle,
+    required this.theprice,
+    required this.specialPriceFound,
+    required this.inStock,
+    required this.optionValues,
+  });
+
+  factory AvailableVariant.fromJson(Map<String, dynamic> json) => AvailableVariant(
+    selprodId: json["selprod_id"],
+    selprodCode: json["selprod_code"],
+    selprodStock: json["selprod_stock"],
+    selprodPrice: json["selprod_price"],
+    selprodTitle: json["selprod_title"],
+    theprice: json["theprice"],
+    specialPriceFound: json["special_price_found"],
+    inStock: json["in_stock"],
+    optionValues: List<AvailableOptionValue>.from(json["option_values"].map((x) => AvailableOptionValue.fromJson(x))),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "selprod_id": selprodId,
+    "selprod_code": selprodCode,
+    "selprod_stock": selprodStock,
+    "selprod_price": selprodPrice,
+    "selprod_title": selprodTitle,
+    "theprice": theprice,
+    "special_price_found": specialPriceFound,
+    "in_stock": inStock,
+    "option_values": List<dynamic>.from(optionValues.map((x) => x.toJson())),
+  };
+}
+
+class VariantOption {
+  String? optionId;
+  String? optionIdentifier;
+  String? prodoptionOptionvalueIds;
+  String? optionIsSeparateImages;
+  String? optionName;
+  Map<String, String> optionValues;
+
+  VariantOption({
+    required this.optionId,
+    required this.optionIdentifier,
+    required this.prodoptionOptionvalueIds,
+    required this.optionIsSeparateImages,
+    required this.optionName,
+    required this.optionValues,
+  });
+
+  factory VariantOption.fromJson(Map<String, dynamic> json) => VariantOption(
+    optionId: json["option_id"],
+    optionIdentifier: json["option_identifier"],
+    prodoptionOptionvalueIds: json["prodoption_optionvalue_ids"],
+    optionIsSeparateImages: json["option_is_separate_images"],
+    optionName: json["option_name"],
+    optionValues: Map.from(json["optionValues"]).map((k, v) => MapEntry<String, String>(k, v)),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "option_id": optionId,
+    "option_identifier": optionIdentifier,
+    "prodoption_optionvalue_ids": prodoptionOptionvalueIds,
+    "option_is_separate_images": optionIsSeparateImages,
+    "option_name": optionName,
+    "optionValues": Map.from(optionValues).map((k, v) => MapEntry<String, dynamic>(k, v)),
+  };
+}
+
+class BoxOptionValue {
+  int? selprodoptionSelprodId;
+  int? optionId;
+  int? optionvalueId;
+  String? optionName;
+  String? optionvalueName;
+
+  BoxOptionValue({
+    required this.selprodoptionSelprodId,
+    required this.optionId,
+    required this.optionvalueId,
+    required this.optionName,
+    required this.optionvalueName,
+  });
+
+  factory BoxOptionValue.fromJson(Map<String, dynamic> json) => BoxOptionValue(
+    selprodoptionSelprodId: json["selprodoption_selprod_id"],
+    optionId: json["option_id"],
+    optionvalueId: json["optionvalue_id"],
+    optionName: json["option_name"],
+    optionvalueName: json["optionvalue_name"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "selprodoption_selprod_id": selprodoptionSelprodId,
+    "option_id": optionId,
+    "optionvalue_id": optionvalueId,
+    "option_name": optionName,
+    "optionvalue_name": optionvalueName,
+  };
+}
+
+class AvailableOptionValue {
+  String? selprodoptionSelprodId;
+  String? optionId;
+  String? optionvalueId;
+  String? optionName;
+  String? optionvalueName;
+  String? isSelected;
+  String? inStock;
+
+  AvailableOptionValue({
+    required this.selprodoptionSelprodId,
+    required this.optionId,
+    required this.optionvalueId,
+    required this.optionName,
+    required this.optionvalueName,
+    required isSelected,
+    required inStock,
+  });
+
+  factory AvailableOptionValue.fromJson(Map<String, dynamic> json) => AvailableOptionValue(
+    selprodoptionSelprodId: json["selprodoption_selprod_id"],
+    optionId: json["option_id"],
+    optionvalueId: json["optionvalue_id"],
+    optionName: json["option_name"],
+    optionvalueName: json["optionvalue_name"],
+    isSelected: json['isSelected'],
+    inStock: json['inStock']
+  );
+
+  Map<String, dynamic> toJson() => {
+    "selprodoption_selprod_id": selprodoptionSelprodId,
+    "option_id": optionId,
+    "optionvalue_id": optionvalueId,
+    "option_name": optionName,
+    "optionvalue_name": optionvalueName,
+    "isSelected": isSelected,
+    "inStock": inStock
+  };
+}
+
+extension ProductDetailTypeExt on ProductDetailType {
+  String get apiValue {
+    switch (this) {
+      case ProductDetailType.productImages:
+        return "2";
+      case ProductDetailType.productDetail:
+        return "1";
+      case ProductDetailType.boxContent:
+        return "18";
+      case ProductDetailType.productOption:
+        return "3";
+      case ProductDetailType.productSpecifications:
+        return "4";
+      case ProductDetailType.volumeDiscount:
+        return "5";
+      case ProductDetailType.productDescription:
+        return "15";
+      case ProductDetailType.productPolicies:
+        return "14";
+      case ProductDetailType.banner:
+        return "10";
+      case ProductDetailType.similarProducts:
+        return "7";
+      case ProductDetailType.recommendedProducts:
+        return "8";
+      case ProductDetailType.buyTogether:
+        return "6";
+      case ProductDetailType.shop:
+        return "13";
+      case ProductDetailType.reviews:
+        return "9";
+      case ProductDetailType.previewFiles:
+        return "16";
+      case ProductDetailType.modelMesurement:
+        return "16";
+      default:
+        return "";
+    }
+  }
 }

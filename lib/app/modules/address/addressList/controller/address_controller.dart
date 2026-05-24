@@ -24,6 +24,7 @@ class AddressController extends GetxController
 
   var selectedIndex = (0).obs;
   var comeFromCartValue = "0";
+  var addressIsDefault = "0";
 
   @override
   void onInit() {
@@ -36,7 +37,8 @@ class AddressController extends GetxController
     getAddressList();
   }
 
-  void selectAddress(String addrId) {
+  void selectAddress(String addrId,String addIsDefault) {
+    addressIsDefault = addIsDefault;
     selectedIndex.value = 0;
     setDefaultAddress(addrId);
   }
@@ -47,6 +49,7 @@ class AddressController extends GetxController
       arguments: {
         "verifiedNumbers": verifiedNumbers,
         "addressDetail": addresses[index],
+        "addressIsDefault": addresses[index].addrIsDefault,
       },
     );
 
@@ -123,7 +126,6 @@ class AddressController extends GetxController
         print('❌ Exception in fetchSplashScreenData: $e');
       } finally {
         isLoading.value = false;
-        hideLoader(Get.context!);
       }
     }
   }
@@ -132,7 +134,6 @@ class AddressController extends GetxController
     if (await AppFunction.isInternetAvailable()) {
       try {
         isLoading.value = true;
-        showLoader(Get.context!);
 
         final response = await setDefaultAddressApi(id);
 
@@ -150,7 +151,8 @@ class AddressController extends GetxController
             if (comeFromCartValue == "1") {
               debugPrint("come from cart");
               Future.delayed(Duration(milliseconds: 100), () {
-                Get.back(result: comeFromCartValue);
+                // Get.back(result: comeFromCartValue);
+                Navigator.of(Get.context!).pop(comeFromCartValue);
               });
             } else {
               getAddressList();
@@ -165,7 +167,6 @@ class AddressController extends GetxController
         print('❌ Exception in fetchSplashScreenData: $e');
       } finally {
         isLoading.value = false;
-        hideLoader(Get.context!);
       }
     }
   }
@@ -174,7 +175,6 @@ class AddressController extends GetxController
     if (await AppFunction.isInternetAvailable()) {
       try {
         isLoading.value = true;
-        showLoader(Get.context!);
 
         final response = await deleteAddressApi(address.addrId ?? "");
 
@@ -199,7 +199,6 @@ class AddressController extends GetxController
         print('❌ Exception in fetchSplashScreenData: $e');
       } finally {
         isLoading.value = false;
-        hideLoader(Get.context!);
       }
     }
   }

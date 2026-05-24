@@ -158,7 +158,7 @@ class ReelPageController extends GetxController {
     }
   }
 
-  void goToShopDetailView(String shopId, String shopUserId) => Get.toNamed(
+  Future<void> goToShopDetailView(String shopId, String shopUserId) async  => await Get.toNamed(
     AppRoutes.shopDetailView,
     arguments: {"shopId": shopId, "shopUserId": shopUserId},
   );

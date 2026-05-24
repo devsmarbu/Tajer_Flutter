@@ -14,4 +14,8 @@ class SplashApiClient {
   Future<Response> getSplashScreenData() async {
     return await _api.dio.get(AppConstants.splashScreenData);
   }
+
+  Future<Response> employeeRegistrationStatusApi(String token) async {
+    return await _api.dio.get(token);
+  }
 }

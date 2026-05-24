@@ -1,4 +1,6 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:get/get.dart';
 import 'package:tajer/app/data/service/brand_api_client.dart';
 import 'package:tajer/app/data/service/category_api_client.dart';
 import 'package:tajer/app/data/service/product_list_api_client.dart';
@@ -7,6 +9,8 @@ import 'package:tajer/app/modules/categories/models/category.dart';
 import 'package:tajer/app/modules/home/home_model.dart';
 import 'package:tajer/app/modules/productList/models/filtered_product.dart';
 import 'package:tajer/app/modules/product_detail/shop_detail_view/shop_model.dart';
+import '../../../common/widgets/app_dialog.dart';
+import '../../core/constants/app_constants.dart';
 import '../../modules/product_detail/product_detail_model.dart';
 
 class BrandRepository {
@@ -24,10 +28,18 @@ class BrandRepository {
         debugPrint("⚠️ Failed to load brands list: ${response.statusCode}");
         return null;
       }
-    } catch (e, s) {
-      debugPrint("❌ Error in repository");
-      debugPrint("$s");
-      return null;
+    } on DioException catch (e, s) {
+      if (e.type == DioExceptionType.connectionError) {
+        Get.snackbar(AppConstants.appName, "APP_ERROR_INTERNET_CONNECTION");
+        
+
+        return null;
+      }
+      else {
+        debugPrint("❌ Error in repository: $e");
+        debugPrint("$s");
+        return null;
+      }
     }
   }
 
@@ -43,10 +55,16 @@ class BrandRepository {
         debugPrint("⚠️ Failed to load brands list: ${response.statusCode}");
         return null;
       }
-    } catch (e, s) {
-      debugPrint("❌ Error in repository");
-      debugPrint("$s");
-      return null;
+    } on DioException catch (e, s) {
+      if (e.type == DioExceptionType.connectionError) {
+        Get.snackbar(AppConstants.appName, "APP_ERROR_INTERNET_CONNECTION");
+        return null;
+      }
+      else {
+        debugPrint("❌ Error in repository: $e");
+        debugPrint("$s");
+        return null;
+      }
     }
   }
 
@@ -62,10 +80,16 @@ class BrandRepository {
         debugPrint("⚠️ Failed to load brands list: ${response.statusCode}");
         return null;
       }
-    } catch (e, s) {
-      debugPrint("❌ Error in repository");
-      debugPrint("$s");
-      return null;
+    } on DioException catch (e, s) {
+      if (e.type == DioExceptionType.connectionError) {
+        Get.snackbar(AppConstants.appName, "APP_ERROR_INTERNET_CONNECTION");
+        return null;
+      }
+      else {
+        debugPrint("❌ Error in repository: $e");
+        debugPrint("$s");
+        return null;
+      }
     }
   }
 
@@ -81,10 +105,16 @@ class BrandRepository {
         debugPrint("⚠️ Failed to load brands list: ${response.statusCode}");
         return null;
       }
-    } catch (e, s) {
-      debugPrint("❌ Error in repository");
-      debugPrint("$s");
-      return null;
+    } on DioException catch (e, s) {
+      if (e.type == DioExceptionType.connectionError) {
+        Get.snackbar(AppConstants.appName, "APP_ERROR_INTERNET_CONNECTION");
+        return null;
+      }
+      else {
+        debugPrint("❌ Error in repository: $e");
+        debugPrint("$s");
+        return null;
+      }
     }
   }
 }

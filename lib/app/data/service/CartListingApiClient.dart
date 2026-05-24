@@ -198,6 +198,22 @@ class CartListingApiClient {
     );
   }
 
+  Future<Response> removeCardItem({
+    required String fullfilmentType,
+    required String tokenId,
+  }) async {
+    return await _api.dio.post(
+      AppConstants.deleteCard,
+      data: FormData.fromMap({"fulfilmentType": fullfilmentType,"tokenId": tokenId}),
+      options: Options(
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'multipart/form-data',
+        },
+      ),
+    );
+  }
+
   Future<Response> addRemoveItemSaveFromLater({
     required String fulfilmentType,
     required String selproductId,

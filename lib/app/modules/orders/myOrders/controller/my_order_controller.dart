@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:tajer/app/data/service/order_api_client.dart';
 import 'package:tajer/app/modules/orders/orderDetail/models/order_detail.dart';
 import 'package:tajer/utils/app_loader.dart';
@@ -26,6 +28,7 @@ class MyOrdersController extends GetxController with OrderApiClient,AppLoader {
 
   final TextEditingController searchController = TextEditingController();
   final RxBool isListening = false.obs;
+  late stt.SpeechToText _speech;
 
   int currentPage = 1;
   int selectedFilterIndex = 0;
@@ -33,6 +36,7 @@ class MyOrdersController extends GetxController with OrderApiClient,AppLoader {
   String status = '';
   var orderId=''.obs;
   var orderNumber=''.obs;
+  Timer? _debounce;
 
   final scrollController = ScrollController();
   late String sessionToken=pref.loadString(AppConstants.sessionToken)??"";
@@ -40,6 +44,7 @@ class MyOrdersController extends GetxController with OrderApiClient,AppLoader {
   @override
   void onInit() {
     super.onInit();
+    _speech = stt.SpeechToText();
     final args = Get.arguments ?? {};
     if (args is Map && args[AppParams.orderId] != null) {
       orderId.value = args[AppParams.orderId]?.toString() ?? '';
@@ -69,17 +74,54 @@ class MyOrdersController extends GetxController with OrderApiClient,AppLoader {
     });
   }
 
-  void onSearchChanged(String query) {
-    currentPage = 1;
-    status = ""; // remove filter during search
-    fetchOrders();
-  }
 
-  void startListening() {
-    isListening.value = true;
+    void onSearchChanged(String query) {
+      if (_debounce?.isActive ?? false) _debounce!.cancel();
+
+      _debounce = Timer(Duration(milliseconds: 500), () {
+        currentPage = 1;
+        fetchOrders();
+      });
+    }
+
+
+
+
+  // void startListening() {
+  //   isListening.value = true;
+  // }
+
+  Future<void> startListening() async {
+    bool available = await _speech.initialize(
+      onStatus: (status) {
+        if (status == "done") {
+          stopListening();
+        }
+      },
+      onError: (error) {
+        stopListening();
+      },
+    );
+
+    if (available) {
+      isListening.value = true;
+
+      _speech.listen(
+        onResult: (result) {
+          searchController.text = result.recognizedWords;
+          searchController.selection = TextSelection.fromPosition(
+            TextPosition(offset: searchController.text.length),
+          );
+
+          // 🔥 Trigger search live
+          onSearchChanged(searchController.text);
+        },
+      );
+    }
   }
 
   void stopListening() {
+    _speech.stop();
     isListening.value = false;
   }
 
@@ -129,6 +171,12 @@ class MyOrdersController extends GetxController with OrderApiClient,AppLoader {
       }
     }
 
+  }
+
+  Future<void> refreshOrders() async {
+    currentPage = 1;        // 👈 RESET PAGE
+    orders.clear();         // 👈 optional but cleaner
+    await fetchOrders();    // 👈 reload fresh data
   }
 
   Future<void> fetchViewOrder(String orderId) async {

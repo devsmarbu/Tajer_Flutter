@@ -27,7 +27,7 @@ class CommonLoader extends StatelessWidget {
 
         /// Centered loader
         const Center(
-          child: CircularProgressIndicator(),
+          child: CircularProgressIndicator(color: Colors.black),
         ),
       ],
     );
