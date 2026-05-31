@@ -274,9 +274,9 @@ class _PaymentSelectionPageState extends State<PaymentSelectionPage> with AppLoa
 
                     },
                   ),
-                  const Expanded(
+                  Expanded(
                     child: Text(
-                      "Credit/Debit Card",
+                      AppStrings.APP_CREDIT_DEBIT_CARD.tr,
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
