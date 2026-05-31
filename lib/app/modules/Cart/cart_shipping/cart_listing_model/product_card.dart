@@ -54,37 +54,34 @@ class CartItemCard extends StatefulWidget {
 
   @override
   State<CartItemCard> createState() => _CartItemCardState();
+}
 
-  }
-
-  class _CartItemCardState extends State<CartItemCard> {
-
+class _CartItemCardState extends State<CartItemCard> {
   late TextEditingController qtyController;
+  late FocusNode qtyFocusNode;
 
   @override
   void initState() {
-  super.initState();
-
-  qtyController = TextEditingController(
-  text: widget.item.quantity ?? "1",
-  );
+    super.initState();
+    qtyFocusNode = FocusNode();
+    qtyController = TextEditingController(text: widget.item.quantity ?? "1");
   }
 
   @override
   void didUpdateWidget(covariant CartItemCard oldWidget) {
-  super.didUpdateWidget(oldWidget);
+    super.didUpdateWidget(oldWidget);
 
-  if (oldWidget.item.quantity != widget.item.quantity) {
-  qtyController.text = widget.item.quantity ?? "1";
-  }
+    if (oldWidget.item.quantity != widget.item.quantity) {
+      qtyController.text = widget.item.quantity ?? "1";
+    }
   }
 
   @override
   void dispose() {
-  qtyController.dispose();
-  super.dispose();
+    qtyFocusNode.dispose();
+    qtyController.dispose();
+    super.dispose();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -105,7 +102,7 @@ class CartItemCard extends StatefulWidget {
     return InkWell(
       onTap: () {
         Get.to(
-              () => ProductDetailView(titleHeader: "Product Detail"),
+          () => ProductDetailView(titleHeader: "Product Detail"),
           arguments: {
             'productId': item.selprodId ?? "",
             'productName': item.productName ?? "",
@@ -144,21 +141,21 @@ class CartItemCard extends StatefulWidget {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: Image.network(
-                            item.imageUrl ?? "",
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Image.network(
+                          item.imageUrl ?? "",
+                          width: 90,
+                          height: 90,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => Container(
                             width: 90,
                             height: 90,
-                            fit: BoxFit.cover,
-                            errorBuilder: (_, __, ___) => Container(
-                              width: 90,
-                              height: 90,
-                              color: Colors.grey[300],
-                              child: const Icon(Icons.image_not_supported),
-                            ),
+                            color: Colors.grey[300],
+                            child: const Icon(Icons.image_not_supported),
                           ),
                         ),
+                      ),
                       const SizedBox(width: 12),
 
                       Expanded(
@@ -247,7 +244,7 @@ class CartItemCard extends StatefulWidget {
                       SizedBox(
                         width: 30,
                         child: TextField(
-                          focusNode: FocusNode(),
+                          focusNode: qtyFocusNode,
                           controller: qtyController,
                           keyboardType: TextInputType.text,
                           textInputAction: TextInputAction.done,
@@ -266,11 +263,12 @@ class CartItemCard extends StatefulWidget {
                             contentPadding: EdgeInsets.zero,
                           ),
                           onEditingComplete: () {
-                            FocusScope.of(context).unfocus();
+                            qtyFocusNode.unfocus();
                             // trigger submission logic to keep existing behavior
                             final value = qtyController.text;
                           },
                           onSubmitted: (value) async {
+                            qtyFocusNode.unfocus(); // or FocusScope.of(context).unfocus();
                             // Keep existing onSubmitted for safety, delegate to onEditingComplete handling
                             final qty = int.tryParse(value) ?? 1;
                             if (qty < 1) {
@@ -283,7 +281,11 @@ class CartItemCard extends StatefulWidget {
                               return;
                             }
                             if (widget.controller != null) {
-                              final success = await widget.controller!.productQuantityUpdate(item.key ?? "", qty.toString());
+                              final success = await widget.controller!
+                                  .productQuantityUpdate(
+                                    item.key ?? "",
+                                    qty.toString(),
+                                  );
                               if (!success) {
                                 qtyController.text = item.quantity ?? "1";
                               }
