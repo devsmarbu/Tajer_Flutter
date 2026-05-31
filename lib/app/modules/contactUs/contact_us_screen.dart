@@ -94,11 +94,11 @@ class ContactUsScreen extends StatelessWidget {
                       color: Colors.black,
                     ),
                     children: [
-                      TextSpan(text: "${AppStrings.appIAgreeToThe.tr} "),
+                      TextSpan(text: "${AppStrings.appIAgreeToThe.toUpperCase().tr} "),
 
                       // --- Terms & Conditions clickable ---
                       TextSpan(
-                        text: AppStrings.appTermCondition.tr,
+                        text: AppStrings.appTermCondition.toUpperCase().tr,
                         style: const TextStyle(
                           decoration: TextDecoration.underline,
                           color: Colors.blue,
@@ -111,7 +111,7 @@ class ContactUsScreen extends StatelessWidget {
 
                       // --- Privacy Policy clickable ---
                       TextSpan(
-                        text: AppStrings.appPrivacy.tr,
+                        text: AppStrings.appPrivacy.toUpperCase().tr,
                         style: const TextStyle(
                           decoration: TextDecoration.underline,
                           color: Colors.blue,

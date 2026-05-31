@@ -38,6 +38,12 @@ class ShopDetailController extends GetxController {
     }
   }
 
+  @override
+  void onClose() {
+    debugPrint("ShopDetailController disposed");
+    super.onClose();
+  }
+
   Future<void> _loadAllData() async {
     await Future.wait([
       loadShopDetail(),
@@ -182,3 +188,4 @@ class ShopDetailController extends GetxController {
     products.refresh(); // 🔥 important for UI update
   }
 }
+

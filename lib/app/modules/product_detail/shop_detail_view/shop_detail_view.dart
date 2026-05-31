@@ -29,7 +29,10 @@ class ShopDetailPage extends StatefulWidget {
 class _ShopDetailPageState extends State<ShopDetailPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  final controller = Get.put(ShopDetailController());
+
+  // final controller = Get.put(ShopDetailController());
+  late final ShopDetailController controller;
+  late final String controllerTag;
   bool showFloatingBar = false;
   final ScrollController _scrollController = ScrollController();
 
@@ -37,7 +40,9 @@ class _ShopDetailPageState extends State<ShopDetailPage>
   void initState() {
     super.initState();
     _tabController = TabController(length: 5, vsync: this);
-    controller.loadShopDetail();
+    controllerTag = UniqueKey().toString();
+    controller = Get.put(ShopDetailController(), tag: controllerTag);
+    // controller.loadShopDetail();
 
     // _scrollController.addListener(() {
     //   if (_scrollController.offset > 200 && !showFloatingBar) {
@@ -52,6 +57,12 @@ class _ShopDetailPageState extends State<ShopDetailPage>
         controller.loadMoreProducts();
       }
     });
+  }
+
+  @override
+  void dispose() {
+    Get.delete<ShopDetailController>(tag: controllerTag);
+    super.dispose();
   }
 
   @override
@@ -492,7 +503,8 @@ class _ShopDetailPageState extends State<ShopDetailPage>
                       directAddedToCart: '1',
                     );
                   }
-                }, productIndex: index.toString(),
+                },
+                productIndex: index.toString(),
               );
             });
           },

@@ -9,7 +9,7 @@ import '../../../../../../utils/app_colors.dart';
 
 class ReviewListView extends StatelessWidget {
   var reviewList = <ReviewsList>[].obs;
-  final controller = Get.find<ShopDetailController>();
+  final controller = Get.put(ShopDetailController());
   ReviewListView({super.key, required this.reviewList});
 
   @override

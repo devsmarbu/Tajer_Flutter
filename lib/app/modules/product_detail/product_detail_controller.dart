@@ -55,7 +55,6 @@ class ProductDetailController extends GetxController {
     if (_isRequesting) return;
     _isRequesting = true;
     isLoading(true);
-    productSections.clear();
 
     bool firstPageLoaded = false;
 
@@ -66,6 +65,9 @@ class ProductDetailController extends GetxController {
           if (isClosed) {
             isLoading(false);
             return;
+          }
+          if (!firstPageLoaded) {
+            productSections.clear();
           }
           productSections.addAll(newSections);
 

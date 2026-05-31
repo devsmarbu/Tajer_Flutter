@@ -10,6 +10,7 @@ import '../../../product_detail/product_detail_model.dart';
 import '../../../product_detail/product_detail_view.dart';
 import '../../../product_detail/product_images/fullscreen_product_images.dart';
 import 'cart_listing_model.dart';
+import 'package:flutter/services.dart';
 
 class OptionModel {
   final String title;
@@ -246,10 +247,14 @@ class CartItemCard extends StatefulWidget {
                       SizedBox(
                         width: 30,
                         child: TextField(
+                          focusNode: FocusNode(),
                           controller: qtyController,
-                          keyboardType: TextInputType.number,
+                          keyboardType: TextInputType.text,
                           textInputAction: TextInputAction.done,
                           textAlign: TextAlign.center,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
                           style: const TextStyle(
                             fontSize: 14,
                             fontFamily: "Nunito",
@@ -260,10 +265,14 @@ class CartItemCard extends StatefulWidget {
                             isDense: true,
                             contentPadding: EdgeInsets.zero,
                           ),
-
+                          onEditingComplete: () {
+                            FocusScope.of(context).unfocus();
+                            // trigger submission logic to keep existing behavior
+                            final value = qtyController.text;
+                          },
                           onSubmitted: (value) async {
+                            // Keep existing onSubmitted for safety, delegate to onEditingComplete handling
                             final qty = int.tryParse(value) ?? 1;
-
                             if (qty < 1) {
                               showAlertMessage(
                                 context,
@@ -273,12 +282,8 @@ class CartItemCard extends StatefulWidget {
                               qtyController.text = item.quantity ?? "1";
                               return;
                             }
-                            debugPrint("CONTROLLER:....... ${widget.controller}");
                             if (widget.controller != null) {
-                              final success = await widget.controller!.productQuantityUpdate(
-                                item.key ?? "",
-                                qty.toString(),
-                              );
+                              final success = await widget.controller!.productQuantityUpdate(item.key ?? "", qty.toString());
                               if (!success) {
                                 qtyController.text = item.quantity ?? "1";
                               }

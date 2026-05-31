@@ -223,26 +223,41 @@ debugPrint('it is being called');
         }
         final productData = controller.productSections;
 
-        return Column(
+        return Stack(
           children: [
-            /// 🔥 Marquee Label
-            (PrefStore().loadString(AppConstants.promoBannerText)??'').marqueeLabel(),
-            /// 🔥 Your List
-            Expanded(
-              child: ListView(
-                controller: _scrollController,
-                children: [
-                  ...List.generate(
-                    productData.length,
-                        (index) =>
-                        _buildSection(productData[index], index),
+            Column(
+              children: [
+                /// 🔥 Marquee Label
+                (PrefStore().loadString(AppConstants.promoBannerText)??'').marqueeLabel(),
+                /// 🔥 Your List
+                Expanded(
+                  child: ListView(
+                    controller: _scrollController,
+                    children: [
+                      ...List.generate(
+                        productData.length,
+                            (index) =>
+                            _buildSection(productData[index], index),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
+            if (controller.isLoading.value)
+              AbsorbPointer(
+                absorbing: true,
+                child: Container(
+                  color: Colors.black.withValues(alpha: 0.15),
+                  child: const Center(
+                    child: CircularProgressIndicator(color: Colors.black),
+                  ),
+                ),
+              ),
           ],
         );
-      }),      bottomNavigationBar: SafeArea(
+      }),
+      bottomNavigationBar: SafeArea(
       child: Container(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
         color: Colors.white,

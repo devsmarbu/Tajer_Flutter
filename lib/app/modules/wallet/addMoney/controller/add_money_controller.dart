@@ -20,10 +20,12 @@ class AddMoneyController extends GetxController {
   void onInit() {
     super.onInit();
     final args = Get.arguments;
-    if (args is Map && args[AppParams.withdrawType] != null) {
+    // if (args is Map && args[AppParams.withdrawType] != null) {
+    if (args is Map ) {
       withdrawType.value = args[AppParams.withdrawType].toString();
       displayUserBalance.value = args[AppParams.displayUserBalance].toString();
       currencySymbol.value = args[AppParams.currencySymbol].toString();
+      walletBalance.value = args[AppParams.walletBalance].toString();
       debugPrint("✅ Withdraw type set in onInit: ${withdrawType.value}");
     }
   }
