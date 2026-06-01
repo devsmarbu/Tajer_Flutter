@@ -7,6 +7,7 @@ import 'package:tajer/app/firebase/one_signal_notification.dart';
 import 'package:tajer/marque_label.dart';
 import 'package:tajer/utils/pref_store.dart';
 import '../../../main_extension.dart';
+import '../../../utils/app_colors.dart';
 import '../../../utils/app_loader.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/routes/app_routes.dart';
@@ -157,10 +158,10 @@ class _HomeViewState extends State<HomeView> {
                 index != 0,
             slides: collection.slides,
             onColorChanged: (color) {
-              if (!mounted) return; // ✅ Prevent calling setState after dispose
-              if (index == 0) {
-                setState(() => appBarColor = color);
-              }
+              // if (!mounted) return; // ✅ Prevent calling setState after dispose
+              // if (index == 0) {
+              //   setState(() => appBarColor = color);
+              // }
             },
             bannerImage: collection.banners?.banners?.first.bannerImage ?? "",
             bannerTitle: collection.banners?.banners?.first.bannerTitle ?? "",
@@ -350,7 +351,7 @@ class _HomeViewState extends State<HomeView> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 12),
+                      const SizedBox(height: 20),
 
                       /// Row 3: Search + Notification + Bag
                       Row(
@@ -445,6 +446,7 @@ class _HomeViewState extends State<HomeView> {
                         ...List.generate(controller.posts.length, (index) {
                           return Column(
                             children: [
+                              Container(height: 16,color: AppColors.colorBackgroundHomeNew),
                               _buildSection(controller.posts[index], index),
                             ],
                           );
