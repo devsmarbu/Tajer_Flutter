@@ -77,6 +77,7 @@ class _HomeViewState extends State<HomeView> {
   @override
   void dispose() {
     _scrollController.dispose();
+    _bannerWorker.dispose();
 
     // Optional: safely remove listeners or reset reactive updates
     // if (Get.isRegistered<HomeController>()) {
@@ -84,136 +85,6 @@ class _HomeViewState extends State<HomeView> {
     // }
 
     super.dispose();
-  }
-
-  Widget buildAppBar(Color color) {
-    return Container(
-      key: const Key('home_container'),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.bottomCenter,
-          end: Alignment.topCenter,
-          colors: [
-            color,
-            // bottom color
-            const Color(0xFFF7F7F7),
-            // top color (slightly off-white for subtle gradient)
-          ],
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.only(top: 8),
-        child: Row(
-          key: const Key('home_row1'),
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const Spacer(),
-            const Spacer(),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: Image.asset(
-                  key: const Key('home_tajer_logo'),
-                 // "assets/images/Tajer_Logo.png",
-                  "assets/icons/ic_eid_icon.png",
-                  height: 38,
-                ),
-              ),
-            ),
-            const Spacer(),
-            Column(
-              key: const Key('home_column1'),
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Row(
-                  key: const Key('home_row2'),
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    GestureDetector(
-                      key: const Key('navigate_to_notification_screen'),
-                      onTap: () {
-                        Get.to(() => NotificationScreen());
-                      },
-                      child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Image.asset(
-                          key: const Key('home_notification_icon'),
-                          "assets/images/notification.png",
-                          height: 28,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 15),
-                    // pref.loadString(AppConstants.sessionToken) ?? ""
-                    GestureDetector(
-                      key: const Key('home_on_tap_cart'),
-                      onTap: () {
-                        widget.onCartTap?.call();
-                      },
-                      child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Stack(
-                          key: const Key('home_stack'),
-                          clipBehavior: Clip.none,
-                          children: [
-                            Image.asset(
-                              key: const Key('home_cart_icon'),
-                              "assets/images/cartIcon.png",
-                              height: 28,
-                              color: Colors.black,
-                            ),
-
-                            // 🔴 Item Count Badge
-                            Obx(() {
-                              if (cartItemCounts.value.toIntSafe() > 0) {
-                                return Positioned(
-                                  key: const Key('home_cart_item_count'),
-                                  right: -6,
-                                  top: -6,
-                                  child: Container(
-                                    key: const Key('home_cart_red_circle'),
-                                    padding: const EdgeInsets.all(3),
-                                    decoration: const BoxDecoration(
-                                      color: Colors.red,
-                                      shape: BoxShape.circle,
-                                    ),
-                                    constraints: const BoxConstraints(
-                                      minWidth: 18,
-                                      minHeight: 18,
-                                    ),
-                                    child: Text(
-                                      key: const Key('home_cart_count_text'),
-                                      cartItemCounts.value.toString(),
-                                      textAlign: TextAlign.center,
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              }
-
-                              return const SizedBox();
-                            }),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                  ],
-                ),
-                const SizedBox(height: 10),
-              ],
-            ),
-            const SizedBox(width: 10),
-          ],
-        ),
-      ),
-    );
   }
 
   Widget _buildSection(Collection collection, int index) {
@@ -391,68 +262,9 @@ class _HomeViewState extends State<HomeView> {
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: isDarkBg
-          ? SystemUiOverlayStyle
-                .light // white status bar icons
+          ? SystemUiOverlayStyle.light // white status bar icons
           : SystemUiOverlayStyle.dark, // black status bar icons
       child: Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          backgroundColor: Colors.transparent,
-          systemOverlayStyle: isDarkBg
-              ? SystemUiOverlayStyle.light
-              : SystemUiOverlayStyle.dark,
-          flexibleSpace: buildAppBar(appBarColor),
-          leading: SizedBox(
-            width: 100,
-            height: 35,
-            child: Container(
-              color: Colors.transparent,
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10),
-                  child: TextButton(
-                    onPressed: () async {
-                      final result = await showDialog(
-                        context: context,
-                        builder: (_) => CountrySelectDialog(
-                          selectedCountryName: PrefStore().loadString(
-                            AppConstants.countryName,
-                          ),
-                        ),
-                      );
-                      if (result != null) {
-                        final selected = result as Result;
-                        print("Selected Country ID: ${selected.id}");
-                        print("Selected Country Name: ${selected.text}");
-                        controller.setCountry(
-                          "${selected.id ?? 0}",
-                          selected.text ?? "Qatar",
-                        );
-                      }
-                    },
-                    child: Text(
-                      "${(PrefStore().loadString(AppConstants.countryName) ?? "").isEmpty ? "Qatar" : PrefStore().loadString(AppConstants.countryName)}",
-                      style: TextStyle(
-                        color:
-                            ThemeData.estimateBrightnessForColor(appBarColor) ==
-                                Brightness.dark
-                            ? Colors.white
-                            : Colors.black,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 14,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          leadingWidth:
-              PrefStore().loadString(AppConstants.languageCode) == "AR"
-              ? 90
-              : 170,
-        ),
         backgroundColor: Colors.white,
         body: Obx(() {
           if (controller.isLoading.value) {
@@ -460,76 +272,205 @@ class _HomeViewState extends State<HomeView> {
               child: CircularProgressIndicator(color: Colors.black),
             );
           }
-          final posts = controller.posts;
-          // if (posts.isEmpty) {
-          //   return Center(
-          //     child: EmptyCartWidget(
-          //       imagePath: 'assets/images/no_data_image.png',
-          //       message: AppStrings.appNoDataFound.tr,
-          //     ),
-          //   );
-          // }
 
-          return Column(
-            children: [
-              /// 🔥 Marquee Label
-              (PrefStore().loadString(AppConstants.promoBannerText) ?? '')
-                  .marqueeLabel(),
-              Container(
-                color: appBarColor,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
+          return SafeArea(
+            bottom: false,
+            child: Column(
+              children: [
+                /// Row 1: 🔥 Marquee Label (Promo Banner)
+                (PrefStore().loadString(AppConstants.promoBannerText) ?? '')
+                    .marqueeLabel(),
+
+                /// 🔥 New Custom Dynamic Header Container (Row 2 & Row 3)
+                Container(
+                  color: appBarColor,
+                  padding: const EdgeInsets.only(
+                    left: 16,
+                    right: 16,
+                    top: 10,
+                    bottom: 14,
                   ),
-                  child: SearchPage(),
-                ),
-              ),
-              Expanded(
-                child: RefreshIndicator(
-                  color: Colors.black,
-                  onRefresh: () async {
-                    await controller.reloadHomeData();
-                  },
-                  child: ListView(
-                    controller: _scrollController,
+                  child: Column(
                     children: [
-                      ...List.generate(controller.posts.length, (index) {
-                        return Column(
-                          children: [
-                            _buildSection(controller.posts[index], index),
-                            // if (controller.posts[index].layoutType ==
-                            //         CollectionLayoutType.homeSlider &&
-                            //     index == 0)
-                            //   (PrefStore().loadString(
-                            //             AppConstants.promoBannerText,
-                            //           ) ??
-                            //           '')
-                            //       .marqueeLabel(),
-                          ],
-                        );
-                      }),
-
-                      // ⬇ Loader without Obx
-                      GetBuilder<HomeController>(
-                        builder: (_) {
-                          return controller.isPageLoading
-                              ? const Padding(
-                                  padding: EdgeInsets.all(20),
-                                  child: Center(
-                                    child: CircularProgressIndicator(
-                                      color: Colors.black,
-                                    ),
+                      /// Row 2: Logo + Address Picker
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Image.asset(
+                            key: const Key('home_tajer_logo'),
+                            "assets/icons/ic_eid_icon.png",
+                            height: 38,
+                          ),
+                          GestureDetector(
+                            onTap: () async {
+                              final result = await showDialog(
+                                context: context,
+                                builder: (_) => CountrySelectDialog(
+                                  selectedCountryName: PrefStore().loadString(
+                                    AppConstants.countryName,
                                   ),
-                                )
-                              : const SizedBox();
-                        },
+                                ),
+                              );
+                              if (result != null) {
+                                final selected = result as Result;
+                                controller.setCountry(
+                                  "${selected.id ?? 0}",
+                                  selected.text ?? "Qatar",
+                                );
+                              }
+                            },
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                SvgPicture.asset(
+                                  "assets/icons/ic_location_new.svg",
+                                  height: 18,
+                                  colorFilter: ColorFilter.mode(
+                                    ThemeData.estimateBrightnessForColor(appBarColor) ==
+                                            Brightness.dark
+                                        ? Colors.white
+                                        : Colors.black,
+                                    BlendMode.srcIn,
+                                  ),
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  "${(PrefStore().loadString(AppConstants.countryName) ?? "").isEmpty ? "Qatar" : PrefStore().loadString(AppConstants.countryName)}",
+                                  style: TextStyle(
+                                    color: ThemeData.estimateBrightnessForColor(appBarColor) ==
+                                            Brightness.dark
+                                        ? Colors.white
+                                        : Colors.black,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+
+                      /// Row 3: Search + Notification + Bag
+                      Row(
+                        children: [
+                          const Expanded(
+                            child: SearchPage(),
+                          ),
+                          const SizedBox(width: 16),
+                          GestureDetector(
+                            onTap: () {
+                              Get.to(() => NotificationScreen());
+                            },
+                            child: SvgPicture.asset(
+                              "assets/icons/ic_bell_new.svg",
+                              height: 24,
+                              colorFilter: ColorFilter.mode(
+                                ThemeData.estimateBrightnessForColor(appBarColor) ==
+                                        Brightness.dark
+                                    ? Colors.white
+                                    : Colors.black,
+                                BlendMode.srcIn,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          GestureDetector(
+                            onTap: () {
+                              widget.onCartTap?.call();
+                            },
+                            child: Stack(
+                              clipBehavior: Clip.none,
+                              children: [
+                                SvgPicture.asset(
+                                  "assets/icons/ic_cart_new.svg",
+                                  height: 24,
+                                  colorFilter: ColorFilter.mode(
+                                    ThemeData.estimateBrightnessForColor(appBarColor) ==
+                                            Brightness.dark
+                                        ? Colors.white
+                                        : Colors.black,
+                                    BlendMode.srcIn,
+                                  ),
+                                ),
+                                Obx(() {
+                                  if (cartItemCounts.value.toIntSafe() > 0) {
+                                    return Positioned(
+                                      right: -5,
+                                      top: -5,
+                                      child: Container(
+                                        padding: const EdgeInsets.all(2),
+                                        decoration: const BoxDecoration(
+                                          color: Colors.red,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        constraints: const BoxConstraints(
+                                          minWidth: 16,
+                                          minHeight: 16,
+                                        ),
+                                        child: Text(
+                                          cartItemCounts.value.toString(),
+                                          textAlign: TextAlign.center,
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 8,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                  return const SizedBox();
+                                }),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
                 ),
-              ),
-            ],
+
+                /// Expanded scrollable list of home sections
+                Expanded(
+                  child: RefreshIndicator(
+                    color: Colors.black,
+                    onRefresh: () async {
+                      await controller.reloadHomeData();
+                    },
+                    child: ListView(
+                      controller: _scrollController,
+                      children: [
+                        ...List.generate(controller.posts.length, (index) {
+                          return Column(
+                            children: [
+                              _buildSection(controller.posts[index], index),
+                            ],
+                          );
+                        }),
+
+                        // Loader
+                        GetBuilder<HomeController>(
+                          builder: (_) {
+                            return controller.isPageLoading
+                                ? const Padding(
+                                    padding: EdgeInsets.all(20),
+                                    child: Center(
+                                      child: CircularProgressIndicator(
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  )
+                                : const SizedBox();
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
           );
         }),
         floatingActionButton: showScrollToTop
