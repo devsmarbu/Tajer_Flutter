@@ -69,7 +69,7 @@ Future<void> _initLocalNotifications() async {
 // --------------------------------------------------
 void main() async {
 
-  AppConfig.env = AppEnvironment.PRODUCTION;
+  AppConfig.env = AppEnvironment.DEVELOPMENT;
   WidgetsFlutterBinding.ensureInitialized();
   // await captureUtmFromClipboard();
   await SystemChrome.setPreferredOrientations([

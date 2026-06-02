@@ -355,15 +355,25 @@ class _HomeViewState extends State<HomeView> {
       case CollectionLayoutType.spacer:
         sectionWidget = const SizedBox(height: 40);
       case CollectionLayoutType.homePageBannerStripe:
-        sectionWidget = InfiniteScrollBanner(
-          height: 40,
-          duration: const Duration(seconds: 30),
-          child: SvgPicture.network(
-            collection.homePageStripeSVGUrl ?? '',
+        final stripeSvgUrl = collection.homePageStripeSVGUrl;
+        if (stripeSvgUrl != null && stripeSvgUrl.isNotEmpty) {
+          sectionWidget = InfiniteScrollBanner(
             height: 40,
-            fit: BoxFit.fitHeight,
-          ),
-        );
+            duration: const Duration(seconds: 30),
+            child: SvgPicture.network(
+              stripeSvgUrl,
+              height: 40,
+              fit: BoxFit.fitHeight,
+            ),
+          );
+        } else {
+          sectionWidget = (collection.collectionDescription ?? '').marqueeLabel(
+            height: 40,
+            backgroundColor: Colors.black,
+            textColor: Colors.white,
+            forceShow: true,
+          );
+        }
       default:
         sectionWidget = const SizedBox.shrink(); // skip unknown layouts
     }
