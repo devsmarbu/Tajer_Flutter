@@ -24,6 +24,7 @@ import 'dual_horizontal_product_view/dual_horizontal_product_view.dart';
 import 'favorite_brand_view/favorite_brand_view.dart';
 import 'home_controller.dart';
 import 'home_model.dart';
+import 'new_small_brand_view/new_small_brand_view.dart';
 import 'perfume_view/perfume_view.dart';
 import 'package:get/get.dart';
 import '../notifications/alerts/view/notification_screen.dart';
@@ -199,8 +200,23 @@ class _HomeViewState extends State<HomeView> {
       case CollectionLayoutType.smallBrandLayout:
         if ((collection.banners?.banners ?? []).isNotEmpty) {
           sectionWidget = SizedBox(
-            height: 110,
-            child: CategoryView(banners: collection.banners?.banners ?? []),
+            height: 150,
+            child: NewSmallBrandView(
+              banners: collection.banners?.banners ?? [],
+              collection: collection,
+            ),
+          );
+        } else {
+          sectionWidget = const SizedBox.shrink();
+        }
+      case CollectionLayoutType.smallBrandLayoutNew:
+        if ((collection.banners?.banners ?? []).isNotEmpty) {
+          sectionWidget = SizedBox(
+            height: 150,
+            child: NewSmallBrandView(
+              banners: collection.banners?.banners ?? [],
+              collection: collection,
+            ),
           );
         } else {
           sectionWidget = const SizedBox.shrink();
@@ -446,7 +462,16 @@ class _HomeViewState extends State<HomeView> {
                         ...List.generate(controller.posts.length, (index) {
                           return Column(
                             children: [
-                              Container(height: 16,color: AppColors.colorBackgroundHomeNew),
+                              (controller.posts[index].layoutType != CollectionLayoutType.smallBrandLayout)
+                                  ? Container(
+                                height: 16,
+                                color: AppColors.colorBackgroundHomeNew,
+                              )
+                                  : Container(
+                                height: 16,
+                                color: AppColors.white,
+                              ),
+
                               _buildSection(controller.posts[index], index),
                             ],
                           );
