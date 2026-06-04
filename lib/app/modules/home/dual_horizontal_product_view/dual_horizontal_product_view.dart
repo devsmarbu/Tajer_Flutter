@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:tajer/app/modules/product_detail/select_size/select_size_controller.dart';
 import '../../../../utils/pref_store.dart';
 import '../../../core/constants/app_constants.dart';
@@ -168,7 +169,7 @@ class _DualHorizontalProductViewState extends State<DualHorizontalProductView> {
       button: true,
       child: InkWell(
         key: ValueKey('product_item_${product.selprodId}_$index'),
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(12),
         highlightColor: Colors.transparent,
         splashColor: Colors.transparent,
         onTap: () {
@@ -184,7 +185,7 @@ class _DualHorizontalProductViewState extends State<DualHorizontalProductView> {
               : const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(24),
+            borderRadius: BorderRadius.circular(13),
             border: Border.all(color: const Color(0xFFE2E2E2), width: 1.0),
             boxShadow: [
               BoxShadow(
@@ -200,8 +201,8 @@ class _DualHorizontalProductViewState extends State<DualHorizontalProductView> {
               /// IMAGE SECTION
               ClipRRect(
                 borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(23),
-                  topRight: Radius.circular(23),
+                  topLeft: Radius.circular(12),
+                  topRight: Radius.circular(12),
                 ),
                 child: Stack(
                   children: [
@@ -312,13 +313,13 @@ class _DualHorizontalProductViewState extends State<DualHorizontalProductView> {
                             }
                           },
                           child: Container(
-                            width: 54,
-                            height: 54,
+                            width: 45,
+                            height: 45,
                             decoration: const BoxDecoration(
                               color: Color(0xFFEDEDED),
                               borderRadius: BorderRadius.only(
-                                topRight: Radius.circular(23),
-                                bottomLeft: Radius.circular(24),
+                                topRight: Radius.circular(12),
+                                bottomLeft: Radius.circular(12),
                               ),
                             ),
                             child: Center(
@@ -400,7 +401,7 @@ class _DualHorizontalProductViewState extends State<DualHorizontalProductView> {
       
               /// DETAILS SECTION
               Padding(
-                padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+                padding: const EdgeInsets.fromLTRB(8, 12, 8, 12),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -414,7 +415,7 @@ class _DualHorizontalProductViewState extends State<DualHorizontalProductView> {
                             key: ValueKey('brand_${product.selprodId}'),
                             (product.brandName ?? "").toUpperCase(),
                             style: const TextStyle(
-                              fontSize: 10,
+                              fontSize: 7,
                               fontWeight: FontWeight.w600,
                               fontFamily: "Nunito",
                               color: Colors.black54,
@@ -430,21 +431,21 @@ class _DualHorizontalProductViewState extends State<DualHorizontalProductView> {
                             (product.productName ?? "").toUpperCase(),
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
-                              fontSize: 12,
+                              fontSize: 9,
                               fontFamily: "Nunito",
                               height: 1.3,
                             ),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
-                          const SizedBox(height: 6),
+                          const SizedBox(height: 2),
                           /// PRICE
                           Text(
                             key: ValueKey('price_${product.selprodId}'),
                             product.selprodPrice ?? "",
                             style: const TextStyle(
                               fontWeight: FontWeight.w900,
-                              fontSize: 15,
+                              fontSize: 13,
                               fontFamily: "Nunito",
                             ),
                             maxLines: 1,
@@ -453,7 +454,7 @@ class _DualHorizontalProductViewState extends State<DualHorizontalProductView> {
                         ],
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: 2),
                     /// CART BUTTON
                     Semantics(
                       label: 'Add ${product.productName} to cart',
@@ -511,17 +512,21 @@ class _DualHorizontalProductViewState extends State<DualHorizontalProductView> {
                           }
                         },
                         child: Container(
-                          width: 48,
-                          height: 48,
+                          width: 45,
+                          height: 45,
                           decoration: BoxDecoration(
                             color: const Color(0xFF1E1E1E), // Dark charcoal/black
-                            borderRadius: BorderRadius.circular(16),
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                          child: const Center(
-                            child: Icon(
-                              Icons.shopping_bag_outlined,
-                              color: Colors.white,
-                              size: 22,
+                          child:  Center(
+                            child: SvgPicture.asset(
+                              "assets/icons/ic_cart_new.svg",
+                              width: 16,
+                              height: 16,
+                              colorFilter: const ColorFilter.mode(
+                                Colors.white,
+                                BlendMode.srcIn,
+                              ),
                             ),
                           ),
                         ),

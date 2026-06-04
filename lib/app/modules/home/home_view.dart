@@ -97,12 +97,12 @@ class _HomeViewState extends State<HomeView> {
       case CollectionLayoutType.productLayout2:
       case CollectionLayoutType.trendingProduct:
         sectionWidget = SizedBox(
-          height: 370,
+          height: 346,
           child: DualHorizontalProductView(
             titleHeader: collection.collectionName ?? "",
             products: collection.products,
             scrollDirection: Axis.horizontal,
-            height: 310,
+            height: 286,
             wantHeader: true,
             scrollEnabled: true,
             isHomeHeader: true,
