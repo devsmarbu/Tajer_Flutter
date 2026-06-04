@@ -199,13 +199,14 @@ class _HomeViewState extends State<HomeView> {
 
       case CollectionLayoutType.smallBrandLayout:
         if ((collection.banners?.banners ?? []).isNotEmpty) {
-          sectionWidget = SizedBox(
-            height: 150,
-            child: NewSmallBrandView(
-              banners: collection.banners?.banners ?? [],
-              collection: collection,
-            ),
-          );
+          if ((collection.banners?.banners ?? []).isNotEmpty) {
+            sectionWidget = SizedBox(
+              height: 110,
+              child: CategoryView(banners: collection.banners?.banners ?? []),
+            );
+          } else {
+            sectionWidget = const SizedBox.shrink();
+          }
         } else {
           sectionWidget = const SizedBox.shrink();
         }
