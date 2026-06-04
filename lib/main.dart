@@ -15,6 +15,7 @@ import 'package:tiktok_events_sdk/tiktok_events_sdk.dart';
 import 'app/core/constants/app_constants.dart';
 import 'app/modules/Account/controller/account_controller.dart';
 import 'app/modules/authentication/splash/controller/splash_controller.dart';
+import 'app/modules/chatbot/controller/chatbot_controller.dart';
 import 'app/modules/navigation/bottom_navigation.dart';
 import 'common/widgets/restart_widget.dart';
 import 'main_extension.dart';
@@ -69,7 +70,7 @@ Future<void> _initLocalNotifications() async {
 // --------------------------------------------------
 void main() async {
 
-  AppConfig.env = AppEnvironment.PRODUCTION;
+  AppConfig.env = AppEnvironment.DEVELOPMENT;
   WidgetsFlutterBinding.ensureInitialized();
   // await captureUtmFromClipboard();
   await SystemChrome.setPreferredOrientations([
@@ -93,6 +94,7 @@ void main() async {
   Get.put(AccountController(), permanent: true);
   Get.put(SplashController(), permanent: true);
   Get.put(BottomNavController(), permanent: true);
+  Get.put(ChatbotController(), permanent: true);
 
   DeepLinkService.instance.init();
 

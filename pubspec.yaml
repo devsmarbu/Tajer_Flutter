@@ -63,6 +63,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   webview_flutter: any
+  webview_flutter_android: any
   webview_flutter_wkwebview: any
   media_kit: ^1.1.2
   media_kit_video: ^1.1.2
@@ -119,6 +120,7 @@ flutter:
     - assets/fonts/
     - assets/icons/ic_login.svg
     - assets/assets/
+    - assets/chatbot_html/
 
   fonts:
     - family: Nunito

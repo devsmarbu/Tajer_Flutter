@@ -1,0 +1,2567 @@
+{
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\.claude\\settings.json": {
+    "mtime": 1780389673.625667,
+    "ast_hash": "5d6ecd96cf065b16e8bb9fbf5d7d8f0d",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\.claude\\settings.local.json": {
+    "mtime": 1780389700.1564825,
+    "ast_hash": "5113636691d9f3f2c8de7420ed3d1503",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\android\\app\\build.gradle.kts": {
+    "mtime": 1780388444.2481008,
+    "ast_hash": "0d0fef61fc70cc647a7e512e7b910049",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\android\\app\\google-services.json": {
+    "mtime": 1780388444.2491035,
+    "ast_hash": "3a205a2aac6b70dfed91e0bb5a17fa6c",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\android\\app\\src\\main\\kotlin\\com\\tajershops\\tajer\\MainActivity.kt": {
+    "mtime": 1780388444.2541032,
+    "ast_hash": "8b6361026f34c449797228643d0d4b29",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\android\\build.gradle.kts": {
+    "mtime": 1780388444.2701023,
+    "ast_hash": "09bf24372cd5a8715a2b366b8f5f374d",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\android\\settings.gradle.kts": {
+    "mtime": 1780388444.2731018,
+    "ast_hash": "bfc5e5b579c00be602d6cf5aa4b08b4a",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\assets\\countries.json": {
+    "mtime": 1780388444.2751017,
+    "ast_hash": "3d521b2a9a42ea8b651f96a6d8ac46e1",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\ios\\OneSignalNotificationServiceExtension\\NotificationService.swift": {
+    "mtime": 1780388444.398101,
+    "ast_hash": "13669dc6b23e184acbb292ac0cd6f61d",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\ios\\RunnerTests\\RunnerTests.swift": {
+    "mtime": 1780388444.4171052,
+    "ast_hash": "24e5d095048eb86c30423f4e04b6e57b",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\ios\\Runner\\AppDelegate.swift": {
+    "mtime": 1780388444.4081037,
+    "ast_hash": "f56c62932f0317150c401087a3c051c7",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\ios\\Runner\\Assets.xcassets\\AppIcon.appiconset\\Contents.json": {
+    "mtime": 1780388444.4091022,
+    "ast_hash": "c21cc2d3aea479f448da4872c7496207",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\ios\\Runner\\Assets.xcassets\\Contents.json": {
+    "mtime": 1780388444.4111042,
+    "ast_hash": "788c7c19fd10833acb82f96c0eaaaf00",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\ios\\Runner\\Assets.xcassets\\app_launch_image.imageset\\Contents.json": {
+    "mtime": 1780388444.4111042,
+    "ast_hash": "abb40ad2b05171de097e54740365c3de",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\ios\\Runner\\Runner-Bridging-Header.h": {
+    "mtime": 1780388444.4161003,
+    "ast_hash": "7ad7b5cea096132de13ba526b2b9efbe",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\core\\constants\\app_constants.dart": {
+    "mtime": 1780388444.4191022,
+    "ast_hash": "6f10dda281e992ed07ea86f2939ec5ab",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\core\\constants\\app_labels.dart": {
+    "mtime": 1780388444.4201045,
+    "ast_hash": "57915333bc86a137f1ac05486772fde7",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\core\\routes\\app_routes.dart": {
+    "mtime": 1780388444.4211056,
+    "ast_hash": "771d17693d33fc6bcbe62507a11068aa",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\data\\events\\app_analytics_service.dart": {
+    "mtime": 1780388444.4221025,
+    "ast_hash": "97a7ae03bad0ca6ca0b8f7dcd89ddf57",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\data\\respository\\brand_repository.dart": {
+    "mtime": 1780388444.423104,
+    "ast_hash": "80253b3bcbe89c58452fd5544dd6ddb7",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\data\\respository\\cart_listing_repository.dart": {
+    "mtime": 1780388444.424107,
+    "ast_hash": "271054ebe78b87915e8a3ff567a05f2b",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\data\\respository\\category_repository.dart": {
+    "mtime": 1780388444.424107,
+    "ast_hash": "f00b1c0affb5ab21d7c212848e2e1d7b",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\data\\respository\\home_respository.dart": {
+    "mtime": 1780388444.4251013,
+    "ast_hash": "687b8cd55ac5d30967b93d8a1be146c6",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\data\\respository\\order_success_repository.dart": {
+    "mtime": 1780388444.4261029,
+    "ast_hash": "285eb27bd33c5d96ca6bab30fdc2fdae",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\data\\respository\\product_list_repository.dart": {
+    "mtime": 1780388444.4261029,
+    "ast_hash": "7810c348ae083e9dd248503f9131f55d",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\data\\respository\\product_repository.dart": {
+    "mtime": 1780388444.4271042,
+    "ast_hash": "ba2a85e3d74538c96ac1ffdae9411d4c",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\data\\respository\\search_repository.dart": {
+    "mtime": 1780388444.4271042,
+    "ast_hash": "2dd22b359db03f36405590b2b41028b7",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\data\\respository\\shop_repository.dart": {
+    "mtime": 1780388444.4281015,
+    "ast_hash": "6fb93d0dfc574e5d2e71540db5644529",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\data\\respository\\wish_list_repository.dart": {
+    "mtime": 1780388444.4291022,
+    "ast_hash": "5b7e6c7701e094fec7db317ab0ca1ac5",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\data\\service\\CartListingApiClient.dart": {
+    "mtime": 1780388444.4301033,
+    "ast_hash": "43ee4d8e1d3a5974a205c6fc8379cc49",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\data\\service\\account_api_client.dart": {
+    "mtime": 1780388444.4301033,
+    "ast_hash": "47c7497e211b9f6b1e9fa6f8d2718283",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\data\\service\\api_service\\api_service.dart": {
+    "mtime": 1780388444.4311032,
+    "ast_hash": "426ab2612bde969bd84c227e68d5f44d",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\data\\service\\authentication_api_client.dart": {
+    "mtime": 1780388444.4321032,
+    "ast_hash": "697a4b7e0c5100b453bb341897c0b6e0",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\data\\service\\brand_api_client.dart": {
+    "mtime": 1780388444.4321032,
+    "ast_hash": "08ca6fc6bef7b6925d028563f8c82891",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\data\\service\\category_api_client.dart": {
+    "mtime": 1780388444.4331036,
+    "ast_hash": "de55eae74671a1105c52a759e83ab3c0",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\data\\service\\home_api_client.dart": {
+    "mtime": 1780388444.4331036,
+    "ast_hash": "533ebb3ee5c1555ff4b94676c49a1739",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\data\\service\\order_api_client.dart": {
+    "mtime": 1780388444.4341016,
+    "ast_hash": "1403794a67e768d5d9c99e31a5275f16",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\data\\service\\order_success_api_client.dart": {
+    "mtime": 1780388444.4351003,
+    "ast_hash": "8e4235e76b83f7ec8af41309893bc7cf",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\data\\service\\product_detail_api_client.dart": {
+    "mtime": 1780388444.4351003,
+    "ast_hash": "b2620a9cea12c9635a710790d568a83b",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\data\\service\\product_list_api_client.dart": {
+    "mtime": 1780388444.4361022,
+    "ast_hash": "9c6f7c9d5d7703ebfec22994a1fc0f50",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\data\\service\\return_request_api_client.dart": {
+    "mtime": 1780388444.437104,
+    "ast_hash": "9b295b52e557778acd215af65f13c996",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\data\\service\\search_api_client.dart": {
+    "mtime": 1780388444.437104,
+    "ast_hash": "5ff83fddb452a2ea771a18d8f1d8afa7",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\data\\service\\shop_api_client.dart": {
+    "mtime": 1780388444.438103,
+    "ast_hash": "41b1cfc20508c7b6a5fad76953131c4d",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\data\\service\\splash_api_client.dart": {
+    "mtime": 1780388444.438103,
+    "ast_hash": "a7748d9c2d759de6bfda2c345dada25d",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\data\\service\\wish_list_api_client.dart": {
+    "mtime": 1780388444.4391012,
+    "ast_hash": "85544d863d98c3b010361e37aa2c1f50",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\extensions\\NavigatorObserver.dart": {
+    "mtime": 1780388444.4401002,
+    "ast_hash": "262c2c4129eeed6bc20fd49859d92409",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\extensions\\alert.dart": {
+    "mtime": 1780388444.4401002,
+    "ast_hash": "87c17a68d9953975502d18bdbc7727f8",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\extensions\\convert_extension.dart": {
+    "mtime": 1780388444.4411027,
+    "ast_hash": "b04c3b8c31cbdb6f7ca9d8a78c037e0d",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\extensions\\expandable_text.dart": {
+    "mtime": 1780388444.442103,
+    "ast_hash": "fc48240ea62bd327c483a8a05515d626",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\extensions\\image_color_utils.dart": {
+    "mtime": 1780388444.4431021,
+    "ast_hash": "f195d0c4ec67645b9e628ff2adf4b9da",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\firebase\\notification_service.dart": {
+    "mtime": 1780388444.4431021,
+    "ast_hash": "9a0e860523279455e4c7a0aa1a01b9e0",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\firebase\\one_signal_notification.dart": {
+    "mtime": 1780388444.444104,
+    "ast_hash": "3482a0124f8b1d6da6e77a2b1f619a57",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\Account\\account_screen.dart": {
+    "mtime": 1780388444.4451015,
+    "ast_hash": "e5ae96b39c55592edff74edc9af03d1b",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\Account\\controller\\account_controller.dart": {
+    "mtime": 1780388444.4461007,
+    "ast_hash": "d91d07393be02889ba6fb19b95d663f6",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\Account\\models\\bank_info.dart": {
+    "mtime": 1780388444.447103,
+    "ast_hash": "111e938477b1b5bfa65869a994742eb5",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\Account\\models\\currency_response.dart": {
+    "mtime": 1780388444.4481003,
+    "ast_hash": "ad89833bc03d5fcac62a8f7090fa714d",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\Account\\models\\language.dart": {
+    "mtime": 1780388444.4491026,
+    "ast_hash": "0b85c0777b96ddd5642f240dd6f50d7b",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\Account\\models\\language_response.dart": {
+    "mtime": 1780388444.4491026,
+    "ast_hash": "e582a224f4745e132a71c24d478d6d3e",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\Account\\models\\profile_data.dart": {
+    "mtime": 1780388444.4501011,
+    "ast_hash": "0497b9b553d2efe27fc1a0ed53ce527a",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\Account\\models\\section.dart": {
+    "mtime": 1780388444.4501011,
+    "ast_hash": "359761dd392d5b1449a2e43b84e40a8d",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\Account\\models\\section_item.dart": {
+    "mtime": 1780388444.451102,
+    "ast_hash": "a359c9cb9a8cc931493f741adb2cb748",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\Account\\sections\\account_quick_actions.dart": {
+    "mtime": 1780388444.4521043,
+    "ast_hash": "b603dc446074b5d2ee02a0fd2577b82d",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\Account\\sections\\contract_item.dart": {
+    "mtime": 1780388444.4531045,
+    "ast_hash": "1cb8d663017b150b7127b0d4bae905e8",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\Account\\sections\\footer.dart": {
+    "mtime": 1780388444.4541035,
+    "ast_hash": "c7837a945b0eb8727ccee7654037d94a",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\Account\\sections\\header_name_email.dart": {
+    "mtime": 1780388444.4541035,
+    "ast_hash": "e0f9b6c7ad8f0946cec25f094330f7fe",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\Account\\sections\\profile_header.dart": {
+    "mtime": 1780388444.4551032,
+    "ast_hash": "fb325913537d025f4b26a22dcb921ef8",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\Account\\sections\\quick_action_card.dart": {
+    "mtime": 1780388444.456103,
+    "ast_hash": "bb323c9e6aeaf9416d450a1e727c7102",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\Account\\sections\\reach_out_section.dart": {
+    "mtime": 1780388444.456103,
+    "ast_hash": "431b6ac7ce2849d13b4dc0620cada4c0",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\Cart\\MainCartView.dart": {
+    "mtime": 1780388444.4571052,
+    "ast_hash": "9d0d3ed1d2a3e8025e1860df1011382a",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\Cart\\address\\address_view.dart": {
+    "mtime": 1780388444.4591043,
+    "ast_hash": "b22b3d70fe01ef0c5a8d8549169f2186",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\Cart\\cart_shipping\\apply_coupon_model.dart": {
+    "mtime": 1780388444.4591043,
+    "ast_hash": "906629a009e1e9bcb2b893917767a737",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\Cart\\cart_shipping\\cart_listing_model\\cart_listing_model.dart": {
+    "mtime": 1780388444.4611027,
+    "ast_hash": "2df22ab8874c574f5fc3027ce2e88fe0",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\Cart\\cart_shipping\\cart_listing_model\\product_card.dart": {
+    "mtime": 1780388444.462104,
+    "ast_hash": "828482a731b20bd47471d43e2cb841f2",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\Cart\\cart_shipping\\cart_update_model\\cart_update_model.dart": {
+    "mtime": 1780388444.4631028,
+    "ast_hash": "0326e8372a0628704a6b660d6c4b22b0",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\Cart\\cart_shipping\\confirm_order_model.dart": {
+    "mtime": 1780388444.4631028,
+    "ast_hash": "49a17042c0fa614e47886c301af47e68",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\Cart\\cart_shipping\\payment_summary_model\\payment_summary_model.dart": {
+    "mtime": 1780388444.4641027,
+    "ast_hash": "340c4c5840bff95201fb8bc8e255d372",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\Cart\\cart_shipping\\preorder_products\\preorder_product_view.dart": {
+    "mtime": 1780388444.4661036,
+    "ast_hash": "42c447d05f7e4063ee10550d94b527f4",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\Cart\\cart_shipping\\regular_products\\add_comment\\add_comment.dart": {
+    "mtime": 1780388444.4671023,
+    "ast_hash": "63afe3ded8fe34c6b898cd1284797298",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\Cart\\cart_shipping\\regular_products\\regular_product_controller.dart": {
+    "mtime": 1780388444.4681032,
+    "ast_hash": "1434bd3bfc3433f18755757ffbe27cb0",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\Cart\\cart_shipping\\regular_products\\regular_product_view.dart": {
+    "mtime": 1780388444.4691048,
+    "ast_hash": "9eb16bc292f03e63385eb203ddfecb3a",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\Cart\\cart_shipping\\save_for_later_model\\save_for_later_model.dart": {
+    "mtime": 1780388444.470104,
+    "ast_hash": "951f757ca5d8f1da1fc243727b39b301",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\Cart\\choose_payment\\choose_payment_view.dart": {
+    "mtime": 1780388444.4721065,
+    "ast_hash": "c761d1e70810c706b47d988bf34b43d0",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\Cart\\coupon_view\\coupon_view.dart": {
+    "mtime": 1780388444.4731035,
+    "ast_hash": "b93f4073adc78ba2296a03030684e20c",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\Cart\\delivery_option\\delivery_option_view.dart": {
+    "mtime": 1780388444.475107,
+    "ast_hash": "110761f7a6f590f8d1f73ecd10b9a630",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\Cart\\notes\\notes_view.dart": {
+    "mtime": 1780388444.4761057,
+    "ast_hash": "33ddaa814e8fbc3d67bb6340a7f08383",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\Cart\\order_price_detail\\order_price_detail_view.dart": {
+    "mtime": 1780388444.478103,
+    "ast_hash": "ff515e5d0f00403adb28f74d119c8dfa",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\Cart\\order_price_detail\\order_success_price_detail_view.dart": {
+    "mtime": 1780388444.4791052,
+    "ast_hash": "632cbf0c685f7fdbf09169993602a1fd",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\Cart\\order_success_page\\order_success_cart_item\\order_success_cart_item.dart": {
+    "mtime": 1780388444.4801042,
+    "ast_hash": "022a040e1c91f8310a54fcbbe8210191",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\Cart\\order_success_page\\order_success_controller.dart": {
+    "mtime": 1780388444.4811006,
+    "ast_hash": "0c43f520fad790cc360d4efd4177066f",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\Cart\\order_success_page\\order_success_model.dart": {
+    "mtime": 1780388444.4831054,
+    "ast_hash": "a5a77189dfd86c47c3c183c01b4a254a",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\Cart\\order_success_page\\order_success_page.dart": {
+    "mtime": 1780388444.4841084,
+    "ast_hash": "057760c1404027791988310790ce31b3",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\Cart\\payment_web_view\\payment_web_view.dart": {
+    "mtime": 1780388444.4851017,
+    "ast_hash": "66304a4c059780090c01cb4de23a5b07",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\Cart\\place_order\\place_order_view.dart": {
+    "mtime": 1780388444.4871004,
+    "ast_hash": "bf1bca71c364cbfa8511f02e89db9651",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\Cart\\reward_points\\reward_points_view.dart": {
+    "mtime": 1780388444.4881034,
+    "ast_hash": "570f59d43202f9b24bbf4373fb3e0282",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\Cart\\save_for_later\\save_for_later_view.dart": {
+    "mtime": 1780388444.4891043,
+    "ast_hash": "6e96d4875f0fabddf598d50129a4463d",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\Cart\\shipping_guideline\\shipping_guideline_view.dart": {
+    "mtime": 1780388444.490103,
+    "ast_hash": "95433a36e4bd4b446217235206657d54",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\address\\addAddress\\controller\\add_address_controller.dart": {
+    "mtime": 1780388444.4921012,
+    "ast_hash": "6aace9493f77bc87113307a499ff0b84",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\address\\addAddress\\models\\country_data.dart": {
+    "mtime": 1780388444.493102,
+    "ast_hash": "24f08aa68b5f0287cf0148fa5891ff0d",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\address\\addAddress\\models\\country_item.dart": {
+    "mtime": 1780388444.493102,
+    "ast_hash": "2cea6b9b1748783e2778e9b3a9f6a284",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\address\\addAddress\\models\\custom_country.dart": {
+    "mtime": 1780388444.4941013,
+    "ast_hash": "f6077254bf3481c9c3e0b5c26eaa7ad6",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\address\\addAddress\\models\\state_item.dart": {
+    "mtime": 1780388444.495102,
+    "ast_hash": "33a07a1bbd3f6dee2e11180c96c7c444",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\address\\addAddress\\view\\add_new_address_screen.dart": {
+    "mtime": 1780388444.4961016,
+    "ast_hash": "84c87fc819a31dd288d2f7a23c173a41",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\address\\addressList\\controller\\address_controller.dart": {
+    "mtime": 1780388444.4971015,
+    "ast_hash": "4f261c43afcabf79ac54cc0320579ae6",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\address\\addressList\\models\\address_data.dart": {
+    "mtime": 1780388444.4981036,
+    "ast_hash": "fe3e20cc0f7bff1b813f8d3ebdaf270e",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\address\\addressList\\models\\address_model.dart": {
+    "mtime": 1780388444.4991019,
+    "ast_hash": "83869a91677e0ac2a640e8f10cad4682",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\address\\addressList\\view\\address_list_screen.dart": {
+    "mtime": 1780388444.5001016,
+    "ast_hash": "51aca7dbf9ecb65337e315e9bf037cae",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\address\\address_api_client.dart": {
+    "mtime": 1780388444.5001016,
+    "ast_hash": "8e1d5d106431112e2f4a3d12fce57e6e",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\authentication\\AppStoreUpdate\\AppStoreUpdate.dart": {
+    "mtime": 1780388444.5021012,
+    "ast_hash": "ecb6808f56a3e0d734e0d342c175275e",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\authentication\\loginOptions\\login_option_controller.dart": {
+    "mtime": 1780388444.5071037,
+    "ast_hash": "6c03823d8d502d97a3cf3356e3cc48ad",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\authentication\\loginOptions\\login_option_screen.dart": {
+    "mtime": 1780388444.5081012,
+    "ast_hash": "309ccdf1465615f13e60f117bc3fd4ca",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\authentication\\login\\login_controller.dart": {
+    "mtime": 1780388444.5041018,
+    "ast_hash": "573366e7dd84a0fba68b2680a38c553c",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\authentication\\login\\login_data.dart": {
+    "mtime": 1780388444.5051014,
+    "ast_hash": "aef8309cf7bfe9b10455fc067021e792",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\authentication\\login\\login_screen.dart": {
+    "mtime": 1780388444.5061016,
+    "ast_hash": "d42c5d11d48952520468fb9928b87dbe",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\authentication\\loginsignup\\authentication_screen.dart": {
+    "mtime": 1780388444.509101,
+    "ast_hash": "e44061552394ca3173b5917fce64055b",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\authentication\\loginsignup\\login_signup_controller.dart": {
+    "mtime": 1780388444.509101,
+    "ast_hash": "4232c211010d6acc222dee1a27503060",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\authentication\\loginsignup\\login_signup_screen.dart": {
+    "mtime": 1780388444.510101,
+    "ast_hash": "efcd8405912995af2cb6119e436c0d6b",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\authentication\\register\\registraion_screen.dart": {
+    "mtime": 1780388444.5111022,
+    "ast_hash": "4d23da6ef1887b9b51a4dda42b56e7df",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\authentication\\register\\registration_controller.dart": {
+    "mtime": 1780388444.5111022,
+    "ast_hash": "119a24d5fdc879d115d0ff148ad43bdd",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\authentication\\registrationSuccess\\employee_success_screen.dart": {
+    "mtime": 1780388444.5121017,
+    "ast_hash": "843391f1771687aa9cf9899c7d594a9e",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\authentication\\registrationSuccess\\registration_success_screen.dart": {
+    "mtime": 1780388444.5131009,
+    "ast_hash": "7b4c505d9dcc13b1900a080cee0cc433",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\authentication\\socialController\\social_controller.dart": {
+    "mtime": 1780388444.5141034,
+    "ast_hash": "780af5ef59a4d30beff1683f7502987c",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\authentication\\splash\\controller\\employee_verification_status.dart": {
+    "mtime": 1780388444.5151026,
+    "ast_hash": "689c12dc95cdcdaca136824cd1df85b5",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\authentication\\splash\\controller\\splash_controller.dart": {
+    "mtime": 1780388444.5161028,
+    "ast_hash": "6a2e88c2a776eeaf49e9e51edd253973",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\authentication\\splash\\models\\employee_verification_data.dart": {
+    "mtime": 1780388444.5171015,
+    "ast_hash": "cd182b9b0b1e7512bc52750c99a78450",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\authentication\\splash\\models\\login_status.dart": {
+    "mtime": 1780388444.5181012,
+    "ast_hash": "38ec4e2a809b1cc6fae96ab2ca07f0bc",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\authentication\\splash\\models\\social_auth_status_model.dart": {
+    "mtime": 1780388444.5191019,
+    "ast_hash": "29e18b79450077f14e7d8a3f56059c80",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\authentication\\splash\\models\\splash_data_model.dart": {
+    "mtime": 1780388444.5191019,
+    "ast_hash": "182bb457976708d4b35099ce310d626c",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\authentication\\splash\\view\\splash_view.dart": {
+    "mtime": 1780388444.5201018,
+    "ast_hash": "07dc4fd1e5683be10acf2e4def48c4d8",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\bankInfo\\controller\\bank_info_controller.dart": {
+    "mtime": 1780388444.521101,
+    "ast_hash": "ceefb3d08d191c876001a428effb403f",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\bankInfo\\view\\bank_info_view.dart": {
+    "mtime": 1780388444.522103,
+    "ast_hash": "6dc5ac065984ccdc0700f5a6c2ea44f7",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\categories\\brands_list\\brand_controller.dart": {
+    "mtime": 1780388444.524103,
+    "ast_hash": "7a49c6fa759af5f7a29cdca947bea476",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\categories\\brands_list\\brand_tile.dart": {
+    "mtime": 1780388444.525101,
+    "ast_hash": "986ff02744d035da33aa158562272339",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\categories\\brands_list\\brands_list_view.dart": {
+    "mtime": 1780388444.525101,
+    "ast_hash": "f8faa8e6d7907471f34ffdfd83b30753",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\categories\\brands_list\\models\\brand.dart": {
+    "mtime": 1780388444.5261028,
+    "ast_hash": "e27a4d79360d0a89f49739c4d69e4cdc",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\categories\\categories_screen.dart": {
+    "mtime": 1780388444.5271015,
+    "ast_hash": "6deab0e8a17fbbbb614aee4b3d9b7f9f",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\categories\\category_controller.dart": {
+    "mtime": 1780388444.5271015,
+    "ast_hash": "f4ffe4c28ad601789cc32c6e2a18b185",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\categories\\category_list\\category_list_view.dart": {
+    "mtime": 1780388444.5281012,
+    "ast_hash": "358034c76a31ab796857d9af3912cc45",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\categories\\category_list\\subcategory_list_view.dart": {
+    "mtime": 1780388444.5291028,
+    "ast_hash": "f036f21d43f67c3c0886e375caa3d933",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\categories\\models\\category.dart": {
+    "mtime": 1780388444.5301023,
+    "ast_hash": "e18c7d08aefa6a9400ad93b89cb5ff1c",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\categories\\models\\category_item.dart": {
+    "mtime": 1780388444.5311027,
+    "ast_hash": "a2f9ff1ae8bd177e79e5b0fc4afc2899",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\changeEmail\\controller\\change_email_controller.dart": {
+    "mtime": 1780388444.5331047,
+    "ast_hash": "d649d029c4fbdf71d9cb0185d676b665",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\changeEmail\\view\\change_emil_screen.dart": {
+    "mtime": 1780388444.534101,
+    "ast_hash": "bfa559a1a7f6fb3f7787df5531431e24",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\change_language\\change_language_popover.dart": {
+    "mtime": 1780388444.5351052,
+    "ast_hash": "cd5bcfd5528fcb81bca5b3cd2f3ac679",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\change_phone_number\\change_phone_controller.dart": {
+    "mtime": 1780388444.5381033,
+    "ast_hash": "2721569f9b3096d5dbd56e86e8982034",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\change_phone_number\\change_phone_number.dart": {
+    "mtime": 1780388444.5391164,
+    "ast_hash": "7e806473fb7b02c118a2b7e6e7fe70ac",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\contactUs\\contact_us_controller.dart": {
+    "mtime": 1780388444.5401032,
+    "ast_hash": "2af3109a55731307cb9d52919f112344",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\contactUs\\contact_us_screen.dart": {
+    "mtime": 1780388444.5411046,
+    "ast_hash": "26042b68966178fe29aa8f7f69b00a9d",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\edit_profile\\edit_profile.dart": {
+    "mtime": 1780388444.5421023,
+    "ast_hash": "e372fa680c4f37954ed2d5d0449a4190",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\edit_profile\\edit_profile_controller.dart": {
+    "mtime": 1780388444.5431051,
+    "ast_hash": "97bd5d41003aef1aa8efae1290ad223f",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\filter\\controller\\filter_controller.dart": {
+    "mtime": 1780388444.545109,
+    "ast_hash": "0fdccb3c6dd13f02f0d6353d02c037e0",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\filter\\views\\brand_list_widget.dart": {
+    "mtime": 1780388444.545109,
+    "ast_hash": "2f81db1a99aeba3d84d8988d9ea68107",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\filter\\views\\filter_screen.dart": {
+    "mtime": 1780388444.547104,
+    "ast_hash": "08c6fc3ebb0f0ddbf22f37f44331d59f",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\filter\\views\\price_range_widget.dart": {
+    "mtime": 1780388444.5481026,
+    "ast_hash": "81a683b6a4ebbda9ef8ade63f07171af",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\giftCard\\addGiftCard\\controller\\add_gift_card_controller.dart": {
+    "mtime": 1780388444.550102,
+    "ast_hash": "8042edbc2d68d31e70a95d6b3f5645ae",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\giftCard\\addGiftCard\\view\\add_gift_card_screen.dart": {
+    "mtime": 1780388444.5511024,
+    "ast_hash": "2d9d85d9de67842d4ee8c2bcae6b354b",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\giftCard\\giftCardList\\controller\\gift_card_list_controller.dart": {
+    "mtime": 1780388444.5521028,
+    "ast_hash": "8f66959840807a5effc23a9cae69c2bd",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\giftCard\\giftCardList\\models\\gift_model.dart": {
+    "mtime": 1780388444.5541012,
+    "ast_hash": "016c979b4eade9725bb4e4a599d93396",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\giftCard\\giftCardList\\view\\gift_card_filter\\gift_card_filter_popover.dart": {
+    "mtime": 1780388444.5551023,
+    "ast_hash": "87d20a89e917165bc8c5bc25c21ccbad",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\giftCard\\giftCardList\\view\\gift_card_list_screen.dart": {
+    "mtime": 1780388444.556104,
+    "ast_hash": "e92e4df5de8a6b268b8227b2e42e27a4",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\giftCard\\gift_card_api_client.dart": {
+    "mtime": 1780388444.556104,
+    "ast_hash": "28e056f69d54d9d5b58806fe94c2f9cb",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\home\\banner_page_view\\banner_page_view.dart": {
+    "mtime": 1780388444.5581024,
+    "ast_hash": "927720c208557297855089675d0eec97",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\home\\beauty_product_view\\beauty_product_view.dart": {
+    "mtime": 1780388444.5591033,
+    "ast_hash": "400dc3d6b1139cd49537c3b041c81f06",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\home\\category_view\\category_view.dart": {
+    "mtime": 1780388444.5601034,
+    "ast_hash": "98939a5ddf47346d5e225f0ecab2863a",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\home\\change_location_view\\change_location_controller.dart": {
+    "mtime": 1780388444.5611053,
+    "ast_hash": "7f1cee064d3dfa18c8758604b8c3508a",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\home\\change_location_view\\change_location_view.dart": {
+    "mtime": 1780388444.562104,
+    "ast_hash": "8122be6d94268b603df950e017660c60",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\home\\change_location_view\\country_model.dart": {
+    "mtime": 1780388444.563104,
+    "ast_hash": "f43c3ff7c998402d4ead5cd6ae51a943",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\home\\dual_banner_view\\dual_banner_view.dart": {
+    "mtime": 1780388444.5641,
+    "ast_hash": "d1559e516dd29a8946339323feb5ea7f",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\home\\dual_horizontal_product_view\\dual_horizontal_product_view.dart": {
+    "mtime": 1780388444.5651026,
+    "ast_hash": "11db75e83a8315bc5922986ecf1af033",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\home\\favorite_brand_view\\favorite_brand_view.dart": {
+    "mtime": 1780388444.566103,
+    "ast_hash": "a00219e3a8fca061e273e47b21d577fa",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\home\\header_view\\header_view.dart": {
+    "mtime": 1780388444.5671024,
+    "ast_hash": "3111c54b3a40f2fabb02fb7fdf0f9100",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\home\\header_view\\header_view_extension.dart": {
+    "mtime": 1780388444.5671024,
+    "ast_hash": "04da51c10ab834c02aa97dc33f42729b",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\home\\home_controller.dart": {
+    "mtime": 1780388444.5681026,
+    "ast_hash": "66c6f43f8c34ec0cb9ee6fa8211c20e5",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\home\\home_model.dart": {
+    "mtime": 1780388444.5691054,
+    "ast_hash": "45baf3764aa86cd3a75abc6bbbb1dfeb",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\home\\home_view.dart": {
+    "mtime": 1780388444.5701025,
+    "ast_hash": "aee74ba06b15e58f9a11ea535c9bc710",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\home\\padded_banner_view\\padded_banner_view.dart": {
+    "mtime": 1780388444.5701025,
+    "ast_hash": "83d20ae0a979689abe626632bb8b4914",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\home\\perfume_view\\perfume_view.dart": {
+    "mtime": 1780388444.5721023,
+    "ast_hash": "a2e1725c0a5c53a836b74c5d2fac0625",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\home\\reel_page_view\\reel_page_controller.dart": {
+    "mtime": 1780388444.5721023,
+    "ast_hash": "34a1bae8cfdb5e0ce93ac39018ce8052",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\home\\reel_page_view\\reel_page_view.dart": {
+    "mtime": 1780388444.5731015,
+    "ast_hash": "083c4c3e26d09155205bd162e028ceef",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\home\\reel_view\\reel_view.dart": {
+    "mtime": 1780388444.5741048,
+    "ast_hash": "2b8a581d29ab520a94d64f05b8d0c550",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\home\\search_view\\search_view.dart": {
+    "mtime": 1780388444.5751064,
+    "ast_hash": "ca8c65d760cdc16dae47aa741b030078",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\home\\shop_list_view\\shop_list_view.dart": {
+    "mtime": 1780388444.5761123,
+    "ast_hash": "949842e2186fd4cde990aff8f19f8362",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\message\\chatScreen\\controller\\chat_controller.dart": {
+    "mtime": 1780388444.578102,
+    "ast_hash": "0061db6ffc69918eb27a4f303adf8ffe",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\message\\chatScreen\\view\\chat_screen.dart": {
+    "mtime": 1780388444.5791023,
+    "ast_hash": "0b72268963eb90aa2488fed884cdb735",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\message\\chat_api_client.dart": {
+    "mtime": 1780388444.5801022,
+    "ast_hash": "c0bb51376c42115c423d5ff7b98d3874",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\message\\messagesList\\controller\\message_list_controller.dart": {
+    "mtime": 1780388444.5811036,
+    "ast_hash": "c5113329160dfccd8adacdba527d2fb2",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\message\\messagesList\\models\\exchange_message.dart": {
+    "mtime": 1780388444.5821025,
+    "ast_hash": "27c23da0396c8642db9095dceaaaad1b",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\message\\messagesList\\models\\message_data.dart": {
+    "mtime": 1780388444.5831053,
+    "ast_hash": "d7785cc69f8ff392c27c56ca36168737",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\message\\messagesList\\models\\return_message.dart": {
+    "mtime": 1780388444.5831053,
+    "ast_hash": "c5b26859c86afcb5d8747aeb3547cebb",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\message\\messagesList\\models\\threads.dart": {
+    "mtime": 1780388444.5841007,
+    "ast_hash": "c37649a243aa5ad2b17fedca091e1370",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\message\\messagesList\\view\\message_list_screen.dart": {
+    "mtime": 1780388444.5851028,
+    "ast_hash": "9b77cd7c900d69f97b6d5f49f2bb020c",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\myOffer\\controller\\my_offer_controller.dart": {
+    "mtime": 1780388444.5861027,
+    "ast_hash": "e6414f5b427a26238c87623fd6b25d49",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\myOffer\\models\\coupon_data.dart": {
+    "mtime": 1780388444.5871034,
+    "ast_hash": "3c540064c5e14c70bf3f110604d3dd89",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\myOffer\\models\\offer.dart": {
+    "mtime": 1780388444.5881026,
+    "ast_hash": "f81634038c68597c2b7612fc064cdd85",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\myOffer\\offer_api_client.dart": {
+    "mtime": 1780388444.5881026,
+    "ast_hash": "4df81de961f816ad66e942b5ba1f65e5",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\myOffer\\view\\my_offer_screen.dart": {
+    "mtime": 1780388444.5891018,
+    "ast_hash": "46362cff2cee995a90822f1f9dae7151",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\navigation\\bottom_navigation.dart": {
+    "mtime": 1780388444.590741,
+    "ast_hash": "5527c197c6629d0c9fcff1bc89e2e352",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\notifications\\alerts\\controllers\\notification_controller.dart": {
+    "mtime": 1780388444.5922577,
+    "ast_hash": "3011e14e28b0455c6b9ea18b75756c6f",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\notifications\\alerts\\models\\app_notification.dart": {
+    "mtime": 1780388444.5932543,
+    "ast_hash": "cb8ab834dd803542844da9ff568339f1",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\notifications\\alerts\\models\\notificationData.dart": {
+    "mtime": 1780388444.5942621,
+    "ast_hash": "bc2021831cdfe14283723e1033914b97",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\notifications\\alerts\\view\\notification_screen.dart": {
+    "mtime": 1780388444.5952597,
+    "ast_hash": "4295b7f0adbc11e5a8dea9a7cadabe0e",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\notifications\\notification_api_client.dart": {
+    "mtime": 1780388444.5952597,
+    "ast_hash": "fde68c86b52d64a25496e27203f17725",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\notifications\\offers\\controller\\offer_controller.dart": {
+    "mtime": 1780388444.5972574,
+    "ast_hash": "7eff9c54fb698adb1bf4a2bfaf0b714b",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\notifications\\offers\\models\\offer_item.dart": {
+    "mtime": 1780388444.5972574,
+    "ast_hash": "dd82f0975ad6625d026dcfd3e8b66b72",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\notifications\\offers\\view\\offer_view.dart": {
+    "mtime": 1780388444.5982542,
+    "ast_hash": "e8fd1b5e378a504e84307927b12b77cf",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\orders\\myOrders\\controller\\my_order_controller.dart": {
+    "mtime": 1780388444.6002555,
+    "ast_hash": "2c4b2571ae17a5b2940b2839c4cd16c7",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\orders\\myOrders\\models\\order_list_response.dart": {
+    "mtime": 1780388444.6012583,
+    "ast_hash": "10914a1dcab79939fc106a2096143245",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\orders\\myOrders\\view\\my_order_view.dart": {
+    "mtime": 1780388444.602255,
+    "ast_hash": "f39b0ad5863081d9f2752e3622798428",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\orders\\myOrders\\view\\order_card.dart": {
+    "mtime": 1780388444.6032562,
+    "ast_hash": "af2d0c0e49ce244016279cf9104254b9",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\orders\\orderDetail\\controller\\order_details_controller.dart": {
+    "mtime": 1780388444.6042569,
+    "ast_hash": "695313d1a81b49639c77863be4aae0d0",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\orders\\orderDetail\\models\\address.dart": {
+    "mtime": 1780388444.6052556,
+    "ast_hash": "b945b8aa1a5a8c881f9e0f8e0b0b4596",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\orders\\orderDetail\\models\\charges.dart": {
+    "mtime": 1780388444.6062584,
+    "ast_hash": "3edd7a707d6bf305146724f7ab751ff2",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\orders\\orderDetail\\models\\child_order_detail_item.dart": {
+    "mtime": 1780388444.6072574,
+    "ast_hash": "81411e99e3b304eaddff0e24476f466c",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\orders\\orderDetail\\models\\comments.dart": {
+    "mtime": 1780388444.6072574,
+    "ast_hash": "0798c5d7b62848cdfdfa8ba8ebb603be",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\orders\\orderDetail\\models\\net_payable.dart": {
+    "mtime": 1780388444.6082582,
+    "ast_hash": "bca8ab54741c4996a41e275b01852d45",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\orders\\orderDetail\\models\\order_detail.dart": {
+    "mtime": 1780388444.6092567,
+    "ast_hash": "af9e3897784b5fbcfcacdd96e2f2d458",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\orders\\orderDetail\\models\\order_detail_account.dart": {
+    "mtime": 1780388444.6092567,
+    "ast_hash": "97ce9d454a4e9f54badedeced14b1f26",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\orders\\orderDetail\\models\\order_detail_data.dart": {
+    "mtime": 1780388444.610258,
+    "ast_hash": "8e80b4425db0c8f4ddee9dc775965163",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\orders\\orderDetail\\models\\pickup_detail.dart": {
+    "mtime": 1780388444.610258,
+    "ast_hash": "50c4c145f54fbeb048638ba7c79d25cc",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\orders\\orderDetail\\models\\price_detail.dart": {
+    "mtime": 1780388444.6112547,
+    "ast_hash": "8fb3aa3f1741a04943f541c8cb598bad",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\orders\\orderDetail\\models\\rates.dart": {
+    "mtime": 1780388444.6122568,
+    "ast_hash": "ed777e386b88a7154586d66653258697",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\orders\\orderDetail\\models\\shipping_address.dart": {
+    "mtime": 1780388444.6122568,
+    "ast_hash": "0d5da18fefd9e517259df79754a18393",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\orders\\orderDetail\\models\\shipping_comments.dart": {
+    "mtime": 1780388444.6132562,
+    "ast_hash": "71cad54973e644ebf02f8f4ab0ef8804",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\orders\\orderDetail\\models\\shipping_data_new.dart": {
+    "mtime": 1780388444.614257,
+    "ast_hash": "b50782b7deaf0f90f1fcbe277da9c6d9",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\orders\\orderDetail\\models\\shipping_guidelines.dart": {
+    "mtime": 1780388444.614257,
+    "ast_hash": "be93a5b2468cea99a57a471d55623de4",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\orders\\orderDetail\\models\\tax_options.dart": {
+    "mtime": 1780388444.615257,
+    "ast_hash": "86cae12869d74dd6e1ab2277f71ebfbe",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\orders\\orderDetail\\models\\time_slot.dart": {
+    "mtime": 1780388444.615257,
+    "ast_hash": "0667bdd71c96ebd6d6207fc6824da111",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\orders\\orderDetail\\models\\total_amount.dart": {
+    "mtime": 1780388444.6162603,
+    "ast_hash": "136a95a91b9352708e7f836b7d7244f6",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\orders\\orderDetail\\view\\order_details_screen.dart": {
+    "mtime": 1780388444.6172588,
+    "ast_hash": "fb2d17b804ef307567a408d8d0bb2d99",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\otp_verification_screen\\controller\\confirm_phone_otp_controller.dart": {
+    "mtime": 1780388444.6192546,
+    "ast_hash": "86ff11d9f4b214d1522deb1ec6db8d1e",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\otp_verification_screen\\view\\otp_verification_screen.dart": {
+    "mtime": 1780388444.6192546,
+    "ast_hash": "37a97d5ce3b248da02673e936d8b85ca",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\payment\\controller\\payment_controller.dart": {
+    "mtime": 1780388444.6212587,
+    "ast_hash": "242671bc4a5d95091cb1a5a81a647d0c",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\payment\\models\\payment_method.dart": {
+    "mtime": 1780388444.6222587,
+    "ast_hash": "8fa5d84ae33ddda13cc088881180112f",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\payment\\paymentMethods\\controller\\payment_method_controller.dart": {
+    "mtime": 1780388444.623257,
+    "ast_hash": "cb6c30bd79e291da051ac31ec6906974",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\payment\\paymentMethods\\model\\payment_methods_data.dart": {
+    "mtime": 1780388444.624254,
+    "ast_hash": "593091782ea0add152801a93deb8a218",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\payment\\paymentMethods\\view\\payment_method_screen.dart": {
+    "mtime": 1780388444.6252565,
+    "ast_hash": "53c38caad17b84cf398ce4d9cde8ef35",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\payment\\payment_api_client.dart": {
+    "mtime": 1780388444.626258,
+    "ast_hash": "e3a0bdcadf0ee5003b46a9fedd234837",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\payment\\view\\payment_screen.dart": {
+    "mtime": 1780388444.6272583,
+    "ast_hash": "72f8d20527caea19753438661d550d13",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\productList\\controllers\\product_controller.dart": {
+    "mtime": 1780388444.628256,
+    "ast_hash": "9056fdfa5d1d87633a8f1fc09388e87f",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\productList\\models\\filtered_product.dart": {
+    "mtime": 1780388444.6292572,
+    "ast_hash": "d43a979add3343660287cc152e74b091",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\productList\\models\\product.dart": {
+    "mtime": 1780388444.630258,
+    "ast_hash": "28cee2eb83c86eb807bc145786564352",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\productList\\product_card.dart": {
+    "mtime": 1780388444.630258,
+    "ast_hash": "407366de2ec3c68d9a04aef527464f29",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\productList\\views\\filter_sort_bar.dart": {
+    "mtime": 1780388444.6312563,
+    "ast_hash": "d245f6d2ae27e0e03653a4d1ab5dff19",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\productList\\views\\product_list_page.dart": {
+    "mtime": 1780388444.6322577,
+    "ast_hash": "be3590ede436cf6ce78f7f02fe97e535",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\productList\\views\\sort_bottom_sheet.dart": {
+    "mtime": 1780388444.63326,
+    "ast_hash": "b8f2d4dc1a2c17fde6de57661e69455a",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\product_detail\\GetFiltersModel.dart": {
+    "mtime": 1780388444.634258,
+    "ast_hash": "a684dae35c607db9674a7d6558942c1c",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\product_detail\\add_to_cart_model\\add_to_cart_model.dart": {
+    "mtime": 1780388444.6352563,
+    "ast_hash": "5e87caf060223d67b7125bcd5bf4d94a",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\product_detail\\ask_question_view\\ask_question_view.dart": {
+    "mtime": 1780388444.636258,
+    "ast_hash": "d41c656ae582cd4f4ce106f8a7ff9888",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\product_detail\\productSizeInfo\\size_chart_controller.dart": {
+    "mtime": 1780388444.6372583,
+    "ast_hash": "cd76835370105bf77f672d0899615894",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\product_detail\\productSizeInfo\\size_chart_model.dart": {
+    "mtime": 1780388444.6382565,
+    "ast_hash": "81ed94a7d84e30a6d501749a12ba4f9f",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\product_detail\\productSizeInfo\\size_chart_screen.dart": {
+    "mtime": 1780388444.6382565,
+    "ast_hash": "44cff2a076df4a1e07608195bfb05cf8",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\product_detail\\product_detail_controller.dart": {
+    "mtime": 1780388444.6392567,
+    "ast_hash": "b92490f51c8a232a146eb962dbc22255",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\product_detail\\product_detail_model.dart": {
+    "mtime": 1780388444.6402583,
+    "ast_hash": "627a886ef543e2f66e99e3bd1585efae",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\product_detail\\product_detail_view.dart": {
+    "mtime": 1780388444.6412559,
+    "ast_hash": "c1e3ea378626540b8873f6feee3374c0",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\product_detail\\product_images\\fullscreen_product_images.dart": {
+    "mtime": 1780388444.6422553,
+    "ast_hash": "5a3623cc57d4e5c68cfd7903a3588676",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\product_detail\\product_images\\product_images.dart": {
+    "mtime": 1780388444.6432545,
+    "ast_hash": "4df1021ed293432e96befe9bf7eb76c6",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\product_detail\\report_form\\report_form_view.dart": {
+    "mtime": 1780388444.644254,
+    "ast_hash": "d59674d6aee0b38f6d70fe4b20337f48",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\product_detail\\search_view\\search_controller.dart": {
+    "mtime": 1780388444.6452541,
+    "ast_hash": "d133ba7db7cf05c171424e695f65b68f",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\product_detail\\search_view\\search_model.dart": {
+    "mtime": 1780388444.6452541,
+    "ast_hash": "d2dca45402dcb7bdab9459a3ad843d5b",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\product_detail\\search_view\\search_view.dart": {
+    "mtime": 1780388444.6462574,
+    "ast_hash": "908ec13e4cf06c7408a5c44696394289",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\product_detail\\select_size\\select_size_controller.dart": {
+    "mtime": 1780388444.6482584,
+    "ast_hash": "97b49dcc4a76f0cf16b61c8e2a3d9827",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\product_detail\\select_size\\select_size_view.dart": {
+    "mtime": 1780388444.6482584,
+    "ast_hash": "e5d61639d9c9c5dd516e0e07263e32db",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\product_detail\\share_activity\\share_activity_view.dart": {
+    "mtime": 1780388444.649258,
+    "ast_hash": "92ac4bc2a440fb16ae5692b6bd1fbaab",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\product_detail\\shop_detail_view\\reviews_view\\review_list_view.dart": {
+    "mtime": 1780388444.6502562,
+    "ast_hash": "b4817f6a21ea5f9a447ef802e61bc63e",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\product_detail\\shop_detail_view\\reviews_view\\shop_review_model.dart": {
+    "mtime": 1780388444.6512568,
+    "ast_hash": "ff7726f5de5737842c6926a91bb53fd9",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\product_detail\\shop_detail_view\\shop_detail_controller.dart": {
+    "mtime": 1780388444.6522577,
+    "ast_hash": "d5355240f34878e2511eada7edf59722",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\product_detail\\shop_detail_view\\shop_detail_view.dart": {
+    "mtime": 1780388444.6532605,
+    "ast_hash": "99ef409c42b3a318bd5f1c2956234fed",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\product_detail\\shop_detail_view\\shop_model.dart": {
+    "mtime": 1780388444.6532605,
+    "ast_hash": "1e3c6f72e4a815727132bb7fd8221079",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\product_detail\\wishlist_names_view\\create_wishlist_view\\create_wishlist_view.dart": {
+    "mtime": 1780388444.6552558,
+    "ast_hash": "a8807f9a7656d42cd87512f1fb8a5933",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\product_detail\\wishlist_names_view\\wishlist_names_view.dart": {
+    "mtime": 1780388444.6552558,
+    "ast_hash": "010ee569b671592da9994b5028b9b97c",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\redeem_gift_card\\redeem_gift_card.dart": {
+    "mtime": 1780388444.657257,
+    "ast_hash": "6f78fd3549d7c3efddac258b2003c0ed",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\request_my_data\\controller\\request_data_controller.dart": {
+    "mtime": 1780388444.6582563,
+    "ast_hash": "ddf84a303013632074b01171e1b52661",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\request_my_data\\view\\request_my_data.dart": {
+    "mtime": 1780388444.6592605,
+    "ast_hash": "cb0fac37a39d9d55a790cc1e9a51ee71",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\return\\cancelOrder\\cancel_order.dart": {
+    "mtime": 1780388444.6602569,
+    "ast_hash": "99d6155ac3d8cdbc2615ea76530d03be",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\return\\returnRequestDetail\\controller\\return_request_detail_controller.dart": {
+    "mtime": 1780388444.6662583,
+    "ast_hash": "d1e9860d0c7d1039cb106442659b9d69",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\return\\returnRequestDetail\\model\\exchange_detail_data.dart": {
+    "mtime": 1780388444.6662583,
+    "ast_hash": "1c5a9f82a4572fa4c81f95e59876fd2d",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\return\\returnRequestDetail\\model\\request_detail_response.dart": {
+    "mtime": 1780388444.6672568,
+    "ast_hash": "ea4ace1c8356d56c99b5733f931bb138",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\return\\returnRequestDetail\\model\\request_exchange_data.dart": {
+    "mtime": 1780388444.6682568,
+    "ast_hash": "2e775293d1bcab59eddff1b9438f5266",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\return\\returnRequestDetail\\model\\vendor_return_address.dart": {
+    "mtime": 1780388444.6682568,
+    "ast_hash": "b2540d5b4b0f20e9e534a5cad7c1e375",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\return\\returnRequestDetail\\view\\return_request_detail_screen.dart": {
+    "mtime": 1780388444.6692562,
+    "ast_hash": "4dc0d60e81e6b3cabaa67916d6c464c2",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\return\\returnRequest\\controller\\return_request_controller.dart": {
+    "mtime": 1780388444.662255,
+    "ast_hash": "8cd004233b135cb0fee9122bd16915ac",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\return\\returnRequest\\models\\request_data.dart": {
+    "mtime": 1780388444.662255,
+    "ast_hash": "5a3dff9c09231a9001938639b5b81a23",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\return\\returnRequest\\models\\request_item.dart": {
+    "mtime": 1780388444.6632543,
+    "ast_hash": "27bb42bab5bdbbe41a56c11c9f74ae58",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\return\\returnRequest\\view\\return_request_screen.dart": {
+    "mtime": 1780388444.6642566,
+    "ast_hash": "717f672fc7d538dbdfed039336819ac9",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\return\\return_order\\controller\\return_order_controller.dart": {
+    "mtime": 1780388444.670257,
+    "ast_hash": "2dc73fd4b4bba2dcd2249a583ee6d62f",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\return\\return_order\\model\\reason_data.dart": {
+    "mtime": 1780388444.6712587,
+    "ast_hash": "c5187dfc8ea2740844073744c86c424c",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\return\\return_order\\model\\resason_item.dart": {
+    "mtime": 1780388444.6722565,
+    "ast_hash": "ef17317dc4007a78c56b9f72a71d26f8",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\return\\return_order\\view\\return_order_screen.dart": {
+    "mtime": 1780388444.6732552,
+    "ast_hash": "ef3c8139ce8ac2b6ff2f15acba495c2b",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\review\\rating\\controller\\rating_controller.dart": {
+    "mtime": 1780388444.6752546,
+    "ast_hash": "4d8440370006f55f9401ce8feffafd77",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\review\\rating\\model\\custom_rate_data.dart": {
+    "mtime": 1780388444.6762583,
+    "ast_hash": "684d07c4a01e92b95fbbad4c2a91bda4",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\review\\rating\\model\\main_rate_data.dart": {
+    "mtime": 1780388444.6762583,
+    "ast_hash": "14499f849c15a086219cfd0a380fd4bb",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\review\\rating\\model\\order_feedback.dart": {
+    "mtime": 1780388444.6772573,
+    "ast_hash": "8a4c6cb814968aeda9167f57d6fe4ccd",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\review\\rating\\view\\rating_screen.dart": {
+    "mtime": 1780388444.6782568,
+    "ast_hash": "63214fa436b5b1356e12194a1075de6d",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\review\\review\\controller\\review_controller.dart": {
+    "mtime": 1780388444.679258,
+    "ast_hash": "c4d2c88a11debf55b15abc51f7ac8b47",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\review\\review\\view\\write_review_screen.dart": {
+    "mtime": 1780388444.68026,
+    "ast_hash": "cf9a95e7dd6f2745ea60f4520de12192",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\review\\review_api_client.dart": {
+    "mtime": 1780388444.6812568,
+    "ast_hash": "21824a61a6c64e4649bbdabe702ed3c7",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\rewards\\controller\\rewards_controller.dart": {
+    "mtime": 1780388444.682255,
+    "ast_hash": "ccb520a094dfc375cb224b2578ee84ec",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\rewards\\models\\reward_model.dart": {
+    "mtime": 1780388444.683255,
+    "ast_hash": "fb6a2f94d1dbb891043aea3975ded850",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\rewards\\models\\rewards_data.dart": {
+    "mtime": 1780388444.6842568,
+    "ast_hash": "e509463d0db1283859f966790301719a",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\rewards\\reward_api_client.dart": {
+    "mtime": 1780388444.6842568,
+    "ast_hash": "666249aeadfe53ecba0a8c265e586e00",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\rewards\\view\\my_rewards_screen.dart": {
+    "mtime": 1780388444.6852574,
+    "ast_hash": "01ad365566df69a8dd99812652cc29b5",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\share_and_earn\\share_and_earn.dart": {
+    "mtime": 1780388444.6862574,
+    "ast_hash": "11a61e888ecde94d8be57e374d53785f",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\wallet\\addMoney\\controller\\add_money_controller.dart": {
+    "mtime": 1780388444.688257,
+    "ast_hash": "d3b1097739f6f691d429efac17d3407e",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\wallet\\addMoney\\view\\add_money_screen.dart": {
+    "mtime": 1780388444.6892588,
+    "ast_hash": "1a6a215cab110f50b869189d559a5bc8",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\wallet\\myWallet\\controller\\wallet_controller.dart": {
+    "mtime": 1780388444.6912546,
+    "ast_hash": "f838fff56ba4f8d7a80f7755214806be",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\wallet\\myWallet\\models\\credit_listing_item.dart": {
+    "mtime": 1780388444.6922562,
+    "ast_hash": "fc0615777ee28e2919f9987a98ec329d",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\wallet\\myWallet\\models\\payout_plugin.dart": {
+    "mtime": 1780388444.6922562,
+    "ast_hash": "3e10eb1bf98fa7e73597692dd0031768",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\wallet\\myWallet\\models\\transaction_data.dart": {
+    "mtime": 1780388444.693257,
+    "ast_hash": "2b8f16c1495ac67be5eb3720e559cf08",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\wallet\\myWallet\\models\\wallet_payout.dart": {
+    "mtime": 1780388444.694256,
+    "ast_hash": "c175e1000c8a0282b1cc87ba7a6d940a",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\wallet\\myWallet\\view\\wallet_screen.dart": {
+    "mtime": 1780388444.694256,
+    "ast_hash": "0eaab1eb4b0cfec23de9b6124668e7ee",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\wallet\\wallet_api_client.dart": {
+    "mtime": 1780388444.6952558,
+    "ast_hash": "11e016b5e0a050961627c2d9c6733d05",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\wallet\\withdraw\\controller\\withdraw_request_controller.dart": {
+    "mtime": 1780388444.6962574,
+    "ast_hash": "a9c63707ec8241a0e3d5f2f90969aeb7",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\wallet\\withdraw\\view\\withdraw_request_screen.dart": {
+    "mtime": 1780388444.6972575,
+    "ast_hash": "96f120e83a979c4b1a245eca006b467a",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\webView\\controller\\wevview_controller.dart": {
+    "mtime": 1780388444.699253,
+    "ast_hash": "eae79172e516905db36c41751ed12f8b",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\webView\\view\\webview_binding.dart": {
+    "mtime": 1780388444.7002544,
+    "ast_hash": "8429736f0a3caee2fc65274cddcf9739",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\webView\\view\\webview_view.dart": {
+    "mtime": 1780388444.7002544,
+    "ast_hash": "a457a920d8721b65070cdf402967e567",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\wish_list\\wish_list_controller.dart": {
+    "mtime": 1780388444.7012587,
+    "ast_hash": "a96fe3b1095825bab5208edaeb3a3ecf",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\wish_list\\wish_list_items_view\\wish_list_item_controller.dart": {
+    "mtime": 1780388444.7022564,
+    "ast_hash": "a36b704babb8dfbfec52544423e9f8c3",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\wish_list\\wish_list_items_view\\wish_list_items_view.dart": {
+    "mtime": 1780388444.7032585,
+    "ast_hash": "1f2717f097a24df20cec392276ca7368",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\wish_list\\wish_list_model.dart": {
+    "mtime": 1780388444.7042563,
+    "ast_hash": "e1f6bfc66a666e677e6843e6d6809412",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\app\\modules\\wish_list\\wish_list_view.dart": {
+    "mtime": 1780388444.705258,
+    "ast_hash": "e8c67461e1698ef870ac8970aaa5768d",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\common\\controller\\country_controller.dart": {
+    "mtime": 1780388444.7062595,
+    "ast_hash": "065033464e856e38e5098f95a1e62cb4",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\common\\functions\\app_function.dart": {
+    "mtime": 1780388444.7072566,
+    "ast_hash": "bb84fc35431e5cd0b8da616e49c92813",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\common\\widgets\\app_dialog.dart": {
+    "mtime": 1780388444.7092566,
+    "ast_hash": "7dc77ceeebbd737a27bd7f0ae3c6fc5b",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\common\\widgets\\common_dropdown_field.dart": {
+    "mtime": 1780388444.7102587,
+    "ast_hash": "f7515fea5cf99ac26e593c0c9dd8d841",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\common\\widgets\\common_loader.dart": {
+    "mtime": 1780388444.7102587,
+    "ast_hash": "f77c0b2c517f6892151be35a9f6d1d70",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\common\\widgets\\common_text_field.dart": {
+    "mtime": 1780388444.7112567,
+    "ast_hash": "4805e1285b66ac2e46cd79ce17cf5226",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\common\\widgets\\phone_field.dart": {
+    "mtime": 1780388444.7122579,
+    "ast_hash": "3957303fd4e044ede46d1e9e5308cdce",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\common\\widgets\\restart_widget.dart": {
+    "mtime": 1780388444.7132554,
+    "ast_hash": "8966177985942f59bced38882c4797e3",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\local_controller.dart": {
+    "mtime": 1780388444.7132554,
+    "ast_hash": "2ac9f41bbb1dc62c923e4f5328a25891",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\main.dart": {
+    "mtime": 1780388444.7142544,
+    "ast_hash": "f518e8849d517a3ea3ec4c5c3a42bf9d",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\main_extension.dart": {
+    "mtime": 1780388444.7152543,
+    "ast_hash": "66906f23403d38317ca86840f6dbef0f",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\marque_label.dart": {
+    "mtime": 1780388444.7152543,
+    "ast_hash": "8ea644a7ef571e63cbc54cf728e38587",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\my_root_app.dart": {
+    "mtime": 1780388444.7162602,
+    "ast_hash": "b5c86912710cc53ca360a65eb96f5e10",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\translations\\localization_service.dart": {
+    "mtime": 1780388444.7172568,
+    "ast_hash": "1b9ffc8642407b2c690b808da8fa4a2b",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\utils\\app_colors.dart": {
+    "mtime": 1780388444.718257,
+    "ast_hash": "3bd8aaf4fe9ee4d77f98df2ab43edd3d",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\utils\\app_dialog.dart": {
+    "mtime": 1780388444.718257,
+    "ast_hash": "8d1555e138db77c1a9bad5c8de8f5e1e",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\utils\\app_loader.dart": {
+    "mtime": 1780388444.7192554,
+    "ast_hash": "1ee80c71d40f1f51c99d8b5c37e3ca73",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\utils\\app_params.dart": {
+    "mtime": 1780388444.720258,
+    "ast_hash": "aa8f3d1554a689a5d554a6ccc9ae6075",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\utils\\app_strings.dart": {
+    "mtime": 1780388444.720258,
+    "ast_hash": "c9d09c8e23fc4245299e6cab518e03e4",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\utils\\base_response.dart": {
+    "mtime": 1780388444.7212577,
+    "ast_hash": "c3d0f4eaf0ce8d39ae926f5b1cf1179d",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\utils\\color_extension.dart": {
+    "mtime": 1780388444.7222576,
+    "ast_hash": "5338dad832bea47637d165a62e8f717c",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\utils\\common_data.dart": {
+    "mtime": 1780388444.7222576,
+    "ast_hash": "f4a0f0636830d5265a03457a3a29e9b1",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\lib\\utils\\pref_store.dart": {
+    "mtime": 1780388444.7232618,
+    "ast_hash": "9639ad9cac03de4da6a1f7530bdf2d74",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\linux\\flutter\\generated_plugin_registrant.cc": {
+    "mtime": 1780388444.7262592,
+    "ast_hash": "2f4f712fbdda6040e7f5f41f9edcd819",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\linux\\flutter\\generated_plugin_registrant.h": {
+    "mtime": 1780388444.7272584,
+    "ast_hash": "0208db974972d7b29a0ac368be83644b",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\linux\\runner\\main.cc": {
+    "mtime": 1780388444.729258,
+    "ast_hash": "539395bcd63dba20afed0838d136189f",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\linux\\runner\\my_application.cc": {
+    "mtime": 1780388444.7302544,
+    "ast_hash": "4c278b316c5102c5df2c4cdebfe25146",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\linux\\runner\\my_application.h": {
+    "mtime": 1780388444.7302544,
+    "ast_hash": "f6b37d58752c8671078b6f660e33e8c1",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\macos\\Flutter\\GeneratedPluginRegistrant.swift": {
+    "mtime": 1780388444.7332585,
+    "ast_hash": "332d3ab1207620042efd1bc6b42911d6",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\macos\\RunnerTests\\RunnerTests.swift": {
+    "mtime": 1780388444.756258,
+    "ast_hash": "8059f5d27a19c556eeafb49b3f9b7bdd",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\macos\\Runner\\AppDelegate.swift": {
+    "mtime": 1780388444.7412584,
+    "ast_hash": "4b52e0b89ebfef9baf45b04548c463d6",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\macos\\Runner\\Assets.xcassets\\AppIcon.appiconset\\Contents.json": {
+    "mtime": 1780388444.7432563,
+    "ast_hash": "1d48e925145d4b573a3b5d7960a1c585",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\macos\\Runner\\MainFlutterWindow.swift": {
+    "mtime": 1780388444.7542572,
+    "ast_hash": "93c22dae2d93f3dc1402e121901f582b",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\test\\integration_test\\app_test.dart": {
+    "mtime": 1780388444.7592576,
+    "ast_hash": "0beec9ac8c59977d9bf62596302a99c9",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\test\\widget_test.dart": {
+    "mtime": 1780388444.7592576,
+    "ast_hash": "66b5b48014e3c78e1c685142805fe89d",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\web\\manifest.json": {
+    "mtime": 1780388444.7652543,
+    "ast_hash": "e538c7beb87edca6ea355c68e1b57369",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\windows\\flutter\\generated_plugin_registrant.cc": {
+    "mtime": 1780388444.7682574,
+    "ast_hash": "8b7318cba0aa6a80d1955c7a2b264f76",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\windows\\flutter\\generated_plugin_registrant.h": {
+    "mtime": 1780388444.7692547,
+    "ast_hash": "0c3df6700414e7f332dfa2582a1ae29e",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\windows\\runner\\flutter_window.cpp": {
+    "mtime": 1780388444.7722545,
+    "ast_hash": "2f463f9b7da67a2d692a012f9ea85e0c",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\windows\\runner\\flutter_window.h": {
+    "mtime": 1780388444.7722545,
+    "ast_hash": "7defcc89d4a26d56e801241d624d48fb",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\windows\\runner\\main.cpp": {
+    "mtime": 1780388444.773256,
+    "ast_hash": "24640b57d70c17d1a892e86ca9811d3f",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\windows\\runner\\resource.h": {
+    "mtime": 1780388444.7742572,
+    "ast_hash": "1ade5dd15e613479a15e8832ed276f2b",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\windows\\runner\\utils.cpp": {
+    "mtime": 1780388444.7762587,
+    "ast_hash": "432461b09d862a2f8dadf380ff0e34e5",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\windows\\runner\\utils.h": {
+    "mtime": 1780388444.7762587,
+    "ast_hash": "fd81e143f5614eb6fd75efe539002853",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\windows\\runner\\win32_window.cpp": {
+    "mtime": 1780388444.7772589,
+    "ast_hash": "571eb8234dbc2661be03aa5f2a4d2fca",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\windows\\runner\\win32_window.h": {
+    "mtime": 1780388444.7782586,
+    "ast_hash": "7569387d58711ab975940f4df3b4bcda",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\CLAUDE.md": {
+    "mtime": 1780389673.6236563,
+    "ast_hash": "0495ae5569b328b0b6bd154d09adb80d",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\README.md": {
+    "mtime": 1780388444.244104,
+    "ast_hash": "354aadaa616ecf72890cdc9ecbd44632",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\analysis_options.yaml": {
+    "mtime": 1780388444.245103,
+    "ast_hash": "9e65f4b9beebb674c0dc252f70a5c177",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\devtools_options.yaml": {
+    "mtime": 1780388444.392104,
+    "ast_hash": "1b16e156b9f8b9f43ca52a78a6f72e80",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\linux\\CMakeLists.txt": {
+    "mtime": 1780388444.7252593,
+    "ast_hash": "a7981f61615fe47bb999e470d3bbac47",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\linux\\flutter\\CMakeLists.txt": {
+    "mtime": 1780388444.7262592,
+    "ast_hash": "2195470ce31675d31db5a37590d011f6",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\linux\\runner\\CMakeLists.txt": {
+    "mtime": 1780388444.7282543,
+    "ast_hash": "30cc1614b16214b66c014af09ba699eb",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\pubspec.yaml": {
+    "mtime": 1780388444.7572594,
+    "ast_hash": "5a815cadaa2105de4d2ed01c0e41e13e",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\web\\index.html": {
+    "mtime": 1780388444.7642562,
+    "ast_hash": "b4e1805fd5b92964a9133bfcea5b31c3",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\windows\\CMakeLists.txt": {
+    "mtime": 1780388444.7672544,
+    "ast_hash": "48966e0036d7b5150b18047d0264f2dd",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\windows\\flutter\\CMakeLists.txt": {
+    "mtime": 1780388444.7682574,
+    "ast_hash": "bbf66fed5180bd9ae8198b8d7c4a0001",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\windows\\runner\\CMakeLists.txt": {
+    "mtime": 1780388444.7712588,
+    "ast_hash": "028602ab9754bffe716659ada7590d29",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\android\\app\\src\\main\\res\\mipmap-hdpi\\ic_launcher.png": {
+    "mtime": 1780388444.2571063,
+    "ast_hash": "13e9c72ec37fac220397aa819fa1ef2d",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\android\\app\\src\\main\\res\\mipmap-hdpi\\launcher_icon.png": {
+    "mtime": 1780388444.2581038,
+    "ast_hash": "4b2a8ab7590b35fc19af3ab7faa1c14c",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\android\\app\\src\\main\\res\\mipmap-mdpi\\ic_launcher.png": {
+    "mtime": 1780388444.2591026,
+    "ast_hash": "6270344430679711b81476e29878caa7",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\android\\app\\src\\main\\res\\mipmap-mdpi\\launcher_icon.png": {
+    "mtime": 1780388444.2601056,
+    "ast_hash": "8c5afed3cba9eef45e952b02cd7da2c5",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\android\\app\\src\\main\\res\\mipmap-xhdpi\\ic_launcher.png": {
+    "mtime": 1780388444.2611022,
+    "ast_hash": "a0a8db5985280b3679d99a820ae2db79",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\android\\app\\src\\main\\res\\mipmap-xhdpi\\launcher_icon.png": {
+    "mtime": 1780388444.2621033,
+    "ast_hash": "d1dce6675fa9a9f4c0e7206a047d5d83",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\android\\app\\src\\main\\res\\mipmap-xxhdpi\\ic_launcher.png": {
+    "mtime": 1780388444.263103,
+    "ast_hash": "afe1b655b9f32da22f9a4301bb8e6ba8",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\android\\app\\src\\main\\res\\mipmap-xxhdpi\\launcher_icon.png": {
+    "mtime": 1780388444.2641013,
+    "ast_hash": "c1253b1ed74cafa2c6fb00350a2158ea",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\android\\app\\src\\main\\res\\mipmap-xxxhdpi\\ic_launcher.png": {
+    "mtime": 1780388444.265102,
+    "ast_hash": "57838d52c318faff743130c3fcfae0c6",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\android\\app\\src\\main\\res\\mipmap-xxxhdpi\\launcher_icon.png": {
+    "mtime": 1780388444.266105,
+    "ast_hash": "67a9580d30329ca89f8d0811fb0b5e89",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\ArrowUDownLeft.svg": {
+    "mtime": 1780388444.295101,
+    "ast_hash": "107b13e54ee4eb5e733921fa8db26531",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\ArrowsLeftRight.svg": {
+    "mtime": 1780388444.2961018,
+    "ast_hash": "a74169e76dc0945a47f9989dae22dcc5",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\Bell.svg": {
+    "mtime": 1780388444.2971022,
+    "ast_hash": "47c8a5b9d1389b456e631e6e9a4cad4c",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\ChatCircle.svg": {
+    "mtime": 1780388444.2981005,
+    "ast_hash": "151f4ecb1c7cb21faa6c66b3d8cd1ad7",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\Check.svg": {
+    "mtime": 1780388444.2981005,
+    "ast_hash": "7d9436c4915791e104a2cce44ab8e5c9",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\Clock.svg": {
+    "mtime": 1780388444.2991023,
+    "ast_hash": "a231362d13f3eeba3a33dbeebdfa5283",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\Microphone.svg": {
+    "mtime": 1780388444.3001032,
+    "ast_hash": "1646a2e8f5b1268a79a16f5a07fc8d32",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\Money.svg": {
+    "mtime": 1780388444.3011012,
+    "ast_hash": "d88ff30d6878b2cb1fdbe1249d6a8502",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\Package.svg": {
+    "mtime": 1780388444.3011012,
+    "ast_hash": "586d2d3d49aad70d0d3d0c14ab3d858a",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\QuestionMark.svg": {
+    "mtime": 1780388444.3021011,
+    "ast_hash": "e18f8bc1f2549890a15fcade72473caa",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\X.svg": {
+    "mtime": 1780388444.3031015,
+    "ast_hash": "6c8c02d87fb1c1b6045dd0a9ddcbc6ef",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\account_icon.svg": {
+    "mtime": 1780388444.3031015,
+    "ast_hash": "e0eeaa44d6798f1ee8b73ca9aa1687fc",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\cart_icon.svg": {
+    "mtime": 1780388444.3041022,
+    "ast_hash": "c49d5139a576e14a613a0301c6fadaa6",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\categories_icon.svg": {
+    "mtime": 1780388444.305103,
+    "ast_hash": "0866f6745f2763c10f091a56389a8658",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\fav_icon.svg": {
+    "mtime": 1780388444.305103,
+    "ast_hash": "8cc7134722f088018884b768de057f23",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\home_icon.svg": {
+    "mtime": 1780388444.3061018,
+    "ast_hash": "b000e53c56b0bc6d8aaf80041f35352a",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\ic_agreement.svg": {
+    "mtime": 1780388444.3071034,
+    "ast_hash": "d31713b2d6690e26159bd45976da87cf",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\ic_apple.svg": {
+    "mtime": 1780388444.3081107,
+    "ast_hash": "5601981ec84159f30fa6ecfe03629d44",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\ic_bank_info.svg": {
+    "mtime": 1780388444.3081107,
+    "ast_hash": "365177159418f35d1c0bf89590af141f",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\ic_cancel.svg": {
+    "mtime": 1780388444.3091016,
+    "ast_hash": "14f8d23b7165072964d9e726ad7fbb3a",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\ic_contact.svg": {
+    "mtime": 1780388444.311103,
+    "ast_hash": "9a73faf9d66eeef658d96d93d466c204",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\ic_credits.svg": {
+    "mtime": 1780388444.3121011,
+    "ast_hash": "9aec63984f747527df9a5c484c8d3546",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\ic_currency.svg": {
+    "mtime": 1780388444.3121011,
+    "ast_hash": "2048ba60b0f787e6683633242c777c28",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\ic_delete.svg": {
+    "mtime": 1780388444.313103,
+    "ast_hash": "d46a7ea74a023ac60546c5032d22eeb0",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\ic_edit.svg": {
+    "mtime": 1780388444.3141012,
+    "ast_hash": "b7358bf31b190195cb38cd8d39b2f485",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\ic_eid_icon.png": {
+    "mtime": 1780388444.3151028,
+    "ast_hash": "d02e686a492d0250ba5fbe1a81be1e49",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\ic_email.svg": {
+    "mtime": 1780388444.316101,
+    "ast_hash": "e855158913969b6c25b23322c52721d3",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\ic_error.svg": {
+    "mtime": 1780388444.316101,
+    "ast_hash": "51fc16a07eddd5f4bf51e65f7eebbaf1",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\ic_exchange_request.svg": {
+    "mtime": 1780388444.3171034,
+    "ast_hash": "ff7330e4e23de8db3772a1499d077407",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\ic_faq.svg": {
+    "mtime": 1780388444.318102,
+    "ast_hash": "20673c5620e514bae4a4d1f6d78437ee",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\ic_gift_card.svg": {
+    "mtime": 1780388444.318102,
+    "ast_hash": "92f977ff59f9c4fcecf6fa844eaa11a3",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\ic_google.svg": {
+    "mtime": 1780388444.3191018,
+    "ast_hash": "b6f6e1056ea962160cf0fa2e8bb47a22",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\ic_invoice_download.svg": {
+    "mtime": 1780388444.3201027,
+    "ast_hash": "2c2612dfb9d87bdf1a68f942d52c5c39",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\ic_language.svg": {
+    "mtime": 1780388444.321103,
+    "ast_hash": "d6e46f955e09769d3e39d2c450e1600c",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\ic_login.svg": {
+    "mtime": 1780388444.321103,
+    "ast_hash": "e68d269b21dfde12c363322711ee7eff",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\ic_logout.svg": {
+    "mtime": 1780388444.3221045,
+    "ast_hash": "e3aa7bdc63682a54e7753cceb66123c6",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\ic_message.svg": {
+    "mtime": 1780388444.3231022,
+    "ast_hash": "edefc19e37ceb7bd604cf33aa347908c",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\ic_my_order.svg": {
+    "mtime": 1780388444.3231022,
+    "ast_hash": "2fb5588b40f34f56339438eb1b4f6bd9",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\ic_offers.svg": {
+    "mtime": 1780388444.3241036,
+    "ast_hash": "211921ee8c3b636e6d2e51f536b578fc",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\ic_privacy_policy.svg": {
+    "mtime": 1780388444.325101,
+    "ast_hash": "d691d1a85371e7ae7ad1503f7485ad29",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\ic_request_data.svg": {
+    "mtime": 1780388444.325101,
+    "ast_hash": "b8c3c8a311c9ebd4bcd96baaa3fcc1d3",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\ic_return_request.svg": {
+    "mtime": 1780388444.3261008,
+    "ast_hash": "73d48770c3e94385001a583fd4ee9750",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\ic_reward.svg": {
+    "mtime": 1780388444.327103,
+    "ast_hash": "5a9aae31c9d76c9ee11028fe5fdf6307",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\ic_share.svg": {
+    "mtime": 1780388444.327103,
+    "ast_hash": "10148d33066ee3686c1de8dd58300848",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\ic_shipping_address.svg": {
+    "mtime": 1780388444.328101,
+    "ast_hash": "d0f59433a1414c963d55a96e660db5be",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\ic_suggestion.svg": {
+    "mtime": 1780388444.3291018,
+    "ast_hash": "0643edb5b88249e06e95b54b5081e8d8",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\ic_terms.svg": {
+    "mtime": 1780388444.3291018,
+    "ast_hash": "674487ccf41de6ff6ed5a1a16d134a84",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\ic_update_phone.svg": {
+    "mtime": 1780388444.3301013,
+    "ast_hash": "27020a68b3e3d7559f0ec04252a8efe6",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\ic_wallet.svg": {
+    "mtime": 1780388444.3311012,
+    "ast_hash": "a03a603aa728aad2e0c5a6478ce0e3fe",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\ic_warranty.svg": {
+    "mtime": 1780388444.3311012,
+    "ast_hash": "41ed65c4c61704adfc9597764a8b875d",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\ic_wishlist.svg": {
+    "mtime": 1780388444.332104,
+    "ast_hash": "05eb1cf9a80ae864b1075d3444693c9c",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\location.svg": {
+    "mtime": 1780388444.3331013,
+    "ast_hash": "7965101b5b1420cac945a6c21a95952d",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\mail 1.svg": {
+    "mtime": 1780388444.3331013,
+    "ast_hash": "e855158913969b6c25b23322c52721d3",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\icons\\phone.svg": {
+    "mtime": 1780388444.334102,
+    "ast_hash": "0301ab11bb24fa12caab8b64003a1a73",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\AddToCart.png": {
+    "mtime": 1780388444.3351011,
+    "ast_hash": "299bd555cb18e8a262f13b6fbfa76d7a",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\BeautyBG.png": {
+    "mtime": 1780388444.3351011,
+    "ast_hash": "a5370289bd95bd59209b41a45dfd8fa8",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\OrderSuccess.png": {
+    "mtime": 1780388444.3361013,
+    "ast_hash": "732f084a6ecf1465c881d361af475c7a",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\PerfumeShadow.png": {
+    "mtime": 1780388444.337103,
+    "ast_hash": "e755ba806866d7955dc39f31dce67d97",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\ShadowPink.png": {
+    "mtime": 1780388444.3381004,
+    "ast_hash": "5c31622c0a2d28045cbf442dff5fbddc",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\Tajer_Logo.png": {
+    "mtime": 1780388444.3381004,
+    "ast_hash": "05d4c1bb211abacca8cde89ef47fef67",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\account_header_image.png": {
+    "mtime": 1780388444.3421006,
+    "ast_hash": "d39ce6f1b8915cc772c9ca953c63b93d",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\app_icon_new.png": {
+    "mtime": 1780388444.3431015,
+    "ast_hash": "7128608f8bfa64673ce8b9de676955b8",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\app_logo.png": {
+    "mtime": 1780388444.3431015,
+    "ast_hash": "0dc21ac57e75570b3550b22ee682334c",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\bin.png": {
+    "mtime": 1780388444.3441024,
+    "ast_hash": "f5e518c31808b161c4411ef44df07382",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\black_app_Icon.png": {
+    "mtime": 1780388444.345103,
+    "ast_hash": "18adc60e89bccfe43caa18f46d6f8d17",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\cartIcon.png": {
+    "mtime": 1780388444.345103,
+    "ast_hash": "85c850b865c6e0d9b6d090153c3f3106",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\coming_soon_banner.png": {
+    "mtime": 1780388444.3481297,
+    "ast_hash": "6b1daeeeee905442208475bd2dff0b6d",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\coming_soon_banner_arabic.png": {
+    "mtime": 1780388444.3511503,
+    "ast_hash": "17bf062310b415f5ed89efc796d49eef",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\credit-card.png": {
+    "mtime": 1780388444.3511503,
+    "ast_hash": "99684786293deceb19fc7769d1ce6317",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\decrease.png": {
+    "mtime": 1780388444.3511503,
+    "ast_hash": "99eb2a07084d06f7b653388984927b06",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\edit.png": {
+    "mtime": 1780388444.3521016,
+    "ast_hash": "66a305325e379204c1f7ab646e395a1b",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\email.png": {
+    "mtime": 1780388444.353102,
+    "ast_hash": "4cef03675a4f6ef35c9cd52e1b84e434",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\forward_arrow.png": {
+    "mtime": 1780388444.353102,
+    "ast_hash": "eca072e79ca872dbd852939565f5b14a",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\gift.png": {
+    "mtime": 1780388444.353102,
+    "ast_hash": "5b6044eef70430d9781088db84788043",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\google_logo.png": {
+    "mtime": 1780388444.3541007,
+    "ast_hash": "06d9304b217ae5c0eeb77837fb8cb880",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\heart.png": {
+    "mtime": 1780388444.3551006,
+    "ast_hash": "02f3261970608ec393ec7bf515305ed3",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\ic_banner.png": {
+    "mtime": 1780388444.3581004,
+    "ast_hash": "6b1daeeeee905442208475bd2dff0b6d",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\ic_banner_ar.jpeg": {
+    "mtime": 1780388444.3591025,
+    "ast_hash": "f9ca8af7a942afa10216f31feb6d7064",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\ic_msg_send.png": {
+    "mtime": 1780388444.3601024,
+    "ast_hash": "5bd4cb4ed965e5bb5accc819d8bd67aa",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\ic_spark.png": {
+    "mtime": 1780388444.3611002,
+    "ast_hash": "231de39a95cf503d7f94377205557ee2",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\ic_splash.png": {
+    "mtime": 1780388444.3611002,
+    "ast_hash": "149435d8be0e739ea415201c67f251ce",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\img_profile_header.svg": {
+    "mtime": 1780388444.3621006,
+    "ast_hash": "6820c79056ed6020ea7e609b30f01e35",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\img_star.png": {
+    "mtime": 1780388444.3621006,
+    "ast_hash": "97f1e83336d34f9769b2d00bdd01f623",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\img_verify_email_done.png": {
+    "mtime": 1780388444.3631005,
+    "ast_hash": "db7a03c0cef089504a4278edd8e2a81d",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\img_welcome.png": {
+    "mtime": 1780388444.3641005,
+    "ast_hash": "24a261fca6f3471579e838a52acfbec5",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\increase.png": {
+    "mtime": 1780388444.3651016,
+    "ast_hash": "f3fc7bc7c8aba11765273859bc63dccc",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\ladybug.png": {
+    "mtime": 1780388444.3651016,
+    "ast_hash": "1e6152a0871c7daf5ce8de25db6dc8b0",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\mail.png": {
+    "mtime": 1780388444.3661005,
+    "ast_hash": "a8a68ddfb18a4f1ed97f0c031e97c977",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\menu.png": {
+    "mtime": 1780388444.367102,
+    "ast_hash": "e66322365093f7df9142768c397c66be",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\mic.png": {
+    "mtime": 1780388444.367102,
+    "ast_hash": "d1e01fe1250c91f9f54f3fe8e5aa7074",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\new.png": {
+    "mtime": 1780388444.3681028,
+    "ast_hash": "602142bb636f835c22a54ec4ef499e07",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\no_data_image.png": {
+    "mtime": 1780388444.3681028,
+    "ast_hash": "2e7d0c6c0dad76c3a51736d7d98520e0",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\notification.png": {
+    "mtime": 1780388444.3691006,
+    "ast_hash": "ec06a1f4cabaa23271afabb32e1ef422",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\phone.png": {
+    "mtime": 1780388444.3691006,
+    "ast_hash": "5c017c158cf1cdc873f85b5988b94960",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\placeholder_image.png": {
+    "mtime": 1780388444.3701017,
+    "ast_hash": "7b5716be5623dff8d85feb2b812986e5",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\plus.png": {
+    "mtime": 1780388444.3711019,
+    "ast_hash": "f57f6993febcf408a2af5c3b0cc7ea6d",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\red_heart.png": {
+    "mtime": 1780388444.3711019,
+    "ast_hash": "51b9927b115f0b812f5abe4912754e45",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\return.png": {
+    "mtime": 1780388444.372104,
+    "ast_hash": "8d5863532c948992f4cf4c387ac2fe40",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\sale.png": {
+    "mtime": 1780388444.373104,
+    "ast_hash": "75b59d95444e601bc526b4c4ea27b98b",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\save_for_later.png": {
+    "mtime": 1780388444.374103,
+    "ast_hash": "f6eb68040edd5603ea8fc24801b79151",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\shareIcon.png": {
+    "mtime": 1780388444.374103,
+    "ast_hash": "e2db6192ddd517f883865e5039719c79",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\share_and_earn.png": {
+    "mtime": 1780388444.3751009,
+    "ast_hash": "c20c0704672f41997e2e0448d5b28358",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\shop_policy.png": {
+    "mtime": 1780388444.3761005,
+    "ast_hash": "ef7b503ce206065bb24e8db698530556",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\shop_star.png": {
+    "mtime": 1780388444.3771012,
+    "ast_hash": "da5c7e73360266bf04fbc173b2f5371b",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\shopping_cart.png": {
+    "mtime": 1780388444.3771012,
+    "ast_hash": "423ba6657c3267529a538a5b06ecab6f",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\splash_image.png": {
+    "mtime": 1780388444.3811011,
+    "ast_hash": "997b24ac01f12aa81c30fb920fcc055e",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\star.png": {
+    "mtime": 1780388444.3811011,
+    "ast_hash": "82ab2a5bf47f268b16891380051e7399",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\userProfile.jpeg": {
+    "mtime": 1780388444.382102,
+    "ast_hash": "8a96f72f31f2cb4ca4ce3d24086d669f",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\images\\view_all.png": {
+    "mtime": 1780388444.3831015,
+    "ast_hash": "fdf7a8c7ef544111b389e714d978ac07",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\flutter_01.png": {
+    "mtime": 1780388444.3931024,
+    "ast_hash": "13cc725e10ebdc4f7bfb944ab179d500",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\ios\\Runner\\Assets.xcassets\\AppIcon.appiconset\\Icon-App-1024x1024@1x.png": {
+    "mtime": 1780388444.410104,
+    "ast_hash": "2df8accbac486885f3bb835a8b72f4a8",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\ios\\Runner\\NewLaunchImage.png": {
+    "mtime": 1780388444.4151025,
+    "ast_hash": "5f39b004316f7c8099ded45fd1d28ee3",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\macos\\Runner\\Assets.xcassets\\AppIcon.appiconset\\app_icon_1024.png": {
+    "mtime": 1780388444.744256,
+    "ast_hash": "c9becc9105f8cabce934d20c7bfb6aac",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\macos\\Runner\\Assets.xcassets\\AppIcon.appiconset\\app_icon_128.png": {
+    "mtime": 1780388444.7452598,
+    "ast_hash": "3ded30823804caaa5ccc944067c54a36",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\macos\\Runner\\Assets.xcassets\\AppIcon.appiconset\\app_icon_16.png": {
+    "mtime": 1780388444.7452598,
+    "ast_hash": "8bf511604bc6ed0a6aeb380c5113fdcf",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\macos\\Runner\\Assets.xcassets\\AppIcon.appiconset\\app_icon_256.png": {
+    "mtime": 1780388444.7462554,
+    "ast_hash": "dfe2c93d1536ae02f085cc63faa3430e",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\macos\\Runner\\Assets.xcassets\\AppIcon.appiconset\\app_icon_32.png": {
+    "mtime": 1780388444.7472591,
+    "ast_hash": "8e0ae58e362a6636bdfccbc04da2c58c",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\macos\\Runner\\Assets.xcassets\\AppIcon.appiconset\\app_icon_512.png": {
+    "mtime": 1780388444.7482586,
+    "ast_hash": "0ad44039155424738917502c69667699",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\macos\\Runner\\Assets.xcassets\\AppIcon.appiconset\\app_icon_64.png": {
+    "mtime": 1780388444.7482586,
+    "ast_hash": "04e7b6ef05346c70b663ca1d97de3ad5",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\web\\favicon.png": {
+    "mtime": 1780388444.760258,
+    "ast_hash": "5dcef449791fa27946b3d35ad8803796",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\web\\icons\\Icon-192.png": {
+    "mtime": 1780388444.7612596,
+    "ast_hash": "ac9a721a12bbc803b44f645561ecb1e1",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\web\\icons\\Icon-512.png": {
+    "mtime": 1780388444.7622576,
+    "ast_hash": "96e752610906ba2a93c65f8abe1645f1",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\web\\icons\\Icon-maskable-192.png": {
+    "mtime": 1780388444.763257,
+    "ast_hash": "c457ef57daa1d16f64b27b786ec2ea3c",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\web\\icons\\Icon-maskable-512.png": {
+    "mtime": 1780388444.763257,
+    "ast_hash": "301a7604d45b3e739efc881eb04896ea",
+    "semantic_hash": ""
+  },
+  "C:\\xampp-php8.2-new\\htdocs\\Egital\\Tajer-flutter\\assets\\videos\\splash.mp4": {
+    "mtime": 1780388444.3911111,
+    "ast_hash": "0957b78964abf794491a1b06b3d76847",
+    "semantic_hash": ""
+  }
+}

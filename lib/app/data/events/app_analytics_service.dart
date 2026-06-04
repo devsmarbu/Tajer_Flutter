@@ -8,7 +8,6 @@ import 'package:tiktok_events_sdk/tiktok_events_sdk.dart';
 import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 
 import '../../../utils/pref_store.dart';
-import '../../modules/Cart/order_success_page/order_success_model.dart';
 
 class AppAnalyticsService {
   static final FacebookAppEvents _facebook = FacebookAppEvents();
@@ -204,22 +203,21 @@ class AppAnalyticsService {
       },
     );
 
-    /// Firebase
-    final cartItems = (items?.map((item) {
-      return {
-        'item_id': item.productId ?? '',
-        'item_name': item.productName ?? '',
-        'quantity': item.quantity?.toIntSafe() ?? 0,
-        'price': double.tryParse(item.selprodPrice ?? '0') ?? 0.0,
-      };
-    }).toList() ?? []);
-    await _firebase.logEvent(
-      name: 'view_cart',
-      parameters: {
-        'currency': currency,
-        'value': totalValue,
-        'items': cartItems as Object,
-      },
+    /// Firebase — items must go through the typed `items:` param, not the
+    /// `parameters` map (Firebase only allows String/num parameter values).
+    await _firebase.logViewCart(
+      currency: currency,
+      value: totalValue,
+      items: (items ?? [])
+          .map(
+            (item) => AnalyticsEventItem(
+              itemId: (item.productId ?? '').toString(),
+              itemName: item.productName ?? '',
+              quantity: item.quantity?.toIntSafe() ?? 0,
+              price: double.tryParse(item.selprodPrice ?? '0') ?? 0.0,
+            ),
+          )
+          .toList(),
     );
 
     /// TikTok
