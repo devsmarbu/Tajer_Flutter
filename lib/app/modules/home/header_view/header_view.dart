@@ -41,16 +41,16 @@ class HeaderView extends StatelessWidget {
           key: const Key('header_view_row'),
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            if (isHomeHeader == true)
-              Semantics(
-                label: 'header_left_indicator',
-                child: SizedBox(
-                  key: const Key('header_left_indicator'),
-                  height: 30,
-                  width: 2,
-                  child: Container(color: Colors.black87),
-                ),
-              ),
+            // if (isHomeHeader == true)
+            //   Semantics(
+            //     label: 'header_left_indicator',
+            //     child: SizedBox(
+            //       key: const Key('header_left_indicator'),
+            //       height: 30,
+            //       width: 2,
+            //       child: Container(color: Colors.black87),
+            //     ),
+            //   ),
             (isHomeHeader == true)
                 ? const SizedBox(width: 10,key: Key('header_spacing_large'),)
                 : const SizedBox(width: 5,key: Key('header_spacing_small'),),
@@ -92,7 +92,7 @@ class HeaderView extends StatelessWidget {
                         vertical: 3,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.grey.shade200,
+                        color: Colors.white,
                         // 👈 background color
                         borderRadius: BorderRadius.circular(
                           16,
@@ -106,6 +106,8 @@ class HeaderView extends StatelessWidget {
                           fontFamily: "Nunito",
                           fontSize: 15,
                           color: Colors.black87,
+                          decoration: TextDecoration.underline,
+                          decorationThickness: 1.5,
                         ),
                       ),
                     ),

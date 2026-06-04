@@ -99,6 +99,7 @@ class HeaderViewHelper {
           (CollectionLayoutType.homeSlider) ||
           (CollectionLayoutType.homeSliderNew) ||
           (CollectionLayoutType.smallBrandLayout) ||
+          (CollectionLayoutType.smallBrandLayoutNew) ||
           (CollectionLayoutType.dualSquareBanner):
       // TODO: Handle this case.
       case CollectionLayoutType.reelCollectionLayout:
