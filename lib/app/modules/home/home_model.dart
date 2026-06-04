@@ -137,6 +137,7 @@ class Collection {
   final DateTime? collectionUpdatedOn;
   final CollectionLayoutType? layoutType; // ✅ Enum instead of String
   final Banners? banners;
+  final List<CategoryModelNew>? categories;
   final List<HomePageShops>? shops;
   final List<HomeProduct> products;
   final List<HomeBrand>? brands;
@@ -164,6 +165,7 @@ class Collection {
     this.collectionUpdatedOn,
     this.layoutType,
     this.banners,
+    this.categories,
     this.shops,
     required this.products,
     this.totProducts,
@@ -202,6 +204,13 @@ class Collection {
     layoutType: CollectionLayoutType.fromValue(json["collection_layout_type"]),
 
     banners: json["banners"] == null ? null : Banners.fromJson(json["banners"]),
+    categories: json["categories"] == null
+        ? []
+        : List<CategoryModelNew>.from(
+      json["categories"].map(
+            (x) => CategoryModelNew.fromJson(x),
+      ),
+    ),
     brands: json["brands"] == null
         ? null
         : List<HomeBrand>.from(
@@ -242,6 +251,11 @@ class Collection {
     "collection_updated_on": collectionUpdatedOn?.toIso8601String(),
     "collection_layout_type": layoutType?.value, // ✅ serialize enum
     "banners": banners?.toJson(),
+    "categories": categories == null
+        ? []
+        : List<dynamic>.from(
+      categories!.map((x) => x.toJson()),
+    ),
     "products": products == null
         ? []
         : List<dynamic>.from(products!.map((x) => x.toJson())),
@@ -1021,6 +1035,38 @@ class Slide {
     "slide_img_updated_on": slideImgUpdatedOn,
     "weekly_cost": weeklyCost,
   };
+}
+
+class CategoryModelNew {
+  final String prodcatId;
+  final String prodcatName;
+  final String prodcatDescription;
+  final String categoryImageUrl;
+
+  CategoryModelNew({
+    required this.prodcatId,
+    required this.prodcatName,
+    required this.prodcatDescription,
+    required this.categoryImageUrl,
+  });
+
+  factory CategoryModelNew.fromJson(Map<String, dynamic> json) {
+    return CategoryModelNew(
+      prodcatId: json['prodcat_id']?.toString() ?? '',
+      prodcatName: json['prodcat_name']?.toString() ?? '',
+      prodcatDescription: json['prodcat_description']?.toString() ?? '',
+      categoryImageUrl: json['category_image_url']?.toString() ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'prodcat_id': prodcatId,
+      'prodcat_name': prodcatName,
+      'prodcat_description': prodcatDescription,
+      'category_image_url': categoryImageUrl,
+    };
+  }
 }
 
 class EnumValues<T> {

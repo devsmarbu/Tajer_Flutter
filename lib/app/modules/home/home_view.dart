@@ -25,6 +25,7 @@ import 'favorite_brand_view/favorite_brand_view.dart';
 import 'home_controller.dart';
 import 'home_model.dart';
 import 'new_small_brand_view/new_small_brand_view.dart';
+import 'parent_category_view/parent_category_view.dart';
 import 'perfume_view/perfume_view.dart';
 import 'package:get/get.dart';
 import '../notifications/alerts/view/notification_screen.dart';
@@ -198,30 +199,14 @@ class _HomeViewState extends State<HomeView> {
         );
 
       case CollectionLayoutType.smallBrandLayout:
-        // if ((collection.banners?.banners ?? []).isNotEmpty) {
-        //   if ((collection.banners?.banners ?? []).isNotEmpty) {
-        //     sectionWidget = SizedBox(
-        //       height: 110,
-        //       child: CategoryView(banners: collection.banners?.banners ?? []),
-        //     );
-        //   } else {
-        //     sectionWidget = const SizedBox.shrink();
-        //   }
-        // } else {
-        //   sectionWidget = const SizedBox.shrink();
-        // }
-        if ((collection.banners?.banners ?? []).isNotEmpty) {
-          sectionWidget = SizedBox(
-            height: 145,
-            child: NewSmallBrandView(
-              banners: collection.banners?.banners ?? [],
-              collection: collection,
-            ),
-          );
-        } else {
-          sectionWidget = const SizedBox.shrink();
-        }
-
+          if ((collection.banners?.banners ?? []).isNotEmpty) {
+            sectionWidget = SizedBox(
+              height: 110,
+              child: CategoryView(banners: collection.banners?.banners ?? []),
+            );
+          } else {
+            sectionWidget = const SizedBox.shrink();
+          }
       case CollectionLayoutType.smallBrandLayoutNew:
         if ((collection.banners?.banners ?? []).isNotEmpty) {
           sectionWidget = SizedBox(
@@ -241,6 +226,13 @@ class _HomeViewState extends State<HomeView> {
             brands: collection.brands ?? [],
             titleHeader: collection.collectionName,
             collection: collection,
+          ),
+        );
+      case CollectionLayoutType.parentCategory:
+        sectionWidget = SizedBox(
+          height: 130,
+          child: ParentCategoryView(
+            categoryList: collection.categories ?? <CategoryModelNew>[],
           ),
         );
       case CollectionLayoutType.perfume:
