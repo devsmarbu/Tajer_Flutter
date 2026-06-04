@@ -463,7 +463,7 @@ class _HomeViewState extends State<HomeView> {
                         ...List.generate(controller.posts.length, (index) {
                           return Column(
                             children: [
-                              (controller.posts[index].layoutType != CollectionLayoutType.smallBrandLayout)
+                              (controller.posts[index].layoutType != CollectionLayoutType.smallBrandLayoutNew)
                                   ? Container(
                                 height: 16,
                                 color: AppColors.colorBackgroundHomeNew,
