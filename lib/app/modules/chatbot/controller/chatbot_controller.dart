@@ -189,14 +189,14 @@ class ChatbotController extends GetxController {
       'mobileBottomOffset': 90, // lift the bubble above the bottom nav bar
       'cartCount': _asInt(cartItemCounts.value, 0),
       'isGuest': !_isLoggedIn,
-      'storeInfo': const {
+      'storeInfo': {
         'name': 'Tajer',
         'phone': '+974 5208 8820',
         'whatsapp': '+974 5208 8820',
         'email': 'help@tajershops.com',
         'hours': 'Sun-Thu 8:30AM-5:00PM, Ramadan: Sun-Thu 9:30AM-3:30PM',
         'location': 'Doha, Qatar',
-        'website': 'https://beta.tajershops.com',
+        'website': 'https://$_webHost', // env-aware (beta or production)
         'instagram': 'https://instagram.com/tajershops',
         'facebook': 'https://facebook.com/tajershops',
         'returnPolicy':
