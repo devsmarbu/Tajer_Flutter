@@ -205,20 +205,16 @@ class _HomeViewState extends State<HomeView> {
               child: CategoryView(banners: collection.banners?.banners ?? []),
             );
           } else {
-            sectionWidget = const SizedBox.shrink();
+            sectionWidget = const SizedBox(height: 0);
           }
       case CollectionLayoutType.smallBrandLayoutNew:
-        if ((collection.banners?.banners ?? []).isNotEmpty) {
           sectionWidget = SizedBox(
             height: 150,
             child: NewSmallBrandView(
-              banners: collection.banners?.banners ?? [],
+              products: collection.products,
               collection: collection,
             ),
           );
-        } else {
-          sectionWidget = const SizedBox.shrink();
-        }
       case CollectionLayoutType.newTopBrand:
         sectionWidget = SizedBox(
           height: 350,
