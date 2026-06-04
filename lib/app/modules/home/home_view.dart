@@ -198,18 +198,30 @@ class _HomeViewState extends State<HomeView> {
         );
 
       case CollectionLayoutType.smallBrandLayout:
+        // if ((collection.banners?.banners ?? []).isNotEmpty) {
+        //   if ((collection.banners?.banners ?? []).isNotEmpty) {
+        //     sectionWidget = SizedBox(
+        //       height: 110,
+        //       child: CategoryView(banners: collection.banners?.banners ?? []),
+        //     );
+        //   } else {
+        //     sectionWidget = const SizedBox.shrink();
+        //   }
+        // } else {
+        //   sectionWidget = const SizedBox.shrink();
+        // }
         if ((collection.banners?.banners ?? []).isNotEmpty) {
-          if ((collection.banners?.banners ?? []).isNotEmpty) {
-            sectionWidget = SizedBox(
-              height: 110,
-              child: CategoryView(banners: collection.banners?.banners ?? []),
-            );
-          } else {
-            sectionWidget = const SizedBox.shrink();
-          }
+          sectionWidget = SizedBox(
+            height: 145,
+            child: NewSmallBrandView(
+              banners: collection.banners?.banners ?? [],
+              collection: collection,
+            ),
+          );
         } else {
           sectionWidget = const SizedBox.shrink();
         }
+
       case CollectionLayoutType.smallBrandLayoutNew:
         if ((collection.banners?.banners ?? []).isNotEmpty) {
           sectionWidget = SizedBox(

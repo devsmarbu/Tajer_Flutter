@@ -26,14 +26,14 @@ class NewSmallBrandView extends StatelessWidget {
       label: 'new_small_brand_layout',
       child: Container(
         key: const Key('new_small_brand_root'),
-        margin: const EdgeInsets.symmetric(horizontal: 16),
-        padding: const EdgeInsets.only(top: 10,bottom: 10),
+        margin: const EdgeInsets.symmetric(horizontal: 10),
+        padding: const EdgeInsets.only(left: 6,top: 20
+            ,bottom: 20,right: 6),
         decoration: BoxDecoration(
           color: const Color(0xFFEEEEEE),
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(18),
         ),
         child: SizedBox(
-          height: 120,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: banners.length,
@@ -54,9 +54,9 @@ class NewSmallBrandView extends StatelessWidget {
                     );
                   },
                   child: Container(
-                    width: 90,
-                    margin: const EdgeInsets.only(right: 10,left: 10),
-                    padding: const EdgeInsets.all(8),
+                    width: 80,
+                    margin: const EdgeInsets.only(right: 6,left: 6),
+                    padding: const EdgeInsets.all(4),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(16),
@@ -64,20 +64,20 @@ class NewSmallBrandView extends StatelessWidget {
                         color: Colors.grey.shade300,
                         width: 1,
                       ),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 4,
-                          offset: Offset(0, 2),
-                        ),
-                      ],
+                      // boxShadow: const [
+                      //   BoxShadow(
+                      //     color: Colors.black12,
+                      //     blurRadius: 4,
+                      //     offset: Offset(0, 2),
+                      //   ),
+                      // ],
                     ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         SizedBox(
-                          height: 70,
-                          width: 70,
+                          height: 55,
+                          width: 55,
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(12),
                             child: CachedNetworkImage(
@@ -104,8 +104,8 @@ class NewSmallBrandView extends StatelessWidget {
                           key: Key('new_small_brand_title_$index'),
                           textAlign: TextAlign.center,
                           style: const TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 10,
                             fontFamily: "Nunito",
                           ),
                           maxLines: 1,

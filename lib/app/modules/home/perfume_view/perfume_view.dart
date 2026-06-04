@@ -220,8 +220,8 @@ class _PerfumeCellViewState extends State<PerfumeCellView> {
                       key: ValueKey('perfume_brand_${product.selprodId}'),
                       (product.brandName ?? "").toUpperCase(),
                       style: const TextStyle(
-                        fontSize: 5,
-                        fontWeight: FontWeight.w400,
+                        fontSize: 7,
+                        fontWeight: FontWeight.w600,
                         fontFamily: "Nunito",
                         color: Colors.black54,
                       ),
@@ -238,7 +238,7 @@ class _PerfumeCellViewState extends State<PerfumeCellView> {
                         (product.productName ?? "").toUpperCase(),
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 6,
+                          fontSize: 8,
                           fontFamily: "Nunito",
                           height: 1.2,
                         ),
@@ -255,7 +255,7 @@ class _PerfumeCellViewState extends State<PerfumeCellView> {
                       product.selprodPrice ?? "",
                       style: const TextStyle(
                         fontWeight: FontWeight.w900,
-                        fontSize: 8,
+                        fontSize: 10,
                         fontFamily: "Nunito",
                       ),
                       maxLines: 1,
