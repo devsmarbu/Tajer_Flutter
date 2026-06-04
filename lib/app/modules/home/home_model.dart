@@ -1113,9 +1113,10 @@ enum CollectionLayoutType {
   newCategoryLayout('31'),
   dualSquareBanner('39'),
   reelCollectionLayout('40'),
-  spacer('50'),
+//  spacer('50'),
   homePageBannerStripe('42'),
-  smallBrandLayoutNew('43'),
+  trendyLayout('43'),
+  smallBrandLayoutNew('50'),
   unknown('0'); // fallback for unrecognized values
 
   final String value;

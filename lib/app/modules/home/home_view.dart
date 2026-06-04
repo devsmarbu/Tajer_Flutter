@@ -96,6 +96,7 @@ class _HomeViewState extends State<HomeView> {
     switch (collection.layoutType) {
       case CollectionLayoutType.productLayout1:
       case CollectionLayoutType.productLayout2:
+      case CollectionLayoutType.trendyLayout:
       case CollectionLayoutType.trendingProduct:
         sectionWidget = SizedBox(
           height: 346,
@@ -211,7 +212,7 @@ class _HomeViewState extends State<HomeView> {
           sectionWidget = SizedBox(
             height: 150,
             child: NewSmallBrandView(
-              products: collection.products,
+              banners: collection.banners?.banners??[],
               collection: collection,
             ),
           );
@@ -241,8 +242,8 @@ class _HomeViewState extends State<HomeView> {
             currencyCode: controller.currencySymbol.value,
           ),
         );
-      case CollectionLayoutType.spacer:
-        sectionWidget = const SizedBox(height: 40);
+      // case CollectionLayoutType.spacer:
+      //   sectionWidget = const SizedBox(height: 40);
       case CollectionLayoutType.homePageBannerStripe:
         final stripeSvgUrl = collection.homePageStripeSVGUrl;
         if (stripeSvgUrl != null && stripeSvgUrl.isNotEmpty) {

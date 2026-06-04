@@ -7,18 +7,18 @@ import '../../../core/routes/app_routes.dart';
 import '../home_model.dart';
 
 class NewSmallBrandView extends StatelessWidget {
-  final List<HomeProduct> products;
+  final List<HomeBanner> banners;
   final Collection collection;
 
   const NewSmallBrandView({
     super.key,
-    required this.products,
+    required this.banners,
     required this.collection,
   });
 
   @override
   Widget build(BuildContext context) {
-    if (products.isEmpty) {
+    if (banners.isEmpty) {
       return const SizedBox.shrink();
     }
 
@@ -36,9 +36,9 @@ class NewSmallBrandView extends StatelessWidget {
         child: SizedBox(
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            itemCount: products.length,
+            itemCount: banners.length,
             itemBuilder: (context, index) {
-              final product = products[index];
+              final banner = banners[index];
 
               return Semantics(
                 label: 'new_small_brand_item_$index',
@@ -46,12 +46,11 @@ class NewSmallBrandView extends StatelessWidget {
                 child: GestureDetector(
                   key: Key('new_small_brand_tap_$index'),
                   onTap: () {
-                    AppRoutes.goToProductListPage(
-                      brandId: "",
-                      productVideoAvailable: "0",
-                      titleHeader: product.prodcatName??"",
-                      prodCatId: product.prodcatId??"",
-                      condition: "",
+                    handleSlideNavigation(
+                      context,
+                      banner.bannerUrlType ?? "",
+                      banner.bannerUrl ?? "",
+                      banner.bannerUrlTitle ?? "",
                     );
                   },
                   child: Container(
@@ -83,7 +82,7 @@ class NewSmallBrandView extends StatelessWidget {
                             borderRadius: BorderRadius.circular(12),
                             child: CachedNetworkImage(
                               key: Key('new_small_brand_image_$index'),
-                              imageUrl: product.productImageUrl ?? "",
+                              imageUrl: banner.bannerImage ?? "",
                               fit: BoxFit.cover,
                               placeholder: (context, url) => const Center(
                                 child: CircularProgressIndicator(
@@ -101,7 +100,7 @@ class NewSmallBrandView extends StatelessWidget {
                         ),
                         const SizedBox(height: 5),
                         Text(
-                          product.prodcatName ?? "",
+                          banner.bannerTitle ?? "",
                           key: Key('new_small_brand_title_$index'),
                           textAlign: TextAlign.center,
                           style: const TextStyle(
