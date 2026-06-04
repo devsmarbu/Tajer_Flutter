@@ -205,7 +205,7 @@ class _HomeViewState extends State<HomeView> {
               child: CategoryView(banners: collection.banners?.banners ?? []),
             );
           } else {
-            sectionWidget = const SizedBox(height: 0);
+            sectionWidget = const SizedBox.shrink();
           }
       case CollectionLayoutType.smallBrandLayoutNew:
           sectionWidget = SizedBox(
