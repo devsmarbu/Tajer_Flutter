@@ -73,24 +73,28 @@ class _DualHorizontalProductViewState extends State<DualHorizontalProductView> {
             ),
           // Conditional scroller based on direction
           isHorizontal
-              ? SizedBox(
-                  height: widget.height,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                    itemCount: widget.products.length,
-                    itemBuilder: (context, index) {
-                      return _buildProductItem(
-                        context,
-                        index,
-                        isVertical: false,
-                        controller: controller,
-                      );
-                    },
+              ? Container(
+                  color:
+                      widget.collection.appColor, // collection_app_color_code
+                  child: SizedBox(
+                    height: widget.height,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                      itemCount: widget.products.length,
+                      itemBuilder: (context, index) {
+                        return _buildProductItem(
+                          context,
+                          index,
+                          isVertical: false,
+                          controller: controller,
+                        );
+                      },
+                    ),
                   ),
                 )
               : GridView.builder(
-            key: const ValueKey('vertical_product_grid'),
+                  key: const ValueKey('vertical_product_grid'),
                   shrinkWrap: true,
                   // ✅ Auto-expand height
                   physics: const NeverScrollableScrollPhysics(),
@@ -225,7 +229,9 @@ class _DualHorizontalProductViewState extends State<DualHorizontalProductView> {
                                 : 190,
                             color: Colors.grey[200],
                             child: const Center(
-                              child: CircularProgressIndicator(color: Colors.black),
+                              child: CircularProgressIndicator(
+                                color: Colors.black,
+                              ),
                             ),
                           );
                         },
@@ -240,7 +246,7 @@ class _DualHorizontalProductViewState extends State<DualHorizontalProductView> {
                         },
                       ),
                     ),
-      
+
                     /// ❤️ FAVORITE BUTTON
                     Positioned(
                       top: 0,
@@ -251,8 +257,7 @@ class _DualHorizontalProductViewState extends State<DualHorizontalProductView> {
                             : 'Remove from wishlist',
                         button: true,
                         child: GestureDetector(
-                          key: ValueKey(
-                              'wishlist_btn_${product.selprodId}'),
+                          key: ValueKey('wishlist_btn_${product.selprodId}'),
                           onTap: () async {
                             debugPrint("Favorite tapped");
                             if ((PrefStore().loadString(
@@ -266,21 +271,23 @@ class _DualHorizontalProductViewState extends State<DualHorizontalProductView> {
                                 backgroundColor: Colors.transparent,
                               );
                             } else if (isInAnyWishlist.value != "0") {
-                              
-                              final result = await controller.addRemoveToWishlist(
-                                product.selprodId ?? '',
-                                "0",
-                                "0",
-                                widget.collection.collectionId ?? '',
-                                index.toString(),
-                              );
+                              final result = await controller
+                                  .addRemoveToWishlist(
+                                    product.selprodId ?? '',
+                                    "0",
+                                    "0",
+                                    widget.collection.collectionId ?? '',
+                                    index.toString(),
+                                  );
                               isInAnyWishlist.value = result.toString();
                             } else {
                               final result = await showGeneralDialog(
                                 context: context,
                                 barrierLabel: "Wishlist",
                                 barrierDismissible: true,
-                                barrierColor: Colors.black.withValues(alpha: 0.4),
+                                barrierColor: Colors.black.withValues(
+                                  alpha: 0.4,
+                                ),
                                 transitionDuration: const Duration(
                                   milliseconds: 300,
                                 ),
@@ -306,9 +313,15 @@ class _DualHorizontalProductViewState extends State<DualHorizontalProductView> {
                               );
                               if (result != null) {
                                 debugPrint(index.toString());
-                                debugPrint(widget.collection.collectionId ?? '');
+                                debugPrint(
+                                  widget.collection.collectionId ?? '',
+                                );
                                 isInAnyWishlist.value = result.toString();
-                                controller.updateFav(isInAnyWishlist.value, widget.collection.collectionId ?? '', index.toString());
+                                controller.updateFav(
+                                  isInAnyWishlist.value,
+                                  widget.collection.collectionId ?? '',
+                                  index.toString(),
+                                );
                               }
                             }
                           },
@@ -323,15 +336,17 @@ class _DualHorizontalProductViewState extends State<DualHorizontalProductView> {
                               ),
                             ),
                             child: Center(
-                              child: Obx(() => Icon(
-                                isInAnyWishlist.value == '0'
-                                    ? Icons.favorite_border
-                                    : Icons.favorite,
-                                size: 22,
-                                color: isInAnyWishlist.value == '0'
-                                    ? Colors.black54
-                                    : const Color(0xFFFE6B6B),
-                              )),
+                              child: Obx(
+                                () => Icon(
+                                  isInAnyWishlist.value == '0'
+                                      ? Icons.favorite_border
+                                      : Icons.favorite,
+                                  size: 22,
+                                  color: isInAnyWishlist.value == '0'
+                                      ? Colors.black54
+                                      : const Color(0xFFFE6B6B),
+                                ),
+                              ),
                             ),
                           ),
                         ),
@@ -398,7 +413,7 @@ class _DualHorizontalProductViewState extends State<DualHorizontalProductView> {
                   ],
                 ),
               ),
-      
+
               /// DETAILS SECTION
               Padding(
                 padding: const EdgeInsets.fromLTRB(8, 12, 8, 12),
@@ -425,6 +440,7 @@ class _DualHorizontalProductViewState extends State<DualHorizontalProductView> {
                             overflow: TextOverflow.ellipsis,
                           ),
                           const SizedBox(height: 4),
+
                           /// PRODUCT NAME
                           Text(
                             key: ValueKey('name_${product.selprodId}'),
@@ -439,6 +455,7 @@ class _DualHorizontalProductViewState extends State<DualHorizontalProductView> {
                             overflow: TextOverflow.ellipsis,
                           ),
                           const SizedBox(height: 2),
+
                           /// PRICE
                           Text(
                             key: ValueKey('price_${product.selprodId}'),
@@ -455,6 +472,7 @@ class _DualHorizontalProductViewState extends State<DualHorizontalProductView> {
                       ),
                     ),
                     const SizedBox(width: 2),
+
                     /// CART BUTTON
                     Semantics(
                       label: 'Add ${product.productName} to cart',
@@ -464,10 +482,11 @@ class _DualHorizontalProductViewState extends State<DualHorizontalProductView> {
                         onTap: () {
                           debugPrint("Add to cart tapped");
                           final options = product.productOptions;
-                            
+
                           if (options != null && options.isNotEmpty) {
-                            final firstOptionValues = options.first.values ?? [];
-                            
+                            final firstOptionValues =
+                                options.first.values ?? [];
+
                             if (firstOptionValues.isNotEmpty) {
                               showModalBottomSheet(
                                 context: context,
@@ -515,10 +534,11 @@ class _DualHorizontalProductViewState extends State<DualHorizontalProductView> {
                           width: 45,
                           height: 45,
                           decoration: BoxDecoration(
-                            color: const Color(0xFF1E1E1E), // Dark charcoal/black
+                            color: const Color(0xFF1E1E1E),
+                            // Dark charcoal/black
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child:  Center(
+                          child: Center(
                             child: SvgPicture.asset(
                               "assets/icons/ic_cart_new.svg",
                               width: 16,

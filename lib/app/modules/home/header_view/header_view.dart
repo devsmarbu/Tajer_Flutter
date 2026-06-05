@@ -26,96 +26,104 @@ class HeaderView extends StatelessWidget {
     this.isHomeHeader = true,
     this.prodCatId,
     this.productVideoAvailable,
-    this.collection, this.currencySymbol,
+    this.collection,
+    this.currencySymbol,
   });
 
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return SizedBox(
+    return ColoredBox(
       key: const Key('header_view_sized_box'),
-      height: 50,
-      child: Padding(
-        padding: EdgeInsets.only(left: (isHomeHeader == false) ? 10 : 10),
-        child: Row(
-          key: const Key('header_view_row'),
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            // if (isHomeHeader == true)
-            //   Semantics(
-            //     label: 'header_left_indicator',
-            //     child: SizedBox(
-            //       key: const Key('header_left_indicator'),
-            //       height: 30,
-            //       width: 2,
-            //       child: Container(color: Colors.black87),
-            //     ),
-            //   ),
-            (isHomeHeader == true)
-                ? const SizedBox(width: 10,key: Key('header_spacing_large'),)
-                : const SizedBox(width: 5,key: Key('header_spacing_small'),),
-            Text(
-              key: const Key('header_view_title_header_text'),
-              titleHeader,
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 16,
-                fontFamily: "Nunito",
+      color: collection?.appColor ?? Colors.transparent,
+      child: SizedBox(
+        height: 50,
+        child: Padding(
+          padding: EdgeInsets.only(left: (isHomeHeader == false) ? 10 : 10),
+          child: Row(
+            key: const Key('header_view_row'),
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // if (isHomeHeader == true)
+              //   Semantics(
+              //     label: 'header_left_indicator',
+              //     child: SizedBox(
+              //       key: const Key('header_left_indicator'),
+              //       height: 30,
+              //       width: 2,
+              //       child: Container(color: Colors.black87),
+              //     ),
+              //   ),
+              (isHomeHeader == true)
+                  ? const SizedBox(width: 10, key: Key('header_spacing_large'))
+                  : const SizedBox(width: 5, key: Key('header_spacing_small')),
+              Text(
+                key: const Key('header_view_title_header_text'),
+                titleHeader,
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16,
+                  fontFamily: "Nunito",
+                ),
+                maxLines: 1,
+                textAlign: TextAlign.left,
               ),
-              maxLines: 1,
-              textAlign: TextAlign.left,
-            ),
-            const Spacer(key: Key('header_spacer')),
-            if (hideSeeAll == false)
-              Semantics(
-                label: 'header_see_all_button',
-                button: true,
-                enabled: true,
-                child: SizedBox(
-                  key: const Key('header_see_all_container'),
-                  child: TextButton(
-                    key: const Key('header_see_all_btn'),
-                    onPressed: () {
-                      // Get.toNamed(
-                      //   AppRoutes.productListPage,
-                      //   parameters: {
-                      //     "prodCatId": prodCatId ?? "",
-                      //     "productVideoAvailable": productVideoAvailable ?? "0",
-                      //   },
-                      // );
-                      HeaderViewHelper.seeAllButton(context,collection,currencySymbol);
-                    },
-                    child: Container(
-                      key: const Key('header_see_all_inner_container'),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 6,
-                        vertical: 3,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        // 👈 background color
-                        borderRadius: BorderRadius.circular(
-                          16,
-                        ), // 👈 corner radius
-                      ),
-                      child: Text(
-                        key: const Key('header_see_all_text'),
-                        AppStrings.appSeeAll.toUpperCase().tr,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontFamily: "Nunito",
-                          fontSize: 15,
-                          color: Colors.black87,
-                          decoration: TextDecoration.underline,
-                          decorationThickness: 1.5,
+              const Spacer(key: Key('header_spacer')),
+              if (hideSeeAll == false)
+                Semantics(
+                  label: 'header_see_all_button',
+                  button: true,
+                  enabled: true,
+                  child: SizedBox(
+                    key: const Key('header_see_all_container'),
+                    child: TextButton(
+                      key: const Key('header_see_all_btn'),
+                      onPressed: () {
+                        // Get.toNamed(
+                        //   AppRoutes.productListPage,
+                        //   parameters: {
+                        //     "prodCatId": prodCatId ?? "",
+                        //     "productVideoAvailable": productVideoAvailable ?? "0",
+                        //   },
+                        // );
+                        HeaderViewHelper.seeAllButton(
+                          context,
+                          collection,
+                          currencySymbol,
+                        );
+                      },
+                      child: Container(
+                        key: const Key('header_see_all_inner_container'),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 3,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          // 👈 background color
+                          borderRadius: BorderRadius.circular(
+                            16,
+                          ), // 👈 corner radius
+                        ),
+                        child: Text(
+                          key: const Key('header_see_all_text'),
+                          AppStrings.appSeeAll.toUpperCase().tr,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            fontFamily: "Nunito",
+                            fontSize: 15,
+                            color: Colors.black87,
+                            decoration: TextDecoration.underline,
+                            decorationThickness: 1.5,
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            SizedBox(width: 5,key: Key('header_end_spacing'),),
-          ],
+              SizedBox(width: 5, key: Key('header_end_spacing')),
+            ],
+          ),
         ),
       ),
     );

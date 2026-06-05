@@ -98,20 +98,23 @@ class _HomeViewState extends State<HomeView> {
       case CollectionLayoutType.productLayout2:
       case CollectionLayoutType.trendyLayout:
       case CollectionLayoutType.trendingProduct:
-        sectionWidget = SizedBox(
-          height: 346,
-          child: DualHorizontalProductView(
-            titleHeader: collection.collectionName ?? "",
-            products: collection.products,
-            scrollDirection: Axis.horizontal,
-            height: 286,
-            wantHeader: true,
-            scrollEnabled: true,
-            isHomeHeader: true,
-            isHideSeeAll: false,
-            prodCatId: index.toString(),
-            collection: collection,
-            currencyCode: controller.currencySymbol.value,
+        sectionWidget = ColoredBox(
+          color: collection.appColor,
+          child: SizedBox(
+            height: 346,
+            child: DualHorizontalProductView(
+              titleHeader: collection.collectionName ?? "",
+              products: collection.products,
+              scrollDirection: Axis.horizontal,
+              height: 286,
+              wantHeader: true,
+              scrollEnabled: true,
+              isHomeHeader: true,
+              isHideSeeAll: false,
+              prodCatId: index.toString(),
+              collection: collection,
+              currencyCode: controller.currencySymbol.value,
+            ),
           ),
         );
 
@@ -200,22 +203,22 @@ class _HomeViewState extends State<HomeView> {
         );
 
       case CollectionLayoutType.smallBrandLayout:
-          if ((collection.banners?.banners ?? []).isNotEmpty) {
-            sectionWidget = SizedBox(
-              height: 110,
-              child: CategoryView(banners: collection.banners?.banners ?? []),
-            );
-          } else {
-            sectionWidget = const SizedBox.shrink();
-          }
-      case CollectionLayoutType.smallBrandLayoutNew:
+        if ((collection.banners?.banners ?? []).isNotEmpty) {
           sectionWidget = SizedBox(
-            height: 150,
-            child: NewSmallBrandView(
-              banners: collection.banners?.banners??[],
-              collection: collection,
-            ),
+            height: 110,
+            child: CategoryView(banners: collection.banners?.banners ?? []),
           );
+        } else {
+          sectionWidget = const SizedBox.shrink();
+        }
+      case CollectionLayoutType.smallBrandLayoutNew:
+        sectionWidget = SizedBox(
+          height: 150,
+          child: NewSmallBrandView(
+            banners: collection.banners?.banners ?? [],
+            collection: collection,
+          ),
+        );
       case CollectionLayoutType.newTopBrand:
         sectionWidget = SizedBox(
           height: 350,
@@ -291,7 +294,8 @@ class _HomeViewState extends State<HomeView> {
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: isDarkBg
-          ? SystemUiOverlayStyle.light // white status bar icons
+          ? SystemUiOverlayStyle
+                .light // white status bar icons
           : SystemUiOverlayStyle.dark, // black status bar icons
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -355,7 +359,9 @@ class _HomeViewState extends State<HomeView> {
                                   "assets/icons/ic_location_new.svg",
                                   height: 18,
                                   colorFilter: ColorFilter.mode(
-                                    ThemeData.estimateBrightnessForColor(appBarColor) ==
+                                    ThemeData.estimateBrightnessForColor(
+                                              appBarColor,
+                                            ) ==
                                             Brightness.dark
                                         ? Colors.white
                                         : Colors.black,
@@ -366,7 +372,10 @@ class _HomeViewState extends State<HomeView> {
                                 Text(
                                   "${(PrefStore().loadString(AppConstants.countryName) ?? "").isEmpty ? "Qatar" : PrefStore().loadString(AppConstants.countryName)}",
                                   style: TextStyle(
-                                    color: ThemeData.estimateBrightnessForColor(appBarColor) ==
+                                    color:
+                                        ThemeData.estimateBrightnessForColor(
+                                              appBarColor,
+                                            ) ==
                                             Brightness.dark
                                         ? Colors.white
                                         : Colors.black,
@@ -384,9 +393,7 @@ class _HomeViewState extends State<HomeView> {
                       /// Row 3: Search + Notification + Bag
                       Row(
                         children: [
-                          const Expanded(
-                            child: SearchPage(),
-                          ),
+                          const Expanded(child: SearchPage()),
                           const SizedBox(width: 16),
                           GestureDetector(
                             onTap: () {
@@ -396,7 +403,9 @@ class _HomeViewState extends State<HomeView> {
                               "assets/icons/ic_bell_new.svg",
                               height: 24,
                               colorFilter: ColorFilter.mode(
-                                ThemeData.estimateBrightnessForColor(appBarColor) ==
+                                ThemeData.estimateBrightnessForColor(
+                                          appBarColor,
+                                        ) ==
                                         Brightness.dark
                                     ? Colors.white
                                     : Colors.black,
@@ -416,7 +425,9 @@ class _HomeViewState extends State<HomeView> {
                                   "assets/icons/ic_cart_new.svg",
                                   height: 24,
                                   colorFilter: ColorFilter.mode(
-                                    ThemeData.estimateBrightnessForColor(appBarColor) ==
+                                    ThemeData.estimateBrightnessForColor(
+                                              appBarColor,
+                                            ) ==
                                             Brightness.dark
                                         ? Colors.white
                                         : Colors.black,
@@ -474,15 +485,16 @@ class _HomeViewState extends State<HomeView> {
                         ...List.generate(controller.posts.length, (index) {
                           return Column(
                             children: [
-                              (controller.posts[index].layoutType != CollectionLayoutType.smallBrandLayoutNew)
+                              (controller.posts[index].layoutType !=
+                                      CollectionLayoutType.smallBrandLayoutNew)
                                   ? Container(
-                                height: 16,
-                                color: AppColors.colorBackgroundHomeNew,
-                              )
+                                      height: 16,
+                                      color: AppColors.colorBackgroundHomeNew,
+                                    )
                                   : Container(
-                                height: 16,
-                                color: AppColors.white,
-                              ),
+                                      height: 16,
+                                      color: AppColors.white,
+                                    ),
 
                               _buildSection(controller.posts[index], index),
                             ],
