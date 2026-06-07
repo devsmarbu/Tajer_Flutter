@@ -14,8 +14,9 @@ extension MarqueeLabelExtension on String {
     double velocity = 60,
     EdgeInsets padding =
     const EdgeInsets.symmetric(horizontal: 12),
+    bool forceShow = false,
   }) {
-    if (PrefStore().loadString(AppConstants.promoBannerEnabled) == "1") {
+    if (forceShow || PrefStore().loadString(AppConstants.promoBannerEnabled) == "1") {
       return Container(
         width: double.infinity,
         height: height,
