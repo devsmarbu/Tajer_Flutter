@@ -27,6 +27,7 @@ class ChatbotController extends GetxController {
   static const String _version = '2026060499';
   static const String _bridgeChannel = 'TajerBridge';
   static const String _assetPath = 'assets/chatbot_html/index.html';
+  final isVisible = false.obs;
 
   final _pref = PrefStore();
   final OrderSuccessApiClient _orderApi = OrderSuccessApiClient();
@@ -48,9 +49,21 @@ class ChatbotController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    updateVisibility();
     _createWebView();
     _bindAppStateListeners();
   }
+
+
+  void updateVisibility() {
+    final enableChatBot =
+        PrefStore().loadString(AppConstants.enableChatBot) ?? "0";
+
+    isVisible.value = enableChatBot == "1";
+
+    debugPrint("🤖 Chatbot visible = ${isVisible.value}");
+  }
+
 
   // ---------------------------------------------------------------------------
   // WebView setup

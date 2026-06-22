@@ -6,6 +6,7 @@ class SplashDataModel {
   final String? cartItemsCount;
   final String? confEnableGeoLocation;
   final String? confDefaultCurrencySeparator;
+  final String? confEnableChatBot;
   final String? confSingleSellerCart;
   final String? confMinOrderValueForFreeShipping;
   final String? confSmsPluginEnabled;
@@ -32,6 +33,7 @@ class SplashDataModel {
     this.cartItemsCount,
     this.confEnableGeoLocation,
     this.confDefaultCurrencySeparator,
+    this.confEnableChatBot,
     this.confSingleSellerCart,
     this.confMinOrderValueForFreeShipping,
     this.confSmsPluginEnabled,
@@ -60,6 +62,7 @@ class SplashDataModel {
       cartItemsCount: json['cartItemsCount'],
       confEnableGeoLocation: json['CONF_ENABLE_GEO_LOCATION'],
       confDefaultCurrencySeparator: json['CONF_DEFAULT_CURRENCY_SEPARATOR'],
+      confEnableChatBot: json['CONF_ENABLE_CHATBOT'],
       confSingleSellerCart: json['CONF_SINGLE_SELLER_CART'],
       confMinOrderValueForFreeShipping:
       json['CONF_MIN_ORDER_VALUE_FOR_FREE_SHIPPING'],
@@ -95,6 +98,7 @@ class SplashDataModel {
     "cartItemsCount": cartItemsCount,
     "CONF_ENABLE_GEO_LOCATION": confEnableGeoLocation,
     "CONF_DEFAULT_CURRENCY_SEPARATOR": confDefaultCurrencySeparator,
+    "CONF_ENABLE_CHATBOT": confEnableChatBot,
     "CONF_SINGLE_SELLER_CART": confSingleSellerCart,
     "CONF_MIN_ORDER_VALUE_FOR_FREE_SHIPPING":
     confMinOrderValueForFreeShipping,

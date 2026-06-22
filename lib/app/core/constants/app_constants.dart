@@ -35,6 +35,7 @@ class AppConstants {
  static const String confEnableForceUpdate = 'CONF_ENABLE_FORCE_UPDATE';
  static const String appleLogin = 'appleLogin';
  static const String countryCode = 'countryCode';
+ static const String enableChatBot = 'enableChatBot';
  static const String countryId = 'countryId';
  static const String countryName = 'countryName';
  static const String themeColor = 'themeColor';

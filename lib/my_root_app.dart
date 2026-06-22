@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'app/modules/authentication/splash/view/splash_view.dart';
+import 'app/modules/chatbot/controller/chatbot_controller.dart';
 import 'app/modules/chatbot/view/chatbot_overlay.dart';
 import 'common/widgets/restart_widget.dart';
 import 'main_extension.dart';
@@ -31,6 +32,8 @@ class _MyRootAppState extends State<MyRootApp> {
   @override
   Widget build(BuildContext context) {
 
+    final chatbotController = Get.find<ChatbotController>();
+
     return Obx(() {
       final locale = LocalizationService.to.appLocale.value;
 
@@ -53,8 +56,13 @@ class _MyRootAppState extends State<MyRootApp> {
             child: Stack(
               children: [
                 child!,
-                // App-wide floating chat bubble + panel.
-                const ChatbotOverlay(),
+                Obx(() {
+                  if (!chatbotController.isVisible.value) {
+                    return const SizedBox.shrink();
+                  }
+
+                  return const ChatbotOverlay();
+                }),
               ],
             ),
           );

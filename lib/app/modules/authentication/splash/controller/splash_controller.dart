@@ -18,6 +18,7 @@ import '../../../../core/routes/app_routes.dart';
 import '../../../../data/service/api_service/api_service.dart';
 import '../../../../data/service/splash_api_client.dart';
 import '../../../../firebase/one_signal_notification.dart';
+import '../../../chatbot/controller/chatbot_controller.dart';
 import '../../../navigation/bottom_navigation.dart';
 import '../../../orders/orderDetail/view/order_details_screen.dart';
 import '../models/social_auth_status_model.dart';
@@ -33,6 +34,7 @@ class SplashController extends GetxController with AppLoader {
   final pref = PrefStore();
   final ApiService _api = ApiService();
 
+
   var isLoading = false.obs;
   var socialAuthStatus = Rxn<SocialAuthStatusModel>();
   var splashDataStatus = Rxn<SplashDataModel>();
@@ -41,6 +43,7 @@ class SplashController extends GetxController with AppLoader {
   var fromSplash = true.obs;
   var shouldStopVideo = false.obs;
   var allowNavigation = true.obs;
+
 
   @override
   void onReady() {
@@ -244,11 +247,23 @@ class SplashController extends GetxController with AppLoader {
   }
 
   Future<void> setSplashData(SplashDataModel splashData) async {
+
     if (splashData.defaultCountry != null) {
       await pref.saveString(
         AppConstants.countryCode,
         splashData.defaultCountry?.countryCode ?? "",
       );
+    }
+
+    if (splashData.confEnableChatBot != null) {
+      await pref.saveString(
+        AppConstants.enableChatBot,
+        splashData.confEnableChatBot ?? "",
+      );
+
+      if (Get.isRegistered<ChatbotController>()) {
+        Get.find<ChatbotController>().updateVisibility();
+      }
     }
 
     if (splashData.appThemeSetting != null) {
