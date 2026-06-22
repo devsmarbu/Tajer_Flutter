@@ -6,7 +6,7 @@ plugins {
     id("com.google.gms.google-services") // Firebase plugin
 }
 
-// gardle
+
 android {
     namespace = "com.tajershops.tajer"
     compileSdk = flutter.compileSdkVersion
@@ -28,8 +28,8 @@ android {
         applicationId = "com.tajershops.tajer"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
-        versionCode = 182
-        versionName = "7.8.4"
+        versionCode = 180
+        versionName = "7.8.2"
     }
 
     signingConfigs {

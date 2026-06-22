@@ -94,7 +94,7 @@ void main() async {
   Get.put(AccountController(), permanent: true);
   Get.put(SplashController(), permanent: true);
   Get.put(BottomNavController(), permanent: true);
-  Get.put(ChatbotController(), permanent: true);
+  // Get.put(ChatbotController(), permanent: true);
 
   DeepLinkService.instance.init();
 
