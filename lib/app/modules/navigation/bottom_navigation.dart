@@ -93,96 +93,138 @@ class _BottomNavigationState extends State<BottomNavigation> {
                     bottomNav.changeTab(0); // Navigate to Home tab
                   }
                 },
-                child: AdaptiveScaffold(
-      minimizeBehavior: TabBarMinimizeBehavior.never,
-      bottomNavigationBar: AdaptiveBottomNavigationBar(
-        items: [
-          // HOME
-          AdaptiveNavigationDestination(
-            icon: PlatformInfo.isIOS26OrHigher()
-                ? "house"
-                : PlatformInfo.isIOS
-                ? CupertinoIcons.home
-                : Icons.home_outlined,
-            selectedIcon: PlatformInfo.isIOS26OrHigher()
-                ? "house.fill"
-                : PlatformInfo.isIOS
-                ? CupertinoIcons.home
-                : Icons.home,
-            label: 'APP_HOME'.tr,
-          ),
+                child: Scaffold(
+                    body: _screens[bottomNav.currentIndex.value],
+                  bottomNavigationBar: BottomNavigationBar(
+                    type: BottomNavigationBarType.fixed,
 
-          // CATEGORIES
-          AdaptiveNavigationDestination(
-            icon: PlatformInfo.isIOS26OrHigher()
-                ? "square.grid.2x2"
-                : PlatformInfo.isIOS
-                ? CupertinoIcons.square_grid_2x2
-                : Icons.grid_view_outlined,
-            selectedIcon: PlatformInfo.isIOS26OrHigher()
-                ? "square.grid.2x2.fill"
-                : PlatformInfo.isIOS
-                ? CupertinoIcons.square_grid_2x2_fill
-                : Icons.grid_view_sharp,
-            label: 'APP_CATEGORY'.tr,
-          ),
+                    currentIndex: bottomNav.currentIndex.value,
 
-          // WISHLIST
-          AdaptiveNavigationDestination(
-            icon: PlatformInfo.isIOS26OrHigher()
-                ? "heart"
-                : PlatformInfo.isIOS
-                ? CupertinoIcons.heart
-                : Icons.favorite_border,
-            selectedIcon: PlatformInfo.isIOS26OrHigher()
-                ? "heart.fill"
-                : PlatformInfo.isIOS
-                ? CupertinoIcons.heart_fill
-                : Icons.favorite,
-            label: 'APP_WISHLIST'.tr,
-          ),
+                    selectedItemColor: Colors.black,
+                    unselectedItemColor: Colors.grey,
 
-          // CART
-          AdaptiveNavigationDestination(
-            icon: PlatformInfo.isIOS26OrHigher()
-                ? "cart"
-                : PlatformInfo.isIOS
-                ? CupertinoIcons.cart
-                : Icons.shopping_cart_outlined,
-            selectedIcon: PlatformInfo.isIOS26OrHigher()
-                ? "cart.fill"
-                : PlatformInfo.isIOS
-                ? CupertinoIcons.cart_fill
-                : Icons.shopping_cart,
-            label: 'APP_CART'.tr,
-          ),
+                    onTap: bottomNav.changeTab,
 
-          // ACCOUNT
-          AdaptiveNavigationDestination(
-            icon: PlatformInfo.isIOS26OrHigher()
-                ? "person"
-                : PlatformInfo.isIOS
-                ? CupertinoIcons.person
-                : Icons.person_outline,
-            selectedIcon: PlatformInfo.isIOS26OrHigher()
-                ? "person"
-                : PlatformInfo.isIOS
-                ? CupertinoIcons.person
-                : Icons.person_sharp,
-            label: 'APP_ACCOUNT'.tr,
-          ),
-        ],
-        selectedItemColor: (Platform.isAndroid || !(PlatformInfo.isIOS26OrHigher())) ? (Platform.isAndroid ? Colors.black.withValues(alpha: 0)  : Colors.black) : Colors.black,
-        selectedIndex: bottomNav.currentIndex.value,
-        onTap: (index) {
-          setState(() {
-            bottomNav.changeTab(index);
-          });
-        },
+                    items: const [
+                      BottomNavigationBarItem(
+                        icon: Icon(CupertinoIcons.home),
+                        activeIcon: Icon(CupertinoIcons.house_fill),
+                        label: 'Home',
+                      ),
 
-        useNativeBottomBar: PlatformInfo.isIOS26OrHigher(),
-      ),
-      body: _screens[bottomNav.currentIndex.value],
+                      BottomNavigationBarItem(
+                        icon: Icon(CupertinoIcons.square_grid_2x2),
+                        activeIcon: Icon(CupertinoIcons.square_grid_2x2_fill),
+                        label: 'Category',
+                      ),
+
+                      BottomNavigationBarItem(
+                        icon: Icon(CupertinoIcons.heart),
+                        activeIcon: Icon(CupertinoIcons.heart_fill),
+                        label: 'Wishlist',
+                      ),
+
+                      BottomNavigationBarItem(
+                        icon: Icon(CupertinoIcons.cart),
+                        activeIcon: Icon(CupertinoIcons.cart_fill),
+                        label: 'Cart',
+                      ),
+
+                      BottomNavigationBarItem(
+                        icon: Icon(CupertinoIcons.person),
+                        activeIcon: Icon(CupertinoIcons.person_fill),
+                        label: 'Account',
+                      ),
+                    ],
+                  )
+      // bottomNavigationBar: AdaptiveBottomNavigationBar(
+      //   items: [
+      //     // HOME
+      //     AdaptiveNavigationDestination(
+      //       icon: PlatformInfo.isIOS26OrHigher()
+      //           ? "house"
+      //           : PlatformInfo.isIOS
+      //           ? CupertinoIcons.home
+      //           : Icons.home_outlined,
+      //       selectedIcon: PlatformInfo.isIOS26OrHigher()
+      //           ? "house.fill"
+      //           : PlatformInfo.isIOS
+      //           ? CupertinoIcons.home
+      //           : Icons.home,
+      //       label: 'APP_HOME'.tr,
+      //     ),
+      //
+      //     // CATEGORIES
+      //     AdaptiveNavigationDestination(
+      //       icon: PlatformInfo.isIOS26OrHigher()
+      //           ? "square.grid.2x2"
+      //           : PlatformInfo.isIOS
+      //           ? CupertinoIcons.square_grid_2x2
+      //           : Icons.grid_view_outlined,
+      //       selectedIcon: PlatformInfo.isIOS26OrHigher()
+      //           ? "square.grid.2x2.fill"
+      //           : PlatformInfo.isIOS
+      //           ? CupertinoIcons.square_grid_2x2_fill
+      //           : Icons.grid_view_sharp,
+      //       label: 'APP_CATEGORY'.tr,
+      //     ),
+      //
+      //     // WISHLIST
+      //     AdaptiveNavigationDestination(
+      //       icon: PlatformInfo.isIOS26OrHigher()
+      //           ? "heart"
+      //           : PlatformInfo.isIOS
+      //           ? CupertinoIcons.heart
+      //           : Icons.favorite_border,
+      //       selectedIcon: PlatformInfo.isIOS26OrHigher()
+      //           ? "heart.fill"
+      //           : PlatformInfo.isIOS
+      //           ? CupertinoIcons.heart_fill
+      //           : Icons.favorite,
+      //       label: 'APP_WISHLIST'.tr,
+      //     ),
+      //
+      //     // CART
+      //     AdaptiveNavigationDestination(
+      //       icon: PlatformInfo.isIOS26OrHigher()
+      //           ? "cart"
+      //           : PlatformInfo.isIOS
+      //           ? CupertinoIcons.cart
+      //           : Icons.shopping_cart_outlined,
+      //       selectedIcon: PlatformInfo.isIOS26OrHigher()
+      //           ? "cart.fill"
+      //           : PlatformInfo.isIOS
+      //           ? CupertinoIcons.cart_fill
+      //           : Icons.shopping_cart,
+      //       label: 'APP_CART'.tr,
+      //     ),
+      //
+      //     // ACCOUNT
+      //     AdaptiveNavigationDestination(
+      //       icon: PlatformInfo.isIOS26OrHigher()
+      //           ? "person"
+      //           : PlatformInfo.isIOS
+      //           ? CupertinoIcons.person
+      //           : Icons.person_outline,
+      //       selectedIcon: PlatformInfo.isIOS26OrHigher()
+      //           ? "person"
+      //           : PlatformInfo.isIOS
+      //           ? CupertinoIcons.person
+      //           : Icons.person_sharp,
+      //       label: 'APP_ACCOUNT'.tr,
+      //     ),
+      //   ],
+      //   selectedItemColor: (Platform.isAndroid || !(PlatformInfo.isIOS26OrHigher())) ? (Platform.isAndroid ? Colors.black.withValues(alpha: 0)  : Colors.black) : Colors.black,
+      //   selectedIndex: bottomNav.currentIndex.value,
+      //   onTap: (index) {
+      //     setState(() {
+      //       bottomNav.changeTab(index);
+      //     });
+      //   },
+      //
+      //   useNativeBottomBar: PlatformInfo.isIOS26OrHigher(),
+      // ),
+     // body: _screens[bottomNav.currentIndex.value],
     )));
   }
 }

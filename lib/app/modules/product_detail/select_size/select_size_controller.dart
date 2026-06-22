@@ -30,6 +30,7 @@ class SelectSizeController extends GetxController {
   String productId;
   RxString inStock = "1".obs;
   String isSizeChartAvailable = '0';
+  final fallbackImageUrl = "".obs;
 
   SelectSizeController(this.productId);
 
@@ -73,6 +74,16 @@ class SelectSizeController extends GetxController {
 
         inStock.value =
             productDetailSection?.content?.productDetail?.inStock ?? "0";
+
+        final imagesSection = productSections.firstWhereOrNull(
+          (d) => d.customType == ProductDetailType.productImages,
+        );
+        if (imagesSection != null &&
+            imagesSection.content?.productImagesArr != null &&
+            imagesSection.content!.productImagesArr!.isNotEmpty) {
+          fallbackImageUrl.value =
+              imagesSection.content!.productImagesArr!.first.productImageUrl ?? "";
+        }
       }
     } catch (e) {
       debugPrint("❌ fetchProductDetail error: $e");
