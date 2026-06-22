@@ -28,6 +28,16 @@
         } catch (e) {}
       }
 
+      // DIAGNOSTIC: surface any uncaught error / promise rejection so a silent
+      // module-load hang is visible in the native logs.
+      window.addEventListener('error', function (e) {
+        post({ type: 'error', message: 'window.onerror: ' + (e && e.message) + ' @ ' + (e && e.filename) });
+      });
+      window.addEventListener('unhandledrejection', function (e) {
+        var r = e && e.reason;
+        post({ type: 'error', message: 'unhandledrejection: ' + (r && r.message ? r.message : r) });
+      });
+
 
       // DIAGNOSTIC: surface every event the widget fires so we can learn its
       // real event names/payloads (cart / auth / login / logout / chat).
@@ -118,13 +128,59 @@
       // ---- Init ----------------------------------------------------------
 
       var _initialized = false;
+      var _initStarted = false;
+
+      // Android WebView pages loaded via loadDataWithBaseURL have a data:-backed
+      // document URL and CANNOT initiate ES-module network fetches — a direct
+      // `import(networkUrl)` hangs forever with no error. Workaround: fetch the
+      // module text ourselves (CORS-open) and import it from a blob: URL. The
+      // module's own relative sub-imports (e.g. "./AIProvider-*.js") would then
+      // resolve against the blob origin, so we rewrite them to absolute URLs on
+      // the chatbot origin first; every transitively-loaded chunk then loads
+      // from its real URL and resolves its own relatives natively.
+      function loadChatModule(moduleUrl) {
+        var base = moduleUrl.replace(/[?#].*$/, '').replace(/\/[^\/]*$/, '/');
+        return fetch(moduleUrl, { credentials: 'omit' })
+          .then(function (r) {
+            if (!r.ok) throw new Error('HTTP ' + r.status + ' fetching module');
+            return r.text();
+          })
+          .then(function (src) {
+            // The bundle's relative sub-imports (e.g. "./AIProvider-*.js") would
+            // resolve against the blob: origin, so rewrite them to absolute URLs
+            // on the chatbot origin. Every chunk then loads from its real URL and
+            // resolves its own relatives natively.
+            src = src
+              .replace(/(\bimport\s*\(\s*["'])\.\//g, '$1' + base)
+              .replace(/(\bfrom\s*["'])\.\//g, '$1' + base)
+              .replace(/(\bimport\s*["'])\.\//g, '$1' + base);
+            var blobUrl = URL.createObjectURL(new Blob([src], { type: 'text/javascript' }));
+            return import(blobUrl).then(function (m) {
+              try { URL.revokeObjectURL(blobUrl); } catch (e) {}
+              return m;
+            });
+          });
+      }
 
       window.__initChatbot = function (config) {
         try {
           var cfg = (typeof config === 'string') ? JSON.parse(config) : config;
           var moduleUrl = cfg.chatbotUrl;
 
-          import(moduleUrl).then(function (module) {
+          // Already loaded (init is triggered by both page-ready and
+          // onPageFinished): just push settings, don't re-import.
+          if (window.TajerChat) {
+            var s = Object.assign({}, cfg);
+            delete s.chatbotUrl;
+            s.onLoginRequired = function () { post({ type: 'login-required' }); };
+            if (typeof window.TajerChat.updateSettings === 'function') window.TajerChat.updateSettings(s);
+            post({ type: 'ready' });
+            return;
+          }
+          if (_initStarted) return; // a load is already in flight
+          _initStarted = true;
+
+          loadChatModule(moduleUrl).then(function (module) {
             var TajerChat = module.default;
             window.TajerChat = TajerChat;
 
@@ -142,22 +198,19 @@
             delete widgetConfig.chatbotUrl;
             widgetConfig.onLoginRequired = function () { post({ type: 'login-required' }); };
 
-            if (_initialized && window.TajerChat && typeof window.TajerChat.updateSettings === 'function') {
-              window.TajerChat.updateSettings(widgetConfig);
-            } else {
-              TajerChat.init(widgetConfig);
-              _initialized = true;
+            TajerChat.init(widgetConfig);
+            _initialized = true;
 
-              // Widget -> app events are captured globally by the
-              // dispatchEvent override above (login / logout / cart / auth),
-              // so no per-event listeners are needed here.
+            // Widget -> app events are captured globally by the dispatchEvent
+            // override above (login / logout / cart / auth), so no per-event
+            // listeners are needed here.
 
-              // Keep reporting the widget's bounds (interactive area) and its
-              // open/closed state to Flutter.
-              setInterval(function () { reportBounds(); reportChatState(); }, 150);
-            }
+            // Keep reporting the widget's bounds (interactive area) and its
+            // open/closed state to Flutter.
+            setInterval(function () { reportBounds(); reportChatState(); }, 150);
             post({ type: 'ready' });
           }).catch(function (e) {
+            _initStarted = false;
             post({ type: 'error', message: 'module-load-failed: ' + (e && e.message ? e.message : e) });
           });
         } catch (e) {
