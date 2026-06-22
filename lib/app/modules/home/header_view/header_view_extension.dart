@@ -99,7 +99,6 @@ class HeaderViewHelper {
           (CollectionLayoutType.homeSlider) ||
           (CollectionLayoutType.homeSliderNew) ||
           (CollectionLayoutType.smallBrandLayout) ||
-          (CollectionLayoutType.smallBrandLayoutNew) ||
           (CollectionLayoutType.dualSquareBanner):
       // TODO: Handle this case.
       case CollectionLayoutType.reelCollectionLayout:
@@ -123,13 +122,10 @@ class HeaderViewHelper {
       case CollectionLayoutType.unknown:
         // TODO: Handle this case.
         throw UnimplementedError();
-      // case CollectionLayoutType.spacer:
-      //   // TODO: Handle this case.
-      //   throw UnimplementedError();
-      case CollectionLayoutType.homePageBannerStripe:
+      case CollectionLayoutType.spacer:
         // TODO: Handle this case.
         throw UnimplementedError();
-        case CollectionLayoutType.trendyLayout:
+      case CollectionLayoutType.homePageBannerStripe:
         // TODO: Handle this case.
         throw UnimplementedError();
     }

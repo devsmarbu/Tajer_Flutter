@@ -137,7 +137,6 @@ class Collection {
   final DateTime? collectionUpdatedOn;
   final CollectionLayoutType? layoutType; // ✅ Enum instead of String
   final Banners? banners;
-  final List<CategoryModelNew>? categories;
   final List<HomePageShops>? shops;
   final List<HomeProduct> products;
   final List<HomeBrand>? brands;
@@ -145,7 +144,6 @@ class Collection {
   final String? collectionUrlTitle;
   final String? collectionUrlType;
   final String? homePageStripeSVGUrl;
-  final String? collectionAppColorCode;
 
   Collection({
     this.collectionDescription,
@@ -166,7 +164,6 @@ class Collection {
     this.collectionUpdatedOn,
     this.layoutType,
     this.banners,
-    this.categories,
     this.shops,
     required this.products,
     this.totProducts,
@@ -174,26 +171,7 @@ class Collection {
     this.collectionUrlType,
     this.brands,
     this.homePageStripeSVGUrl,
-    this.collectionAppColorCode,
   });
-
-  Color get appColor {
-    if (collectionAppColorCode == null || collectionAppColorCode!.isEmpty) {
-      return Colors.transparent;
-    }
-
-    String hex = collectionAppColorCode!.replaceAll('#', '');
-
-    if (hex.length == 8) {
-      // RGBA -> ARGB
-
-      hex = hex.substring(6, 8) + hex.substring(0, 6);
-    } else if (hex.length == 6) {
-      hex = 'FF$hex';
-    }
-
-    return Color(int.parse(hex, radix: 16));
-  }
 
   factory Collection.fromJson(Map<String, dynamic> json) => Collection(
     collectionDescription: json["collection_description"],
@@ -224,11 +202,6 @@ class Collection {
     layoutType: CollectionLayoutType.fromValue(json["collection_layout_type"]),
 
     banners: json["banners"] == null ? null : Banners.fromJson(json["banners"]),
-    categories: json["categories"] == null
-        ? []
-        : List<CategoryModelNew>.from(
-            json["categories"].map((x) => CategoryModelNew.fromJson(x)),
-          ),
     brands: json["brands"] == null
         ? null
         : List<HomeBrand>.from(
@@ -243,7 +216,6 @@ class Collection {
     collectionUrlTitle: json["collection_url_title"],
     collectionUrlType: json["collection_url_type"],
     homePageStripeSVGUrl: json["home_page_stripe_svg_url"],
-    collectionAppColorCode: json["collection_app_color_code"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -270,9 +242,6 @@ class Collection {
     "collection_updated_on": collectionUpdatedOn?.toIso8601String(),
     "collection_layout_type": layoutType?.value, // ✅ serialize enum
     "banners": banners?.toJson(),
-    "categories": categories == null
-        ? []
-        : List<dynamic>.from(categories!.map((x) => x.toJson())),
     "products": products == null
         ? []
         : List<dynamic>.from(products!.map((x) => x.toJson())),
@@ -280,7 +249,6 @@ class Collection {
     "collection_url_title": collectionUrlTitle,
     "collection_url_type": collectionUrlType,
     "home_page_stripe_svg_url": homePageStripeSVGUrl,
-    "collection_app_color_code": collectionAppColorCode,
   };
 }
 
@@ -1055,38 +1023,6 @@ class Slide {
   };
 }
 
-class CategoryModelNew {
-  final String prodcatId;
-  final String prodcatName;
-  final String prodcatDescription;
-  final String categoryImageUrl;
-
-  CategoryModelNew({
-    required this.prodcatId,
-    required this.prodcatName,
-    required this.prodcatDescription,
-    required this.categoryImageUrl,
-  });
-
-  factory CategoryModelNew.fromJson(Map<String, dynamic> json) {
-    return CategoryModelNew(
-      prodcatId: json['prodcat_id']?.toString() ?? '',
-      prodcatName: json['prodcat_name']?.toString() ?? '',
-      prodcatDescription: json['prodcat_description']?.toString() ?? '',
-      categoryImageUrl: json['category_image_url']?.toString() ?? '',
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'prodcat_id': prodcatId,
-      'prodcat_name': prodcatName,
-      'prodcat_description': prodcatDescription,
-      'category_image_url': categoryImageUrl,
-    };
-  }
-}
-
 class EnumValues<T> {
   Map<String, T> map;
   late Map<T, String> reverseMap;
@@ -1131,10 +1067,8 @@ enum CollectionLayoutType {
   newCategoryLayout('31'),
   dualSquareBanner('39'),
   reelCollectionLayout('40'),
-  //  spacer('50'),
+  spacer('50'),
   homePageBannerStripe('42'),
-  trendyLayout('43'),
-  smallBrandLayoutNew('50'),
   unknown('0'); // fallback for unrecognized values
 
   final String value;
@@ -1285,13 +1219,14 @@ class InfiniteScrollBanner extends StatefulWidget {
   });
 
   @override
-  State<InfiniteScrollBanner> createState() => _InfiniteScrollBannerState();
+  State<InfiniteScrollBanner> createState() =>
+      _InfiniteScrollBannerState();
 }
 
-class _InfiniteScrollBannerState extends State<InfiniteScrollBanner>
+class _InfiniteScrollBannerState
+    extends State<InfiniteScrollBanner>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
-
   // total scrolling distance
   final double scrollDistance = 2000;
 
@@ -1299,13 +1234,16 @@ class _InfiniteScrollBannerState extends State<InfiniteScrollBanner>
   void initState() {
     super.initState();
 
-    _controller = AnimationController(vsync: this, duration: widget.duration)
-      ..repeat();
+    _controller = AnimationController(
+      vsync: this,
+      duration: widget.duration,
+    )..repeat();
   }
 
   @override
   Widget build(BuildContext context) {
-    final isRTL = Directionality.of(context) == TextDirection.rtl;
+    final isRTL =
+        Directionality.of(context) == TextDirection.rtl;
     return SizedBox(
       height: widget.height,
       width: double.infinity,
@@ -1318,13 +1256,17 @@ class _InfiniteScrollBannerState extends State<InfiniteScrollBanner>
               minWidth: 0,
               maxWidth: double.infinity,
               child: Transform.translate(
-                offset: Offset((scrollDistance * _controller.value), 0),
+                offset: Offset(
+                  (scrollDistance * _controller.value),
+                  0,
+                ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: List.generate(
                     20,
-                    (index) => Padding(
-                      padding: const EdgeInsets.only(right: 0),
+                        (index) => Padding(
+                      padding:
+                      const EdgeInsets.only(right: 0),
                       child: widget.child,
                     ),
                   ),

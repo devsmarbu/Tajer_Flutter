@@ -193,7 +193,6 @@ class OptionValue {
   final String? selprodId;
   final String? optionvalueName;
   final String? optionvalueColorCode;
-  final String? productImageUrl;
   final String? selprodUserId;
   final String? theprice;
   final String? selprodCode;
@@ -204,12 +203,12 @@ class OptionValue {
   final String? isSelected;
   final String? stock;
 
+
   OptionValue({
     this.productName,
     this.selprodId,
     this.optionvalueName,
     this.optionvalueColorCode,
-    this.productImageUrl,
     this.selprodUserId,
     this.theprice,
     this.selprodCode,
@@ -218,7 +217,7 @@ class OptionValue {
     this.optionvalueId,
     this.optionId,
     this.isSelected,
-    this.stock,
+    this.stock
   });
 
   factory OptionValue.fromJson(Map<String, dynamic> json) => OptionValue(
@@ -226,7 +225,6 @@ class OptionValue {
     selprodId: json["selprod_id"],
     optionvalueName: json["optionvalue_name"],
     optionvalueColorCode: json["optionvalue_color_code"],
-    productImageUrl: json["product_image_url"],
     selprodUserId: json["selprod_user_id"],
     theprice: json["theprice"],
     selprodCode: json["selprod_code"],
@@ -243,7 +241,6 @@ class OptionValue {
     "selprod_id": selprodId,
     "optionvalue_name": optionvalueName,
     "optionvalue_color_code": optionvalueColorCode,
-    "product_image_url": productImageUrl, // <-- Add this
     "selprod_user_id": selprodUserId,
     "theprice": theprice,
     "selprod_code": selprodCode,
