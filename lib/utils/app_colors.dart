@@ -138,6 +138,7 @@ class AppColors {
   static const Color colorOutStock = Color(0xB3000000);
   static const Color colorDisableItem = Color(0x26000000);
   static const Color colorButtonLoginSignup = Color(0xE6FFFFFF);
+  static const Color colorBackgroundHomeNew = Color(0xAAF3F2F8);
 }
 
 extension HexColorExtension on String {

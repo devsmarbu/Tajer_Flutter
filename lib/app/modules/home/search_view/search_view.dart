@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:tajer/utils/app_strings.dart';
 import '../../product_detail/search_view/search_view.dart';
 
 class SearchPage extends StatefulWidget {
@@ -22,22 +24,35 @@ class _SearchPageState extends State<SearchPage> {
         );
       },
       child: Container(
+
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
-          boxShadow: const [
-            BoxShadow(
-              color: Colors.black26,
-              blurRadius: 6,
-              offset: Offset(2, 2),
-            ),
-          ],
+          border: Border.all(
+            color: const Color(0xffE5E5E5), // border color
+            width: 1, // border width
+          ),
+          // boxShadow: const [
+          //   BoxShadow(
+          //     color: Colors.black26,
+          //     blurRadius: 6,
+          //     offset: Offset(2, 2),
+          //   ),
+          // ],
         ),
         child: IgnorePointer(
           // Prevents keyboard focus in this screen
           child: TextField(
             decoration: InputDecoration(
-              hintText: "app_search_for_brands_products".toUpperCase().tr,
+              hintText: AppStrings.appSearch.toUpperCase().tr,
+              prefixIcon: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: SvgPicture.asset(
+                  "assets/icons/ic_search_new.svg",
+                  height: 20,
+                  width: 20,
+                ),
+              ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: BorderSide.none,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:tajer/app/core/constants/app_labels.dart';
 import 'package:tajer/app/modules/home/home_controller.dart';
 import 'package:tajer/app/modules/product_detail/select_size/select_size_controller.dart';
 import '../../product_detail/select_size/select_size_view.dart';
@@ -39,17 +39,17 @@ class _PerfumeCellViewState extends State<PerfumeCellView> {
           collection: widget.collection,
         ),
         Container(
-          height: 350,
-          padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-          color: Colors.grey.withValues(alpha: 0.08),
+          height: 360,
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          color: Colors.white,
           child: GridView.builder(
             cacheExtent: 200,
             scrollDirection: Axis.horizontal,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2, // 2 columns
-              crossAxisSpacing: 0,
-              mainAxisSpacing: 10,
-              childAspectRatio: 1.2,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
+              childAspectRatio: 1.28,
             ),
             itemCount: widget.products.length,
             itemBuilder: (context, index) {
@@ -62,156 +62,204 @@ class _PerfumeCellViewState extends State<PerfumeCellView> {
                     product.productName ?? "",
                   );
                 },
-                child: Stack(
-                  alignment: Alignment.center,
-                  clipBehavior: Clip.none, // 👈 allows image to go outside
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    // Background white card
-                    Container(
-                      width: 140,
-                      height: 125,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(30),
-                          topRight: Radius.circular(30),
-                          bottomLeft: Radius.circular(10),
-                          bottomRight: Radius.circular(10),
-                        ), // rounded corners
-                      ),
-                      margin: const EdgeInsets.only(top: 30),
-                      // space for image overlap
-                      padding: const EdgeInsets.all(8),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Row(
-                            children: [
-                              // Brand name + price column
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      product.selprodTitle ?? "",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.normal,
-                                        fontSize: 10,
-                                        fontFamily: "Nunito",
-                                      ),
-                                      textAlign: TextAlign.start,
-                                      maxLines: 2,
-                                      // softWrap: false,
-                                       overflow: TextOverflow.ellipsis,
-                                    ),
-                                    Text(
-                                      product.selprodPrice ?? "",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                        color: Colors.black,
-                                        fontSize: 11,
-                                        fontFamily: "Nunito",
-                                      ),
-                                      maxLines: 1,
-                                      softWrap: false,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              // Spacer(),
-                              SizedBox(
-                                width: 35,
-                                height: 35,
-                                child: TextButton(
-                                  onPressed: () {
-                                    debugPrint("Add to cart tapped");
-                                    final options = product.productOptions;
-                                    if (options != null && options.isNotEmpty) {
-                                      final firstOptionValues =
-                                          options.first.values ?? [];
-                                      if (firstOptionValues.isNotEmpty) {
-                                        showModalBottomSheet(
-                                          context: context,
-                                          isScrollControlled: true,
-                                          backgroundColor: Colors.transparent,
-                                          builder: (context) => SelectSizeView(
-                                            price: product.selprodPrice ?? "",
-                                            productId: firstOptionValues.first.selprodId ?? "",
-                                            productOptions: options,
-                                            currencyCode:
-                                                widget.currencyCode, productName: product.productName ?? '', isSizeChartAvailable: '',
-                                          ),
-                                        );
-                                      } else {
-                                        debugPrint("⚠️ No option values found");
-                                      }
-                                    } else {
-                                      final sizeController = Get.put(SelectSizeController(product.selprodId ?? ""));
-                                      sizeController.addToCart(product.selprodId ?? "",product.productName ?? '',product.selprodPrice ?? '',directAddedToCart: '1');
-                                    }
-                                  },
-                                  style: TextButton.styleFrom(
-                                    padding: EdgeInsets.zero,
-                                    // remove default padding
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(5),
-                                    ),
-                                  ),
-                                  child: Container(
-                                    width: 35,
-                                    height: 35,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(12),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withOpacity(0.12),
-                                          blurRadius: 10,
-                                          offset: const Offset(0, 4),
-                                        ),
-                                      ],
-                                    ),
-                                    child: const Center(
-                                      child: Icon(
-                                        Icons.shopping_bag_outlined,
-                                        color: Colors.black,
-                                        size: 20,
-                                      ),
-                                    ),
-                                  ),
-                                ),
+
+                    /// CIRCLE IMAGE WITH OVERLAPPING CART
+                    Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        Container(
+                          width: 105,
+                          height: 105,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.04),
+                                blurRadius: 8,
+                                offset: const Offset(0, 3),
                               ),
                             ],
                           ),
-                        ],
-                      ),
-                    ),
-                    Positioned(
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Image(
-                            height: 110,
-                            width: 90,
-                            image: provider,
-                            fit: BoxFit.fitWidth,
-                          ),
-                          Transform.translate(
-                            offset: Offset(0, -30), // 👈 move upward by 8px
-                            child: Image.asset(
-                              "assets/images/PerfumeShadow.png",
-                              width: 80,
-                              height: 40,
-                              color: Colors.black,
+                          child: ClipOval(
+                            child: Image(
+                              image: provider,
+                              fit: BoxFit.cover,
+                              loadingBuilder: (context, child,
+                                  loadingProgress) {
+                                if (loadingProgress == null) return child;
+                                return Container(
+                                  color: Colors.grey[100],
+                                  child: const Center(
+                                    child: SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(
+                                        color: Colors.black,
+                                        strokeWidth: 2,
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                              errorBuilder: (context, error, stackTrace) {
+                                return Container(
+                                  color: Colors.grey[200],
+                                  child: const Icon(
+                                      Icons.error_outline, size: 20,
+                                      color: Colors.red),
+                                );
+                              },
                             ),
                           ),
-                        ],
+                        ),
+
+                        /// CART BUTTON
+                        Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: Semantics(
+                            label: 'Add ${product.productName} to cart',
+                            button: true,
+                            child: GestureDetector(
+                              key: ValueKey(
+                                  'perfume_add_to_cart_${product.selprodId}'),
+                              onTap: () {
+                                debugPrint("Add to cart tapped");
+                                final options = product.productOptions;
+
+                                if (options != null && options.isNotEmpty) {
+                                  final firstOptionValues = options.first
+                                      .values ?? [];
+
+                                  if (firstOptionValues.isNotEmpty) {
+                                    showModalBottomSheet(
+                                      context: context,
+                                      isScrollControlled: true,
+                                      backgroundColor: Colors.transparent,
+                                      builder: (context) =>
+                                          SelectSizeView(
+                                            price: product.selprodPrice ?? "",
+                                            productId:
+                                            firstOptionValues.first.selprodId ??
+                                                "",
+                                            productOptions: options,
+                                            currencyCode: widget.currencyCode,
+                                            productName: product.productName ??
+                                                '',
+                                            isSizeChartAvailable: '',
+                                          ),
+                                    );
+                                  } else {
+                                    final sizeController = Get.put(
+                                      SelectSizeController(
+                                          product.selprodId ?? ''),
+                                    );
+                                    sizeController.addToCart(
+                                      product.selprodId ?? '',
+                                      product.productName ?? '',
+                                      product.selprodPrice ?? '',
+                                      directAddedToCart: '1',
+                                    );
+                                  }
+                                } else {
+                                  final sizeController = Get.put(
+                                    SelectSizeController(
+                                        product.selprodId ?? ''),
+                                  );
+                                  sizeController.addToCart(
+                                    product.selprodId ?? '',
+                                    product.productName ?? '',
+                                    product.selprodPrice ?? '',
+                                    directAddedToCart: '1',
+                                  );
+                                }
+                              },
+                              child: Container(
+                                  width: 34,
+                                  height: 34,
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFF1E1E1E),
+                                    // Dark charcoal/black
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(
+                                        color: Colors.white, width: 1.5),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withValues(
+                                            alpha: 0.1),
+                                        blurRadius: 4,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Center(
+                                    child: SvgPicture.asset(
+                                      "assets/icons/ic_cart_new.svg",
+                                      width: 16,
+                                      height: 16,
+                                      colorFilter: const ColorFilter.mode(
+                                        Colors.white,
+                                        BlendMode.srcIn,
+                                      ),
+                                    ),
+                                  ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 6),
+
+                    /// BRAND
+                    Text(
+                      key: ValueKey('perfume_brand_${product.selprodId}'),
+                      (product.brandName ?? "").toUpperCase(),
+                      style: const TextStyle(
+                        fontSize: 7,
+                        fontWeight: FontWeight.w600,
+                        fontFamily: "Nunito",
+                        color: Colors.black54,
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 2),
+
+                    /// PRODUCT NAME
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      child: Text(
+                        key: ValueKey('perfume_name_${product.selprodId}'),
+                        (product.productName ?? "").toUpperCase(),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 8,
+                          fontFamily: "Nunito",
+                          height: 1.2,
+                        ),
+                        maxLines: 1,
+                        textAlign: TextAlign.center,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+
+                    /// PRICE
+                    Text(
+                      key: ValueKey('perfume_price_${product.selprodId}'),
+                      product.selprodPrice ?? "",
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w900,
+                        fontSize: 10,
+                        fontFamily: "Nunito",
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),

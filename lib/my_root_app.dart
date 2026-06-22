@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'app/modules/authentication/splash/view/splash_view.dart';
-import 'app/modules/chatbot/view/chatbot_overlay.dart';
 import 'common/widgets/restart_widget.dart';
 import 'main_extension.dart';
 import 'translations/localization_service.dart';
@@ -50,13 +49,7 @@ class _MyRootAppState extends State<MyRootApp> {
         builder: (context, child) {
           return Directionality(
             textDirection: isRTL ? TextDirection.rtl : TextDirection.ltr,
-            child: Stack(
-              children: [
-                child!,
-                // App-wide floating chat bubble + panel.
-                const ChatbotOverlay(),
-              ],
-            ),
+            child: child!,
           );
         },
       );

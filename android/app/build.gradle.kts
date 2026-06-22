@@ -6,7 +6,7 @@ plugins {
     id("com.google.gms.google-services") // Firebase plugin
 }
 
-
+// gardle
 android {
     namespace = "com.tajershops.tajer"
     compileSdk = flutter.compileSdkVersion

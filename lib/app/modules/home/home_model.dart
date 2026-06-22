@@ -87,13 +87,13 @@ class HomeData {
     collections: json["collections"] == null
         ? []
         : List<Collection>.from(
-      json["collections"]!.map((x) => Collection.fromJson(x)),
-    ),
+            json["collections"]!.map((x) => Collection.fromJson(x)),
+          ),
     currencySymbol: json["currencySymbol"],
     home_promotion_popup_available: json["home_promotion_popup_available"],
     home_promotion_popup_image_url: json["home_promotion_popup_image_url"],
     home_promotion_popup_redirect_url:
-    json["home_promotion_popup_redirect_url"],
+        json["home_promotion_popup_redirect_url"],
     promo_banner_enabled: json["promo_banner_enabled"],
     promo_banner_text: json["promo_banner_text"],
   );
@@ -214,8 +214,8 @@ class Collection {
     shops: json["shops"] == null
         ? []
         : List<HomePageShops>.from(
-      json["shops"]!.map((x) => HomePageShops.fromJson(x)),
-    ),
+            json["shops"]!.map((x) => HomePageShops.fromJson(x)),
+          ),
     collectionName: json["collection_name"],
     collectionDisplayMediaOnly: json["collection_display_media_only"],
     collectionUpdatedOn: json["collection_updated_on"] == null
@@ -227,18 +227,18 @@ class Collection {
     categories: json["categories"] == null
         ? []
         : List<CategoryModelNew>.from(
-      json["categories"].map((x) => CategoryModelNew.fromJson(x)),
-    ),
+            json["categories"].map((x) => CategoryModelNew.fromJson(x)),
+          ),
     brands: json["brands"] == null
         ? null
         : List<HomeBrand>.from(
-      json["brands"]!.map((x) => HomeBrand.fromJson(x)),
-    ),
+            json["brands"]!.map((x) => HomeBrand.fromJson(x)),
+          ),
     products: json["products"] == null
         ? []
         : List<HomeProduct>.from(
-      json["products"]!.map((x) => HomeProduct.fromJson(x)),
-    ),
+            json["products"]!.map((x) => HomeProduct.fromJson(x)),
+          ),
     totProducts: json["totProducts"],
     collectionUrlTitle: json["collection_url_title"],
     collectionUrlType: json["collection_url_type"],
@@ -338,8 +338,8 @@ class Banners {
     banners: json["banners"] == null
         ? []
         : List<HomeBanner>.from(
-      json["banners"]!.map((x) => HomeBanner.fromJson(x)),
-    ),
+            json["banners"]!.map((x) => HomeBanner.fromJson(x)),
+          ),
     blocationPromotionCost: json["blocation_promotion_cost"],
     blocationId: json["blocation_id"],
     blocationActive: json["blocation_active"],
@@ -556,8 +556,8 @@ class HomeProduct {
     productOptions: json["product_options"] == null
         ? []
         : List<ProductOptions>.from(
-      json["product_options"]!.map((x) => ProductOptions.fromJson(x)),
-    ),
+            json["product_options"]!.map((x) => ProductOptions.fromJson(x)),
+          ),
     prodRating: json["prod_rating"],
     shopId: json["shop_id"],
     selprod_user_id: json["selprod_user_id"],
@@ -646,16 +646,16 @@ class ProductOption {
     optionId: json["option_id"],
     // ✅ Safely map option name
     optionName:
-    optionNameValues.map[json["option_name"]] ??
+        optionNameValues.map[json["option_name"]] ??
         OptionName.UNKNOWN, // default fallback
     // ✅ Guard null values list
     values: json["values"] == null
         ? []
         : List<Value>.from(
-      (json["values"] as List).whereType<Map<String, dynamic>>().map(
-            (x) => Value.fromJson(x),
-      ),
-    ),
+            (json["values"] as List).whereType<Map<String, dynamic>>().map(
+              (x) => Value.fromJson(x),
+            ),
+          ),
   );
 
   Map<String, dynamic> toJson() => {
@@ -794,8 +794,8 @@ class MakeupViewModel {
         products: json["products"] == null
             ? []
             : List<Product>.from(
-          json["products"]!.map((x) => Product.fromJson(x)),
-        ),
+                json["products"]!.map((x) => Product.fromJson(x)),
+              ),
         collectionChildRecords: json["collection_child_records"],
         collectionName: json["collection_name"],
         collectionUpdatedOn: json["collection_updated_on"] == null
@@ -1144,7 +1144,7 @@ enum CollectionLayoutType {
   /// Factory to create enum from API string value
   static CollectionLayoutType fromValue(String? value) {
     return CollectionLayoutType.values.firstWhere(
-          (e) => e.value == value,
+      (e) => e.value == value,
       orElse: () => CollectionLayoutType.unknown,
     );
   }
@@ -1323,7 +1323,7 @@ class _InfiniteScrollBannerState extends State<InfiniteScrollBanner>
                   mainAxisSize: MainAxisSize.min,
                   children: List.generate(
                     20,
-                        (index) => Padding(
+                    (index) => Padding(
                       padding: const EdgeInsets.only(right: 0),
                       child: widget.child,
                     ),
