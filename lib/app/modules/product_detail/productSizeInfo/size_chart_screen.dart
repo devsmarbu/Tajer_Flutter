@@ -42,7 +42,7 @@ class _SizeChartScreenState extends State<SizeChartScreen> {
   bool _scrollHintShown = false;
   final ScrollController _horizontalScrollController = ScrollController();
 
- // static const _kFirstColWidth = 120.0;
+  // static const _kFirstColWidth = 120.0;
   static const _kColWidth = 80.0;
 
   double cmToInch(num cm) => cm / 2.54;
@@ -54,13 +54,12 @@ class _SizeChartScreenState extends State<SizeChartScreen> {
     controller
       ..fetchSizeChart(widget.productId)
       ..loadProductDetail(widget.productId);
-
   }
 
   double _calculateFirstColumnWidth(
-      List<MergedChartRow> mergedRows,
-      TextStyle style,
-      ) {
+    List<MergedChartRow> mergedRows,
+    TextStyle style,
+  ) {
     double maxWidth = 0;
 
     for (final row in mergedRows) {
@@ -79,7 +78,6 @@ class _SizeChartScreenState extends State<SizeChartScreen> {
     // Add space for Radio button + padding
     return maxWidth + 60;
   }
-
 
   void _runScrollHintAfterBuild() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -112,7 +110,6 @@ class _SizeChartScreenState extends State<SizeChartScreen> {
       curve: Curves.easeInOut,
     );
   }
-
 
   @override
   void dispose() {
@@ -151,16 +148,16 @@ class _SizeChartScreenState extends State<SizeChartScreen> {
       ),
 
       body: Obx(() {
-
-
         if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator(color: Colors.black));
+          return const Center(
+            child: CircularProgressIndicator(color: Colors.black),
+          );
         }
 
         final data = controller.sizeChartModel.value?.data;
         final tables = data?.tableChartData ?? [];
         final hasChart = tables.any(
-              (t) => t.chartData?.values?.isNotEmpty == true,
+          (t) => t.chartData?.values?.isNotEmpty == true,
         );
 
         if (hasChart) {
@@ -172,13 +169,9 @@ class _SizeChartScreenState extends State<SizeChartScreen> {
           options: widget.productOptions,
         );
 
-
         final firstColumnWidth = _calculateFirstColumnWidth(
           mergedRows,
-          const TextStyle(
-            fontFamily: "Nunito",
-            fontWeight: FontWeight.w600,
-          ),
+          const TextStyle(fontFamily: "Nunito", fontWeight: FontWeight.w600),
         );
 
         selectedSizeIndex ??= mergedRows.indexWhere(
@@ -200,8 +193,7 @@ class _SizeChartScreenState extends State<SizeChartScreen> {
                 /// 🔁 MULTIPLE TABLES
                 ...tables.map((table) {
                   final chartData = table.chartData;
-                  if (chartData == null ||
-                      chartData.values?.isEmpty != false) {
+                  if (chartData == null || chartData.values?.isEmpty != false) {
                     return const SizedBox();
                   }
 
@@ -215,18 +207,19 @@ class _SizeChartScreenState extends State<SizeChartScreen> {
                     children: [
                       /// Table title (Dress / Cape)
                       if (tables.length > 1)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        child: Text(
-                          table.sctblName ?? "",
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            fontFamily: "Nunito",
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          child: Text(
+                            table.sctblName ?? "",
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              fontFamily: "Nunito",
+                            ),
                           ),
                         ),
-                      ),
                       SizedBox(height: 10),
+
                       /// Scrollable table
                       Scrollbar(
                         controller: _horizontalScrollController,
@@ -241,9 +234,9 @@ class _SizeChartScreenState extends State<SizeChartScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              _tableHeader(chartData,firstColumnWidth),
+                              _tableHeader(chartData, firstColumnWidth),
                               const Divider(),
-                              ..._buildRows(mergedRows,firstColumnWidth),
+                              ..._buildRows(mergedRows, firstColumnWidth),
                             ],
                           ),
                         ),
@@ -264,7 +257,7 @@ class _SizeChartScreenState extends State<SizeChartScreen> {
               if (sizeChartUrl?.isNotEmpty == true)
                 _measureYourself(sizeChartUrl),
             ],
-          )
+          ),
         );
       }),
 
@@ -275,9 +268,15 @@ class _SizeChartScreenState extends State<SizeChartScreen> {
         }
 
         final data = controller.sizeChartModel.value?.data;
-        final chartData = data?.chartData;
+        // final chartData = data?.tableChartData?.first.chartData;
+        final chartData =
+            (data?.tableChartData != null &&
+                (data?.tableChartData ?? []).isNotEmpty)
+            ? data?.tableChartData?.first.chartData
+            : null;
         final hasChart = chartData?.values?.isNotEmpty == true;
 
+        debugPrint('this is ${hasChart.toString()}');
         if (!hasChart) return const SizedBox.shrink();
 
         final mergedRows = _mergeChartWithOptions(
@@ -325,7 +324,7 @@ class _SizeChartScreenState extends State<SizeChartScreen> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-             Text(
+            Text(
               "APP_SIZE_CHART".tr,
               style: TextStyle(
                 fontSize: 18,
@@ -361,7 +360,7 @@ class _SizeChartScreenState extends State<SizeChartScreen> {
     );
   }
 
-  Widget _tableHeader(ChartData chartData,double firstColumnWidth) {
+  Widget _tableHeader(ChartData chartData, double firstColumnWidth) {
     final titles = chartData.titles;
     if (titles == null || titles.isEmpty) return const SizedBox.shrink();
 
@@ -391,14 +390,21 @@ class _SizeChartScreenState extends State<SizeChartScreen> {
     );
   }
 
-  List<Widget> _buildRows(List<MergedChartRow> mergedRows,double firstColumnWidth) {
+  List<Widget> _buildRows(
+    List<MergedChartRow> mergedRows,
+    double firstColumnWidth,
+  ) {
     return [
       for (int rowIndex = 0; rowIndex < mergedRows.length; rowIndex++)
-        _buildRow(mergedRows, rowIndex,firstColumnWidth),
+        _buildRow(mergedRows, rowIndex, firstColumnWidth),
     ];
   }
 
-  Widget _buildRow(List<MergedChartRow> mergedRows, int rowIndex,double firstColumnWidth) {
+  Widget _buildRow(
+    List<MergedChartRow> mergedRows,
+    int rowIndex,
+    double firstColumnWidth,
+  ) {
     final row = mergedRows[rowIndex];
     final isDisabled = row.option?.isAvailable == "0";
 
@@ -440,7 +446,8 @@ class _SizeChartScreenState extends State<SizeChartScreen> {
     ChartValue cell,
     int colIndex,
     int rowIndex,
-    bool isDisabled, double firstColumnWidth,
+    bool isDisabled,
+    double firstColumnWidth,
     void Function(int?) onChanged,
   ) {
     if (colIndex == 0) {
@@ -509,7 +516,7 @@ class _SizeChartScreenState extends State<SizeChartScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-         Text(
+        Text(
           "APP_HOW_TO_MEASURE_YOURSELF".tr,
           style: TextStyle(
             fontSize: 16,
@@ -524,6 +531,16 @@ class _SizeChartScreenState extends State<SizeChartScreen> {
             AppConstants.imageBaseURLPath + imageUrl,
             width: double.infinity,
             fit: BoxFit.fitWidth, // width fixed, height auto
+          ),
+        ),
+        const SizedBox(height: 16),
+        Text(
+          "APP_SIZE_CHART_HELPER_TEXT".tr,
+          style: const TextStyle(
+            fontSize: 12,
+            color: Colors.grey,
+            fontFamily: "Nunito",
+            fontWeight: FontWeight.w500,
           ),
         ),
       ],
@@ -545,7 +562,9 @@ class _SizeChartScreenState extends State<SizeChartScreen> {
                     SelectSizeController(selected?.selprodId ?? ''),
                   );
                   sizeController.addToCart(
-                    selected?.selprodId ?? '',widget.productName,widget.productPrice,
+                    selected?.selprodId ?? '',
+                    widget.productName,
+                    widget.productPrice,
                     comeFromSizeChart: "1",
                   );
                   debugPrint(
@@ -709,5 +728,4 @@ class MeasureSelector extends StatelessWidget {
       ),
     );
   }
-
 }
