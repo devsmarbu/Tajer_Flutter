@@ -29,6 +29,10 @@ class ChatbotController extends GetxController {
   static const String _assetPath = 'assets/chatbot_html/index.html';
   final isVisible = false.obs;
 
+  /// True while [PaymentWebProcessPage] is on screen — chatbot must be hidden
+  /// during payment to avoid WebView overlay conflicts.
+  final isOnPaymentPage = false.obs;
+
   final _pref = PrefStore();
   final OrderSuccessApiClient _orderApi = OrderSuccessApiClient();
 
@@ -59,9 +63,16 @@ class ChatbotController extends GetxController {
     final enableChatBot =
         PrefStore().loadString(AppConstants.enableChatBot) ?? "0";
 
-    isVisible.value = enableChatBot == "1";
+    isVisible.value = enableChatBot == "1" && !isOnPaymentPage.value;
 
-    debugPrint("🤖 Chatbot visible = ${isVisible.value}");
+    debugPrint("🤖 Chatbot visible = ${isVisible.value} (enableChatBot=$enableChatBot, onPaymentPage=${isOnPaymentPage.value})");
+  }
+
+  /// Called by [PaymentWebProcessPage] to hide/restore the chatbot overlay
+  /// while the payment WebView is active.
+  void setPaymentPageActive(bool active) {
+    isOnPaymentPage.value = active;
+    updateVisibility();
   }
 
 
