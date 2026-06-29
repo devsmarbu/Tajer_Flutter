@@ -9,190 +9,243 @@
   </style>
 </head>
 <body>
-  <script>
-    /*
-     * Flutter <-> Tajer chatbot bridge (mobile port of the web embed script).
-     *
-     * The chatbot renders its OWN floating bubble/panel directly in this page.
-     * Because a transparent platform WebView can't pass touches through empty
-     * areas, we continuously report the widget's visible bounding box back to
-     * Flutter via the "TajerBridge" channel; Flutter only makes that rectangle
-     * interactive and lets every other touch fall through to the app.
-     */
-    (function () {
-      function post(payload) {
-        try {
-          if (window.TajerBridge && window.TajerBridge.postMessage) {
-            window.TajerBridge.postMessage(JSON.stringify(payload));
-          }
-        } catch (e) {}
-      }
-
-
-      // DIAGNOSTIC: surface every event the widget fires so we can learn its
-      // real event names/payloads (cart / auth / login / logout / chat).
+<script>
+  /*
+   * Flutter <-> Tajer chatbot bridge (mobile port of the web embed script).
+   *
+   * The chatbot renders its OWN floating bubble/panel directly in this page.
+   * Because a transparent platform WebView can't pass touches through empty
+   * areas, we continuously report the widget's visible bounding box back to
+   * Flutter via the "TajerBridge" channel; Flutter only makes that rectangle
+   * interactive and lets every other touch fall through to the app.
+   */
+  (function () {
+    function post(payload) {
       try {
-        var _origDispatch = EventTarget.prototype.dispatchEvent;
-        EventTarget.prototype.dispatchEvent = function (evt) {
-          try {
-            if (evt && evt.type && /tajer|cart|auth|login|logout|chat|user|session/i.test(evt.type)) {
-              var d = null;
-              try { d = evt.detail != null ? JSON.parse(JSON.stringify(evt.detail)) : null; } catch (e) { d = String(evt.detail); }
-              post({ type: 'evt', name: evt.type, detail: d });
-              // DIAGNOSTIC: on login, report whatever cookies are readable from
-              // the WebView so we can tell whether PHPSESSID can be bridged.
-              if (/login/i.test(evt.type)) {
-                try { post({ type: 'cookie', cookie: document.cookie || '(empty)' }); } catch (e) {}
-              }
-            }
-          } catch (e) {}
-          return _origDispatch.apply(this, arguments);
-        };
+        if (window.TajerBridge && window.TajerBridge.postMessage) {
+          window.TajerBridge.postMessage(JSON.stringify(payload));
+        }
       } catch (e) {}
+    }
 
-      // Measure the chatbot's actually-rendered region by probing a grid of
-      // points with elementFromPoint. Anything that is not the transparent
-      // page background (HTML/BODY) is real widget pixels — this is robust to
-      // whatever DOM/shadow structure the widget uses.
-      var _last = '';
-      var STEP = 28; // px between probe points
+    // DIAGNOSTIC: surface any uncaught error / promise rejection so a silent
+    // module-load hang is visible in the native logs.
+    window.addEventListener('error', function (e) {
+      post({ type: 'error', message: 'window.onerror: ' + (e && e.message) + ' @ ' + (e && e.filename) });
+    });
+    window.addEventListener('unhandledrejection', function (e) {
+      var r = e && e.reason;
+      post({ type: 'error', message: 'unhandledrejection: ' + (r && r.message ? r.message : r) });
+    });
 
-      function reportBounds() {
-        var vw = window.innerWidth, vh = window.innerHeight;
-        var minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity, found = false;
 
-        for (var y = 2; y < vh; y += STEP) {
-          for (var x = 2; x < vw; x += STEP) {
-            var el = document.elementFromPoint(x, y);
-            if (!el) continue;
-            var tag = el.tagName;
-            if (tag === 'HTML' || tag === 'BODY') continue; // transparent background
-            found = true;
-            if (x < minX) minX = x;
-            if (y < minY) minY = y;
-            if (x > maxX) maxX = x;
-            if (y > maxY) maxY = y;
+    // DIAGNOSTIC: surface every event the widget fires so we can learn its
+    // real event names/payloads (cart / auth / login / logout / chat).
+    try {
+      var _origDispatch = EventTarget.prototype.dispatchEvent;
+      EventTarget.prototype.dispatchEvent = function (evt) {
+        try {
+          if (evt && evt.type && /tajer|cart|auth|login|logout|chat|user|session/i.test(evt.type)) {
+            var d = null;
+            try { d = evt.detail != null ? JSON.parse(JSON.stringify(evt.detail)) : null; } catch (e) { d = String(evt.detail); }
+            post({ type: 'evt', name: evt.type, detail: d });
+            // DIAGNOSTIC: on login, report whatever cookies are readable from
+            // the WebView so we can tell whether PHPSESSID can be bridged.
+            if (/login/i.test(evt.type)) {
+              try { post({ type: 'cookie', cookie: document.cookie || '(empty)' }); } catch (e) {}
+            }
           }
-        }
+        } catch (e) {}
+        return _origDispatch.apply(this, arguments);
+      };
+    } catch (e) {}
 
-        var payload;
-        if (found) {
-          // Pad by one grid step so edges of the bubble/panel stay tappable.
-          minX = Math.max(0, minX - STEP); minY = Math.max(0, minY - STEP);
-          maxX = Math.min(vw, maxX + STEP); maxY = Math.min(vh, maxY + STEP);
-          payload = { type: 'bounds', x: minX, y: minY, w: maxX - minX, h: maxY - minY, vw: vw, vh: vh };
-        } else {
-          payload = { type: 'bounds', x: 0, y: 0, w: 0, h: 0, vw: vw, vh: vh };
-        }
-        var key = [Math.round(payload.x), Math.round(payload.y), Math.round(payload.w), Math.round(payload.h)].join(',');
-        if (key !== _last) {
-          _last = key;
-          post(payload);
+    // Measure the chatbot's actually-rendered region by probing a grid of
+    // points with elementFromPoint. Anything that is not the transparent
+    // page background (HTML/BODY) is real widget pixels — this is robust to
+    // whatever DOM/shadow structure the widget uses.
+    var _last = '';
+    var STEP = 28; // px between probe points
+
+    function reportBounds() {
+      var vw = window.innerWidth, vh = window.innerHeight;
+      var minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity, found = false;
+
+      for (var y = 2; y < vh; y += STEP) {
+        for (var x = 2; x < vw; x += STEP) {
+          var el = document.elementFromPoint(x, y);
+          if (!el) continue;
+          var tag = el.tagName;
+          if (tag === 'HTML' || tag === 'BODY') continue; // transparent background
+          found = true;
+          if (x < minX) minX = x;
+          if (y < minY) minY = y;
+          if (x > maxX) maxX = x;
+          if (y > maxY) maxY = y;
         }
       }
 
-      // ---- Native -> widget API ------------------------------------------
+      var payload;
+      if (found) {
+        // Pad by one grid step so edges of the bubble/panel stay tappable.
+        minX = Math.max(0, minX - STEP); minY = Math.max(0, minY - STEP);
+        maxX = Math.min(vw, maxX + STEP); maxY = Math.min(vh, maxY + STEP);
+        payload = { type: 'bounds', x: minX, y: minY, w: maxX - minX, h: maxY - minY, vw: vw, vh: vh };
+      } else {
+        payload = { type: 'bounds', x: 0, y: 0, w: 0, h: 0, vw: vw, vh: vh };
+      }
+      var key = [Math.round(payload.x), Math.round(payload.y), Math.round(payload.w), Math.round(payload.h)].join(',');
+      if (key !== _last) {
+        _last = key;
+        post(payload);
+      }
+    }
 
-      window.tajerSetToken = function (token) {
-        try {
-          if (window.TajerChat && typeof window.TajerChat.setToken === 'function') window.TajerChat.setToken(token);
-          document.dispatchEvent(new CustomEvent('tajer:auth-response', { detail: { token: token } }));
-        } catch (e) {}
-      };
-      window.tajerClearToken = function () {
-        try { if (window.TajerChat && typeof window.TajerChat.setToken === 'function') window.TajerChat.setToken(''); } catch (e) {}
-      };
-      window.tajerSetUserId = function (userId) {
-        try { if (window.TajerChat && typeof window.TajerChat.setUserId === 'function') window.TajerChat.setUserId(userId); } catch (e) {}
-      };
-      window.tajerUpdateCurrency = function (currencyId) {
-        try { if (window.TajerChat && typeof window.TajerChat.updateSettings === 'function') window.TajerChat.updateSettings({ currencyId: parseInt(currencyId, 10) }); } catch (e) {}
-      };
-      window.tajerSiteCartChanged = function (action) {
-        try { document.dispatchEvent(new CustomEvent('tajer:site-cart-changed', { detail: { action: action || 'update' } })); } catch (e) {}
-      };
-      window.tajerSiteLogout = function () {
-        try { document.dispatchEvent(new CustomEvent('tajer:site-logout')); } catch (e) {}
-      };
+    // ---- Native -> widget API ------------------------------------------
 
-      // ---- Init ----------------------------------------------------------
+    window.tajerSetToken = function (token) {
+      try {
+        if (window.TajerChat && typeof window.TajerChat.setToken === 'function') window.TajerChat.setToken(token);
+        document.dispatchEvent(new CustomEvent('tajer:auth-response', { detail: { token: token } }));
+      } catch (e) {}
+    };
+    window.tajerClearToken = function () {
+      try { if (window.TajerChat && typeof window.TajerChat.setToken === 'function') window.TajerChat.setToken(''); } catch (e) {}
+    };
+    window.tajerSetUserId = function (userId) {
+      try { if (window.TajerChat && typeof window.TajerChat.setUserId === 'function') window.TajerChat.setUserId(userId); } catch (e) {}
+    };
+    window.tajerUpdateCurrency = function (currencyId) {
+      try { if (window.TajerChat && typeof window.TajerChat.updateSettings === 'function') window.TajerChat.updateSettings({ currencyId: parseInt(currencyId, 10) }); } catch (e) {}
+    };
+    window.tajerSiteCartChanged = function (action) {
+      try { document.dispatchEvent(new CustomEvent('tajer:site-cart-changed', { detail: { action: action || 'update' } })); } catch (e) {}
+    };
+    window.tajerSiteLogout = function () {
+      try { document.dispatchEvent(new CustomEvent('tajer:site-logout')); } catch (e) {}
+    };
 
-      var _initialized = false;
+    // ---- Init ----------------------------------------------------------
 
-      window.__initChatbot = function (config) {
-        try {
-          var cfg = (typeof config === 'string') ? JSON.parse(config) : config;
-          var moduleUrl = cfg.chatbotUrl;
+    var _initialized = false;
+    var _initStarted = false;
 
-          import(moduleUrl).then(function (module) {
-            var TajerChat = module.default;
-            window.TajerChat = TajerChat;
-
-            // DIAGNOSTIC: dump the widget's API surface so we know which hooks
-            // (open/close/updateConfig/onCartChange/setToken/...) actually exist.
-            try {
-              var api = [];
-              [TajerChat, Object.getPrototypeOf(TajerChat) || {}].forEach(function (o) {
-                Object.getOwnPropertyNames(o).forEach(function (k) { if (api.indexOf(k) === -1) api.push(k); });
-              });
-              post({ type: 'api', module: Object.keys(module), tajer: api });
-            } catch (e) {}
-
-            var widgetConfig = Object.assign({}, cfg);
-            delete widgetConfig.chatbotUrl;
-            widgetConfig.onLoginRequired = function () { post({ type: 'login-required' }); };
-
-            if (_initialized && window.TajerChat && typeof window.TajerChat.updateSettings === 'function') {
-              window.TajerChat.updateSettings(widgetConfig);
-            } else {
-              TajerChat.init(widgetConfig);
-              _initialized = true;
-
-              // Widget -> app events are captured globally by the
-              // dispatchEvent override above (login / logout / cart / auth),
-              // so no per-event listeners are needed here.
-
-              // Keep reporting the widget's bounds (interactive area) and its
-              // open/closed state to Flutter.
-              setInterval(function () { reportBounds(); reportChatState(); }, 150);
-            }
-            post({ type: 'ready' });
-          }).catch(function (e) {
-            post({ type: 'error', message: 'module-load-failed: ' + (e && e.message ? e.message : e) });
+    // Android WebView pages loaded via loadDataWithBaseURL have a data:-backed
+    // document URL and CANNOT initiate ES-module network fetches — a direct
+    // `import(networkUrl)` hangs forever with no error. Workaround: fetch the
+    // module text ourselves (CORS-open) and import it from a blob: URL. The
+    // module's own relative sub-imports (e.g. "./AIProvider-*.js") would then
+    // resolve against the blob origin, so we rewrite them to absolute URLs on
+    // the chatbot origin first; every transitively-loaded chunk then loads
+    // from its real URL and resolves its own relatives natively.
+    function loadChatModule(moduleUrl) {
+      var base = moduleUrl.replace(/[?#].*$/, '').replace(/\/[^\/]*$/, '/');
+      return fetch(moduleUrl, { credentials: 'omit' })
+        .then(function (r) {
+          if (!r.ok) throw new Error('HTTP ' + r.status + ' fetching module');
+          return r.text();
+        })
+        .then(function (src) {
+          // The bundle's relative sub-imports (e.g. "./AIProvider-*.js") would
+          // resolve against the blob: origin, so rewrite them to absolute URLs
+          // on the chatbot origin. Every chunk then loads from its real URL and
+          // resolves its own relatives natively.
+          src = src
+            .replace(/(\bimport\s*\(\s*["'])\.\//g, '$1' + base)
+            .replace(/(\bfrom\s*["'])\.\//g, '$1' + base)
+            .replace(/(\bimport\s*["'])\.\//g, '$1' + base);
+          var blobUrl = URL.createObjectURL(new Blob([src], { type: 'text/javascript' }));
+          return import(blobUrl).then(function (m) {
+            try { URL.revokeObjectURL(blobUrl); } catch (e) {}
+            return m;
           });
-        } catch (e) {
-          post({ type: 'error', message: 'init-failed: ' + (e && e.message ? e.message : e) });
-        }
-      };
+        });
+    }
 
-      window.tajerReinit = function (config) {
-        try {
-          var cfg = (typeof config === 'string') ? JSON.parse(config) : config;
+    window.__initChatbot = function (config) {
+      try {
+        var cfg = (typeof config === 'string') ? JSON.parse(config) : config;
+        var moduleUrl = cfg.chatbotUrl;
+
+        // Already loaded (init is triggered by both page-ready and
+        // onPageFinished): just push settings, don't re-import.
+        if (window.TajerChat) {
           var s = Object.assign({}, cfg);
           delete s.chatbotUrl;
-          if (window.TajerChat && typeof window.TajerChat.updateSettings === 'function') {
-            window.TajerChat.updateSettings(s);
-          } else {
-            _initialized = false;
-            window.__initChatbot(config);
-          }
-        } catch (e) {}
-      };
+          s.onLoginRequired = function () { post({ type: 'login-required' }); };
+          if (typeof window.TajerChat.updateSettings === 'function') window.TajerChat.updateSettings(s);
+          post({ type: 'ready' });
+          return;
+        }
+        if (_initStarted) return; // a load is already in flight
+        _initStarted = true;
 
-      // Report the chat panel's open/closed state so Flutter can refresh the
-      // app (cart, account) when the user finishes and closes the chat — the
-      // widget does not emit a cart-changed event of its own.
-      var _lastOpen = null;
-      function reportChatState() {
-        try {
-          var open = (window.TajerChat && typeof window.TajerChat.isOpen === 'function')
-            ? !!window.TajerChat.isOpen() : null;
-          if (open !== _lastOpen) { _lastOpen = open; post({ type: 'chat-state', open: open }); }
-        } catch (e) {}
+        loadChatModule(moduleUrl).then(function (module) {
+          var TajerChat = module.default;
+          window.TajerChat = TajerChat;
+
+          // DIAGNOSTIC: dump the widget's API surface so we know which hooks
+          // (open/close/updateConfig/onCartChange/setToken/...) actually exist.
+          try {
+            var api = [];
+            [TajerChat, Object.getPrototypeOf(TajerChat) || {}].forEach(function (o) {
+              Object.getOwnPropertyNames(o).forEach(function (k) { if (api.indexOf(k) === -1) api.push(k); });
+            });
+            post({ type: 'api', module: Object.keys(module), tajer: api });
+          } catch (e) {}
+
+          var widgetConfig = Object.assign({}, cfg);
+          delete widgetConfig.chatbotUrl;
+          widgetConfig.onLoginRequired = function () { post({ type: 'login-required' }); };
+
+          TajerChat.init(widgetConfig);
+          _initialized = true;
+
+          // Widget -> app events are captured globally by the dispatchEvent
+          // override above (login / logout / cart / auth), so no per-event
+          // listeners are needed here.
+
+          // Keep reporting the widget's bounds (interactive area) and its
+          // open/closed state to Flutter.
+          setInterval(function () { reportBounds(); reportChatState(); }, 150);
+          post({ type: 'ready' });
+        }).catch(function (e) {
+          _initStarted = false;
+          post({ type: 'error', message: 'module-load-failed: ' + (e && e.message ? e.message : e) });
+        });
+      } catch (e) {
+        post({ type: 'error', message: 'init-failed: ' + (e && e.message ? e.message : e) });
       }
+    };
 
-      post({ type: 'page-ready' });
-    })();
-  </script>
+    window.tajerReinit = function (config) {
+      try {
+        var cfg = (typeof config === 'string') ? JSON.parse(config) : config;
+        var s = Object.assign({}, cfg);
+        delete s.chatbotUrl;
+        if (window.TajerChat && typeof window.TajerChat.updateSettings === 'function') {
+          window.TajerChat.updateSettings(s);
+        } else {
+          _initialized = false;
+          window.__initChatbot(config);
+        }
+      } catch (e) {}
+    };
+
+    // Report the chat panel's open/closed state so Flutter can refresh the
+    // app (cart, account) when the user finishes and closes the chat — the
+    // widget does not emit a cart-changed event of its own.
+    var _lastOpen = null;
+    function reportChatState() {
+      try {
+        var open = (window.TajerChat && typeof window.TajerChat.isOpen === 'function')
+          ? !!window.TajerChat.isOpen() : null;
+        if (open !== _lastOpen) { _lastOpen = open; post({ type: 'chat-state', open: open }); }
+      } catch (e) {}
+    }
+
+    post({ type: 'page-ready' });
+  })();
+</script>
 </body>
 </html>

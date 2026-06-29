@@ -101,7 +101,11 @@ class ChatbotController extends GetxController {
             isLoading.value = false;
             _injectInit();
           },
-          onWebResourceError: (_) => isLoading.value = false,
+          onWebResourceError: (e) {
+            debugPrint('Chatbot resource error: ${e.errorCode} ${e.description} '
+                'url=${e.url} main=${e.isForMainFrame}');
+            isLoading.value = false;
+          },
         ),
       );
 

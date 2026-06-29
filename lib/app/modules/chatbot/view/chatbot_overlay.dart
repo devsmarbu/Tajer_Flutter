@@ -34,6 +34,10 @@ class ChatbotOverlay extends StatelessWidget {
       final Rect? hitRect = !c.isReady.value
           ? null
           : (treatOpen ? (Offset.zero & mq.size) : rect);
+      final double topInset = treatOpen ? mq.viewPadding.top : 0;
+      final double bottomInset =
+      keyboard > 0 ? keyboard : (treatOpen ? mq.viewPadding.bottom : 0);
+
 
       return Positioned.fill(
         child: _ChatHitArea(
@@ -43,7 +47,7 @@ class ChatbotOverlay extends StatelessWidget {
           child: Padding(
             // Shrink the WebView above the keyboard so the chat input stays
             // visible while typing.
-            padding: EdgeInsets.only(bottom: keyboard),
+            padding: EdgeInsets.only(top: topInset, bottom: bottomInset),
             child: WebViewWidget(controller: controller),
           ),
         ),
