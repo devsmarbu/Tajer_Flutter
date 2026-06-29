@@ -95,13 +95,18 @@ class ChatbotController extends GetxController {
         _bridgeChannel,
         onMessageReceived: (msg) => _onBridgeMessage(msg.message),
       )
+      ..setOnConsoleMessage((m) => debugPrint('Chatbot console [${m.level.name}]: ${m.message}'))
       ..setNavigationDelegate(
         NavigationDelegate(
           onPageFinished: (_) {
             isLoading.value = false;
             _injectInit();
           },
-          onWebResourceError: (_) => isLoading.value = false,
+          onWebResourceError: (e) {
+            debugPrint('Chatbot resource error: ${e.errorCode} ${e.description} '
+                'url=${e.url} main=${e.isForMainFrame}');
+            isLoading.value = false;
+          },
         ),
       );
 

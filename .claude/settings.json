@@ -1,4 +1,15 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(tasklist)",
+      "Bash('C:\\\\Users\\\\TSC\\\\AppData\\\\Local/Android/Sdk/platform-tools/adb.exe' logcat *)",
+      "Bash('C:\\\\Users\\\\TSC\\\\AppData\\\\Local/Android/Sdk/platform-tools/adb.exe' exec-out *)",
+      "Bash('C:\\\\Users\\\\TSC\\\\AppData\\\\Local/Android/Sdk/platform-tools/adb.exe' shell *)",
+      "Bash(curl -sS -o tajer-chatbot.es.js \"https://chatbot.tajershops.com/tajer-chatbot.es.js?v=2026060499\")",
+      "Bash(grep -aoE \"import\\\\\\([^\\)]{0,60}\" tajer-chatbot.es.js)",
+      "Bash('C:\\\\Users\\\\TSC\\\\AppData\\\\Local/Android/Sdk/platform-tools/adb.exe' devices *)"
+    ]
+  },
   "hooks": {
     "PreToolUse": [
       {

@@ -35,15 +35,24 @@ class ChatbotOverlay extends StatelessWidget {
           ? null
           : (treatOpen ? (Offset.zero & mq.size) : rect);
 
+      // When the panel is open it fills the screen, so its header (X / menu) and
+      // its input must clear the system insets — otherwise the header collides
+      // with the status bar / notch (untappable X) and the input hides behind
+      // the home indicator. When it's only the floating bubble, keep the full
+      // screen so the chatbot can position the bubble itself.
+      final double topInset = treatOpen ? mq.viewPadding.top : 0;
+      final double bottomInset =
+          keyboard > 0 ? keyboard : (treatOpen ? mq.viewPadding.bottom : 0);
+
       return Positioned.fill(
         child: _ChatHitArea(
           // Interactive area: full screen when chat is open, just the bubble
           // when closed, null before ready.
           hitRect: hitRect,
           child: Padding(
-            // Shrink the WebView above the keyboard so the chat input stays
-            // visible while typing.
-            padding: EdgeInsets.only(bottom: keyboard),
+            // Keep the chat clear of the status bar/notch (top) and the
+            // keyboard/home indicator (bottom).
+            padding: EdgeInsets.only(top: topInset, bottom: bottomInset),
             child: WebViewWidget(controller: controller),
           ),
         ),
