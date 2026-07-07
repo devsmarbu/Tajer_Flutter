@@ -28,8 +28,8 @@ android {
         applicationId = "com.tajershops.tajer"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
-        versionCode = 182
-        versionName = "7.8.5"
+        versionCode = 184
+        versionName = "7.8.6"
     }
 
     signingConfigs {
