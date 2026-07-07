@@ -405,6 +405,25 @@ class DeepLinkService {
       return;
     }
 
+    // Affiliate Referral
+    if (url.contains("/home/affiliate-referral/")) {
+      try {
+        final uri = Uri.parse(url);
+
+        // Gets: 63089fab0be35
+        final referralId = uri.pathSegments.last;
+
+        if (referralId.isNotEmpty) {
+          PrefStore().saveString("affiliate_referral_id", referralId);
+          debugPrint("✅ Affiliate Referral ID Saved: $referralId");
+        }
+      } catch (e) {
+        debugPrint("❌ Affiliate referral parse error: $e");
+      }
+
+      return;
+    }
+
     if (AppState.isReady) {
       if (url.contains("/buyer/order-feedback")) {
         final currentToken = PrefStore().loadString(AppConstants.sessionToken) ?? "";

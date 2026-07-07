@@ -24,6 +24,8 @@ class HomeRepository {
   var firstTimeBannerImageURL = "";
   var bannerRedirectURL = "";
   var promoBannerText = "";
+  var promoBannerTextColor = "";
+  var promoBannerColor = "";
   var promoBannerEnabled = "0";
 
   void resetPagination() {
@@ -44,9 +46,13 @@ class HomeRepository {
     bannerRedirectURL = homeModel.data?.home_promotion_popup_redirect_url ?? "1";
     promoBannerEnabled = homeModel.data?.promo_banner_enabled ?? "0";
     promoBannerText = homeModel.data?.promo_banner_text ?? "";
+    promoBannerTextColor = homeModel.data?.promo_banner_text_color ?? "";
+    promoBannerColor = homeModel.data?.promo_banner_bg_color ?? "";
     cartItemCounts.value = homeModel.data?.cartItemsCount ?? "0";
 
     PrefStore().saveString(AppConstants.promoBannerText, promoBannerText);
+    PrefStore().saveString(AppConstants.promoBannerTextColor, promoBannerTextColor);
+    PrefStore().saveString(AppConstants.promoBannerColor, promoBannerColor);
     PrefStore().saveString(AppConstants.promoBannerEnabled, promoBannerEnabled);
     return homeModel.data?.collections ?? [];
   }

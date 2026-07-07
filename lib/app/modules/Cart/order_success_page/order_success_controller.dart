@@ -86,6 +86,7 @@ class OrderSuccessController extends GetxController {
           );
 
           PrefStore().saveString("campaign_cleared", "true");
+          PrefStore().saveString("affiliate_referral_id", '');
         }
       }
     } catch (e) {

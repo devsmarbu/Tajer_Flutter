@@ -34,24 +34,31 @@ class ChatbotOverlay extends StatelessWidget {
       final Rect? hitRect = !c.isReady.value
           ? null
           : (treatOpen ? (Offset.zero & mq.size) : rect);
-      final double topInset = treatOpen ? mq.viewPadding.top : 0;
-      final double bottomInset =
-      keyboard > 0 ? keyboard : (treatOpen ? mq.viewPadding.bottom : 0);
+      // If open, the chatbot fills the screen.
+      // If closed, we size the Positioned wrapper height to end exactly above the tab bar (e.g. subtracting 80 pixels).
+      // This leaves the bottom tab bar area completely free of the WebView on the native layer.
+      if (treatOpen) {
+        final double topInset = mq.viewPadding.top;
+        final double bottomInset = keyboard > 0 ? keyboard : mq.viewPadding.bottom;
 
-
-      return Positioned.fill(
-        child: _ChatHitArea(
-          // Interactive area: full screen when chat is open, just the bubble
-          // when closed, null before ready.
-          hitRect: hitRect,
+        return Positioned.fill(
           child: Padding(
-            // Shrink the WebView above the keyboard so the chat input stays
-            // visible while typing.
             padding: EdgeInsets.only(top: topInset, bottom: bottomInset),
             child: WebViewWidget(controller: controller),
           ),
-        ),
-      );
+        );
+      } else {
+        return Positioned(
+          left: 0,
+          top: 0,
+          right: 0,
+          bottom: 80, // Ends exactly above the bottom tab bar (allowing bottomInset: 0)
+          child: _ChatHitArea(
+            hitRect: hitRect,
+            child: WebViewWidget(controller: controller),
+          ),
+        );
+      }
     });
   }
 }

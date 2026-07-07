@@ -192,7 +192,8 @@ class AppRoutes {
         "keyword": keyword.toString(),
         "condition": condition ?? '',
         "image": image ?? '',
-        "imagePath": imagePath ?? ''
+        "imagePath": imagePath ?? '',
+        "uniqueId": DateTime.now().millisecondsSinceEpoch.toString(),
       },
     );
   }

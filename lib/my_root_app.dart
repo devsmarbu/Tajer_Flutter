@@ -60,8 +60,25 @@ class _MyRootAppState extends State<MyRootApp> {
                   if (!chatbotController.isVisible.value) {
                     return const SizedBox.shrink();
                   }
+                  
+                  final rect = chatbotController.widgetRect.value;
+                  final isOpen = chatbotController.isChatOpen.value;
+                  final mq = MediaQuery.of(context);
 
-                  return const ChatbotOverlay();
+                  // Keep a single Positioned widget to avoid widget reconstruction (stops blinking).
+                  // Adjust layout bounds dynamically based on open/closed state.
+                  final double left = (isOpen || rect == null) ? 0 : rect.left;
+                  final double top = (isOpen || rect == null) ? 0 : rect.top;
+                  final double? width = (isOpen || rect == null) ? mq.size.width : rect.width;
+                  final double? height = (isOpen || rect == null) ? mq.size.height : rect.height;
+
+                  return Positioned(
+                    left: left,
+                    top: top,
+                    width: width,
+                    height: height,
+                    child: const ChatbotOverlay(),
+                  );
                 }),
               ],
             ),

@@ -51,7 +51,7 @@ class CommonTextField extends StatefulWidget {
 }
 
 class _CommonTextFieldState extends State<CommonTextField> {
-  late TextEditingController _controller;
+  TextEditingController? _controller;
   bool _ownsController = false;
   bool _isObscure = true; // 👈 ADD THIS
 
@@ -70,7 +70,7 @@ class _CommonTextFieldState extends State<CommonTextField> {
   @override
   void dispose() {
     if (_ownsController) {
-      _controller.dispose();
+      _controller?.dispose();
     }
     super.dispose();
   }

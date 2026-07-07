@@ -22,7 +22,8 @@ class FilterSortBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ProductController controller = Get.put(ProductController());
+    final tag = Get.parameters['uniqueId'];
+    final ProductController controller = Get.put(ProductController(), tag: tag);
     Map<String, dynamic> baseParams = {};
 
     return Container(

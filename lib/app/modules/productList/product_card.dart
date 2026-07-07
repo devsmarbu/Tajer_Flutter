@@ -34,7 +34,8 @@ class ProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final imageProvider = NetworkImage(product.productImageUrl ?? "");
     RxString isInAnyWishlist = (product.is_in_any_wishlist ?? '0').obs;
-    final controller = Get.put(ProductController());
+    final tag = Get.parameters['uniqueId'];
+    final controller = Get.put(ProductController(), tag: tag);
     final shopController = Get.put(ShopDetailController());
 
     return LayoutBuilder(

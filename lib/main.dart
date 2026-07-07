@@ -69,7 +69,6 @@ Future<void> _initLocalNotifications() async {
 
 // --------------------------------------------------
 void main() async {
-
   AppConfig.env = AppEnvironment.DEVELOPMENT;
   WidgetsFlutterBinding.ensureInitialized();
   // await captureUtmFromClipboard();

@@ -27,13 +27,15 @@ class ProductListPage extends StatefulWidget {
 }
 
 class _ProductListPageState extends State<ProductListPage> {
-  final ProductController controller = Get.put(ProductController());
+  late final ProductController controller;
 
   bool showScrollToTop = false;
   final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
+    final tag = Get.parameters['uniqueId'];
+    controller = Get.put(ProductController(), tag: tag);
     super.initState();
 
     _scrollController.addListener(() {
@@ -43,6 +45,14 @@ class _ProductListPageState extends State<ProductListPage> {
         setState(() => showScrollToTop = false);
       }
     });
+  }
+
+  @override
+  void dispose() {
+    final tag = Get.parameters['uniqueId'];
+    Get.delete<ProductController>(tag: tag);
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override

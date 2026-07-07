@@ -539,7 +539,7 @@ class AccountController extends GetxController with AccountApiClient, AppLoader,
   void hideGlobalLoader() {
     if (GlobalLoader.disable) return;
     if (Get.isDialogOpen == true) {
-      Get.back();
+      Navigator.of(Get.context!, rootNavigator: true).pop();
     }
   }
 

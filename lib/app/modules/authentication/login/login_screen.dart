@@ -101,6 +101,7 @@ class LoginScreen extends StatelessWidget {
                                       label: AppStrings.appEmail.toUpperCase().tr,
                                       hint: AppStrings.pleaseEnterEmail.toUpperCase().tr,
                                       controller: controller.emailController,
+                                      keyboardType: TextInputType.emailAddress,
                                       autofillHints: const [
                                         AutofillHints.username,
                                       ],

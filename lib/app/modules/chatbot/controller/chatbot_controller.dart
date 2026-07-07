@@ -64,7 +64,6 @@ class ChatbotController extends GetxController {
         PrefStore().loadString(AppConstants.enableChatBot) ?? "0";
 
     isVisible.value = enableChatBot == "1" && !isOnPaymentPage.value;
-
     debugPrint("🤖 Chatbot visible = ${isVisible.value} (enableChatBot=$enableChatBot, onPaymentPage=${isOnPaymentPage.value})");
   }
 

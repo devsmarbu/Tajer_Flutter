@@ -10,6 +10,7 @@ import 'package:tajer/utils/app_dialog.dart';
 import 'package:tajer/utils/app_strings.dart';
 import '../../../common/widgets/app_dialog.dart';
 import '../../../main_extension.dart';
+import '../../core/routes/app_routes.dart';
 import '../../modules/Account/account_screen.dart';
 import '../../modules/Cart/order_success_page/order_success_page.dart';
 import '../../modules/categories/categories_screen.dart';
@@ -19,7 +20,10 @@ import '../../../utils/app_colors.dart';
 import '../Cart/MainCartView.dart';
 import '../wish_list/wish_list_view.dart';
 import 'package:adaptive_platform_ui/adaptive_platform_ui.dart';
+import 'package:cupertino_native_better/cupertino_native_better.dart';
 import 'package:get/get.dart';
+import 'package:pointer_interceptor/pointer_interceptor.dart';
+import '../../modules/authentication/splash/controller/splash_controller.dart';
 
 class BottomNavigation extends StatefulWidget {
   const BottomNavigation({super.key});
@@ -36,7 +40,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
   void initState() {
     super.initState();
 
-    _screens.addAll([
+      _screens.addAll([
       HomeView(onCartTap: () => Get.find<BottomNavController>().changeTab(3)),
       CategoriesScreen(),
       const WishlistNamesView(),
@@ -82,6 +86,13 @@ class _BottomNavigationState extends State<BottomNavigation> {
   @override
   Widget build(BuildContext context) {
     final bottomNav = Get.find<BottomNavController>();
+    final splashController = Get.find<SplashController>();
+    final campaign = splashController.splashDataStatus.value?.floatingCampaign;
+    final bool hasCampaign = campaign != null &&
+        campaign.prodcatId != null &&
+        campaign.prodcatId!.trim().isNotEmpty &&
+        campaign.name != null &&
+        campaign.name!.trim().isNotEmpty;
 
     return Obx(
             () => PopScope(
@@ -93,139 +104,289 @@ class _BottomNavigationState extends State<BottomNavigation> {
                     bottomNav.changeTab(0); // Navigate to Home tab
                   }
                 },
-                child: Scaffold(
-                    body: _screens[bottomNav.currentIndex.value],
-                  bottomNavigationBar: BottomNavigationBar(
-                    type: BottomNavigationBarType.fixed,
-
-                    currentIndex: bottomNav.currentIndex.value,
-
-                    selectedItemColor: Colors.black,
-                    unselectedItemColor: Colors.grey,
-
-                    onTap: bottomNav.changeTab,
-
-                    items: const [
-                      BottomNavigationBarItem(
-                        icon: Icon(CupertinoIcons.home),
-                        activeIcon: Icon(CupertinoIcons.house_fill),
-                        label: 'Home',
-                      ),
-
-                      BottomNavigationBarItem(
-                        icon: Icon(CupertinoIcons.square_grid_2x2),
-                        activeIcon: Icon(CupertinoIcons.square_grid_2x2_fill),
-                        label: 'Category',
-                      ),
-
-                      BottomNavigationBarItem(
-                        icon: Icon(CupertinoIcons.heart),
-                        activeIcon: Icon(CupertinoIcons.heart_fill),
-                        label: 'Wishlist',
-                      ),
-
-                      BottomNavigationBarItem(
-                        icon: Icon(CupertinoIcons.cart),
-                        activeIcon: Icon(CupertinoIcons.cart_fill),
-                        label: 'Cart',
-                      ),
-
-                      BottomNavigationBarItem(
-                        icon: Icon(CupertinoIcons.person),
-                        activeIcon: Icon(CupertinoIcons.person_fill),
-                        label: 'Account',
-                      ),
-                    ],
-                  )
-      // bottomNavigationBar: AdaptiveBottomNavigationBar(
-      //   items: [
-      //     // HOME
-      //     AdaptiveNavigationDestination(
-      //       icon: PlatformInfo.isIOS26OrHigher()
-      //           ? "house"
-      //           : PlatformInfo.isIOS
-      //           ? CupertinoIcons.home
-      //           : Icons.home_outlined,
-      //       selectedIcon: PlatformInfo.isIOS26OrHigher()
-      //           ? "house.fill"
-      //           : PlatformInfo.isIOS
-      //           ? CupertinoIcons.home
-      //           : Icons.home,
-      //       label: 'APP_HOME'.tr,
-      //     ),
-      //
-      //     // CATEGORIES
-      //     AdaptiveNavigationDestination(
-      //       icon: PlatformInfo.isIOS26OrHigher()
-      //           ? "square.grid.2x2"
-      //           : PlatformInfo.isIOS
-      //           ? CupertinoIcons.square_grid_2x2
-      //           : Icons.grid_view_outlined,
-      //       selectedIcon: PlatformInfo.isIOS26OrHigher()
-      //           ? "square.grid.2x2.fill"
-      //           : PlatformInfo.isIOS
-      //           ? CupertinoIcons.square_grid_2x2_fill
-      //           : Icons.grid_view_sharp,
-      //       label: 'APP_CATEGORY'.tr,
-      //     ),
-      //
-      //     // WISHLIST
-      //     AdaptiveNavigationDestination(
-      //       icon: PlatformInfo.isIOS26OrHigher()
-      //           ? "heart"
-      //           : PlatformInfo.isIOS
-      //           ? CupertinoIcons.heart
-      //           : Icons.favorite_border,
-      //       selectedIcon: PlatformInfo.isIOS26OrHigher()
-      //           ? "heart.fill"
-      //           : PlatformInfo.isIOS
-      //           ? CupertinoIcons.heart_fill
-      //           : Icons.favorite,
-      //       label: 'APP_WISHLIST'.tr,
-      //     ),
-      //
-      //     // CART
-      //     AdaptiveNavigationDestination(
-      //       icon: PlatformInfo.isIOS26OrHigher()
-      //           ? "cart"
-      //           : PlatformInfo.isIOS
-      //           ? CupertinoIcons.cart
-      //           : Icons.shopping_cart_outlined,
-      //       selectedIcon: PlatformInfo.isIOS26OrHigher()
-      //           ? "cart.fill"
-      //           : PlatformInfo.isIOS
-      //           ? CupertinoIcons.cart_fill
-      //           : Icons.shopping_cart,
-      //       label: 'APP_CART'.tr,
-      //     ),
-      //
-      //     // ACCOUNT
-      //     AdaptiveNavigationDestination(
-      //       icon: PlatformInfo.isIOS26OrHigher()
-      //           ? "person"
-      //           : PlatformInfo.isIOS
-      //           ? CupertinoIcons.person
-      //           : Icons.person_outline,
-      //       selectedIcon: PlatformInfo.isIOS26OrHigher()
-      //           ? "person"
-      //           : PlatformInfo.isIOS
-      //           ? CupertinoIcons.person
-      //           : Icons.person_sharp,
-      //       label: 'APP_ACCOUNT'.tr,
-      //     ),
-      //   ],
-      //   selectedItemColor: (Platform.isAndroid || !(PlatformInfo.isIOS26OrHigher())) ? (Platform.isAndroid ? Colors.black.withValues(alpha: 0)  : Colors.black) : Colors.black,
-      //   selectedIndex: bottomNav.currentIndex.value,
-      //   onTap: (index) {
-      //     setState(() {
-      //       bottomNav.changeTab(index);
-      //     });
-      //   },
-      //
-      //   useNativeBottomBar: PlatformInfo.isIOS26OrHigher(),
-      // ),
-     // body: _screens[bottomNav.currentIndex.value],
-    )));
+                child: PlatformInfo.isIOS26OrHigher()
+                    ? Scaffold(
+                        body: Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            _screens[bottomNav.currentIndex.value],
+                             Align(
+                              alignment: Alignment.bottomCenter,
+                              child: Padding(
+                                padding: const EdgeInsets.only(bottom: 8.0), // Shift the entire bar slightly downwards
+                                child: PointerInterceptor(
+                                  child: Stack(
+                                    clipBehavior: Clip.none,
+                                    alignment: Alignment.bottomCenter,
+                                    children: [
+                                      CNTabBar(
+                                        items: [
+                                          CNTabBarItem(
+                                            label: 'APP_HOME'.tr,
+                                            icon: CNSymbol('house'),
+                                            activeIcon: CNSymbol('house.fill'),
+                                          ),
+                                          CNTabBarItem(
+                                            label: 'APP_CATEGORY'.tr,
+                                            icon: CNSymbol('square.grid.2x2'),
+                                            activeIcon: CNSymbol('square.grid.2x2.fill'),
+                                          ),
+                                          // Blank spacer destination to reserve the center tab slot
+                                          if (hasCampaign)
+                                            const CNTabBarItem(
+                                              label: '',
+                                              icon: null,
+                                            )
+                                          else
+                                            CNTabBarItem(
+                                              label: 'APP_WISHLIST'.tr,
+                                              icon: CNSymbol('heart'),
+                                              activeIcon: CNSymbol('heart.fill'),
+                                            ),
+                                          CNTabBarItem(
+                                            label: 'APP_CART'.tr,
+                                            icon: CNSymbol('cart'),
+                                            activeIcon: CNSymbol('cart.fill'),
+                                          ),
+                                          CNTabBarItem(
+                                            label: 'APP_ACCOUNT'.tr,
+                                            icon: CNSymbol('person'),
+                                            activeIcon: CNSymbol('person.fill'),
+                                          ),
+                                        ],
+                                        currentIndex: bottomNav.currentIndex.value,
+                                        onTap: (index) {
+                                          if (index == 2 && hasCampaign) {
+                                            // Handle SUMMER PICKS navigation if user clicks the blank slot area
+                                            Get.toNamed(
+                                              AppRoutes.productListPage,
+                                              parameters: {
+                                                "prodCatId": campaign?.prodcatId ?? "",
+                                                "productVideoAvailable": "0",
+                                                "titleHeader": campaign?.name ?? "",
+                                              },
+                                            );
+                                          } else {
+                                            // Navigate normally to the selected tab
+                                            bottomNav.changeTab(index);
+                                          }
+                                        },
+                                         split: false,
+                                         rightCount: 1, // Minimum package value
+                                         iconSize: 15.0, // Decreased icon size by an additional 5 points (default is 25)
+                                         tint: Colors.black, // Set selected tab accent/tint color to black
+                                       ),
+                                      // Floating SUMMER PICKS button slightly raised above the bar
+                                      if (hasCampaign)
+                                        Positioned(
+                                          bottom: 15, // positioned relative to the padded container bottom
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              Get.toNamed(
+                                                AppRoutes.productListPage,
+                                                parameters: {
+                                                  "prodCatId": campaign?.prodcatId ?? "",
+                                                  //  "brandId": subCat. ?? "",
+                                                  "productVideoAvailable": "0",
+                                                  "titleHeader": campaign?.name ?? "",
+                                                },
+                                              );
+                                            },
+                                            child: Container(
+                                              width: 75,
+                                              height: 75,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: const Color(0xFFFCD846),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.black.withOpacity(0.15),
+                                                    blurRadius: 10,
+                                                    offset: const Offset(0, 4),
+                                                  ),
+                                                ],
+                                              ),
+                                              alignment: Alignment.center,
+                                              child: ClipOval(
+                                                child: Image.network(
+                                                        campaign.image!,
+                                                        width: 75,
+                                                        height: 75,
+                                                        fit: BoxFit.cover,
+                                                        errorBuilder: (_, __, ___) => const Center(
+                                                        ),
+                                                      )
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    : Scaffold(
+                        body: _screens[bottomNav.currentIndex.value],
+                        bottomNavigationBar: Stack(
+                          alignment: Alignment.topCenter,
+                          clipBehavior: Clip.none,
+                          children: [
+                            BottomNavigationBar(
+                              type: BottomNavigationBarType.fixed,
+                              currentIndex: bottomNav.currentIndex.value,
+                              selectedItemColor: Colors.black,
+                              unselectedItemColor: Colors.grey,
+                              onTap: (index) {
+                                if (index == 2 && hasCampaign) {
+                                  Get.toNamed(
+                                    AppRoutes.productListPage,
+                                    parameters: {
+                                      "prodCatId": campaign?.prodcatId ?? "",
+                                      "productVideoAvailable": "0",
+                                      "titleHeader": campaign?.name ?? "",
+                                    },
+                                  );
+                                } else {
+                                  bottomNav.changeTab(index);
+                                }
+                              },
+                              items: [
+                                BottomNavigationBarItem(
+                                  icon: const Icon(CupertinoIcons.home),
+                                  activeIcon: const Icon(CupertinoIcons.house_fill),
+                                  label: 'APP_HOME'.tr,
+                                ),
+                                BottomNavigationBarItem(
+                                  icon: const Icon(CupertinoIcons.square_grid_2x2),
+                                  activeIcon: const Icon(CupertinoIcons.square_grid_2x2_fill),
+                                  label: 'APP_CATEGORY'.tr,
+                                ),
+                                if (hasCampaign)
+                                  const BottomNavigationBarItem(
+                                    icon: SizedBox(height: 24),
+                                    label: '',
+                                  )
+                                else
+                                  BottomNavigationBarItem(
+                                    icon: const Icon(CupertinoIcons.heart),
+                                    activeIcon: const Icon(CupertinoIcons.heart_fill),
+                                    label: 'APP_WISHLIST'.tr,
+                                  ),
+                                BottomNavigationBarItem(
+                                  icon: const Icon(CupertinoIcons.cart),
+                                  activeIcon: const Icon(CupertinoIcons.cart_fill),
+                                  label: 'APP_CART'.tr,
+                                ),
+                                BottomNavigationBarItem(
+                                  icon: const Icon(CupertinoIcons.person),
+                                  activeIcon: const Icon(CupertinoIcons.person_fill),
+                                  label: 'APP_ACCOUNT'.tr,
+                                ),
+                              ],
+                            ),
+                             if (hasCampaign)
+                               Positioned(
+                                top: -20,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Get.toNamed(
+                                      AppRoutes.productListPage,
+                                      parameters: {
+                                        "prodCatId": campaign?.prodcatId ?? "",
+                                        "productVideoAvailable": "0",
+                                        "titleHeader": campaign?.name ?? "",
+                                      },
+                                    );
+                                  },
+                                  child: Container(
+                                    width: 75,
+                                    height: 75,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: const Color(0xFFFCD846),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.1),
+                                          blurRadius: 8,
+                                          offset: const Offset(0, 4),
+                                        ),
+                                      ],
+                                    ),
+                                    alignment: Alignment.center,
+                                    child: ClipOval(
+                                      child: (campaign?.image != null && campaign!.image!.isNotEmpty)
+                                          ? Image.network(
+                                              campaign.image!,
+                                              width: 75,
+                                              height: 75,
+                                              fit: BoxFit.cover,
+                                              errorBuilder: (_, __, ___) => const Center(
+                                                child: Text.rich(
+                                                  TextSpan(
+                                                    children: [
+                                                      TextSpan(
+                                                        text: "SUMMER\n",
+                                                        style: TextStyle(
+                                                          fontSize: 12,
+                                                          fontWeight: FontWeight.w900,
+                                                        ),
+                                                      ),
+                                                      TextSpan(
+                                                        text: "PICKS",
+                                                        style: TextStyle(
+                                                          fontSize: 10,
+                                                          fontWeight: FontWeight.w500,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                    color: Colors.black,
+                                                    height: 1.1,
+                                                    fontFamily: "Nunito",
+                                                  ),
+                                                ),
+                                              ),
+                                            )
+                                          : const Center(
+                                              child: Text.rich(
+                                                TextSpan(
+                                                  children: [
+                                                    TextSpan(
+                                                      text: "SUMMER\n",
+                                                      style: TextStyle(
+                                                        fontSize: 12,
+                                                        fontWeight: FontWeight.w900,
+                                                      ),
+                                                    ),
+                                                    TextSpan(
+                                                      text: "PICKS",
+                                                      style: TextStyle(
+                                                        fontSize: 10,
+                                                        fontWeight: FontWeight.w500,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  height: 1.1,
+                                                  fontFamily: "Nunito",
+                                                ),
+                                              ),
+                                            ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                      )));
   }
 }
 

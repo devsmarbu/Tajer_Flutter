@@ -366,5 +366,6 @@ String getDeviceISO() {
 
 String getDialCodeFromISO(String isoCode) {
   final country = CountryCode.fromCountryCode(isoCode.toUpperCase());
+  debugPrint('this is the country code ${country.dialCode}');
   return country.dialCode ?? "+1"; // fallback
 }

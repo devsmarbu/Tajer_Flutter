@@ -253,7 +253,7 @@ class _HomeViewState extends State<HomeView> {
           sectionWidget = InfiniteScrollBanner(
             height: 40,
             duration: const Duration(seconds: 30),
-            child: SvgPicture.network(
+            child: Image.network(
               stripeSvgUrl,
               height: 40,
               fit: BoxFit.fitHeight,
@@ -526,8 +526,8 @@ class _HomeViewState extends State<HomeView> {
         }),
         floatingActionButton: showScrollToTop
             ? Padding(
-                padding: EdgeInsets.only(bottom: Platform.isIOS ? 40 : 0),
-                child: FloatingActionButton.small(
+          padding: EdgeInsets.only(bottom: Platform.isIOS ? 55 : 0),
+          child: FloatingActionButton.small(
                   backgroundColor: Colors.black,
                   onPressed: () {
                     _scrollController.animateTo(

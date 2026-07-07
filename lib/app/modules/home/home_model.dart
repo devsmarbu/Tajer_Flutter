@@ -58,6 +58,8 @@ class HomeData {
   final String? home_promotion_popup_redirect_url;
   final String? promo_banner_enabled;
   final String? promo_banner_text;
+  final String? promo_banner_text_color;
+  final String? promo_banner_bg_color;
 
   HomeData({
     this.totalUnreadNotificationCount,
@@ -74,6 +76,8 @@ class HomeData {
     this.home_promotion_popup_redirect_url,
     this.promo_banner_text,
     this.promo_banner_enabled,
+    this.promo_banner_text_color,
+    this.promo_banner_bg_color,
   });
 
   factory HomeData.fromJson(Map<String, dynamic> json) => HomeData(
@@ -96,6 +100,8 @@ class HomeData {
         json["home_promotion_popup_redirect_url"],
     promo_banner_enabled: json["promo_banner_enabled"],
     promo_banner_text: json["promo_banner_text"],
+    promo_banner_text_color: json["promo_banner_text_color"],
+    promo_banner_bg_color: json["promo_banner_bg_color"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -115,6 +121,8 @@ class HomeData {
     "home_promotion_popup_redirect_url": home_promotion_popup_redirect_url,
     "promo_banner_text": promo_banner_text,
     "promo_banner_enabled": promo_banner_enabled,
+    "promo_banner_text_color": promo_banner_text_color,
+    "promo_banner_bg_color": promo_banner_bg_color,
   };
 }
 
@@ -1290,7 +1298,7 @@ class InfiniteScrollBanner extends StatefulWidget {
 
 class _InfiniteScrollBannerState extends State<InfiniteScrollBanner>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _controller;
+  AnimationController? _controller;
 
   // total scrolling distance
   final double scrollDistance = 2000;
@@ -1310,36 +1318,38 @@ class _InfiniteScrollBannerState extends State<InfiniteScrollBanner>
       height: widget.height,
       width: double.infinity,
       child: ClipRect(
-        child: AnimatedBuilder(
-          animation: _controller,
-          builder: (context, child) {
-            return OverflowBox(
-              alignment: Alignment.centerRight,
-              minWidth: 0,
-              maxWidth: double.infinity,
-              child: Transform.translate(
-                offset: Offset((scrollDistance * _controller.value), 0),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: List.generate(
-                    20,
-                    (index) => Padding(
-                      padding: const EdgeInsets.only(right: 0),
-                      child: widget.child,
+        child: _controller == null
+            ? const SizedBox()
+            : AnimatedBuilder(
+                animation: _controller!,
+                builder: (context, child) {
+                  return OverflowBox(
+                    alignment: Alignment.centerRight,
+                    minWidth: 0,
+                    maxWidth: double.infinity,
+                    child: Transform.translate(
+                      offset: Offset((scrollDistance * _controller!.value), 0),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: List.generate(
+                          20,
+                          (index) => Padding(
+                            padding: const EdgeInsets.only(right: 0),
+                            child: widget.child,
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
+                  );
+                },
               ),
-            );
-          },
-        ),
       ),
     );
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _controller?.dispose();
     super.dispose();
   }
 }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:marquee/marquee.dart';
+import 'package:tajer/utils/app_colors.dart';
 import 'package:tajer/utils/pref_store.dart';
 import 'app/core/constants/app_constants.dart';
-// import 'package:marquee_widget/marquee_widget.dart';
 
 extension MarqueeLabelExtension on String {
   Widget marqueeLabel({
@@ -17,16 +17,32 @@ extension MarqueeLabelExtension on String {
     bool forceShow = false,
   }) {
     if (forceShow || PrefStore().loadString(AppConstants.promoBannerEnabled) == "1") {
+      // 1. Fetch values from PrefStore
+      final prefBgColor = PrefStore().loadString(AppConstants.promoBannerColor);
+      final prefTextColor = PrefStore().loadString(AppConstants.promoBannerTextColor);
+
+      // 2. Parse background color safely
+      Color resolvedBgColor = backgroundColor;
+      if (prefBgColor != null && prefBgColor.isNotEmpty) {
+        resolvedBgColor = prefBgColor.hexToColor;
+      }
+
+      // 3. Parse text color safely
+      Color resolvedTextColor = textColor;
+      if (prefTextColor != null && prefTextColor.isNotEmpty) {
+        resolvedTextColor = prefTextColor.hexToColor;
+      }
+
       return Container(
         width: double.infinity,
         height: height,
-        color: backgroundColor,
+        color: resolvedBgColor,
         alignment: Alignment.centerLeft,
         padding: padding,
         child: Marquee(
           text: this,
           style: TextStyle(
-            color: textColor,
+            color: resolvedTextColor,
             fontWeight: fontWeight,
             fontSize: fontSize,
             fontFamily: "Nunito",
@@ -39,8 +55,9 @@ extension MarqueeLabelExtension on String {
       );
     }
     else {
-      return SizedBox();
+      return const SizedBox();
     }
   }
+
 }
 

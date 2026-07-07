@@ -32,8 +32,10 @@ class ApiService {
           'Cache-Control': 'no-cache',
           'X-IP-COUNTRY-ID': '173',
           'X-NEW-APP-VERSION': '1',
-          'Cookie': ''
-        },
+          'Cookie': '',
+          'X-Affiliate-Code' : pref.loadString("affiliate_referral_id")
+
+      },
       ),
     );
 
@@ -76,6 +78,8 @@ class ApiService {
               pref.loadString(AppConstants.countryId) ?? "173";
           options.headers['X-CURRENCY-ID'] =
               pref.loadString(AppConstants.currencyId) ?? "";
+          options.headers['X-Affiliate-Code'] =
+              pref.loadString("affiliate_referral_id");
 
           log('🌐 [REQUEST] ${options.method} ${options.uri}');
           log('🔸 Headers: ${options.headers}');

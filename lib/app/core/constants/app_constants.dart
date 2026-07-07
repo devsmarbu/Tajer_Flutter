@@ -39,8 +39,10 @@ class AppConstants {
  static const String countryId = 'countryId';
  static const String countryName = 'countryName';
  static const String themeColor = 'themeColor';
- static const String promoBannerEnabled = 'promoBannerEnabled';
- static const String promoBannerText = 'promoBannerText';
+  static const String promoBannerEnabled = 'promoBannerEnabled';
+  static const String promoBannerText = 'promoBannerText';
+  static const String promoBannerTextColor = 'promoBannerTextColor';
+  static const String promoBannerColor = 'promoBannerColor';
  static const String primaryInverseThemeColor = 'primaryInverseThemeColor';
  static const String secondaryThemeColor = 'secondaryThemeColor';
  static const String secondaryInverseThemeColor = 'secondaryInverseThemeColor';

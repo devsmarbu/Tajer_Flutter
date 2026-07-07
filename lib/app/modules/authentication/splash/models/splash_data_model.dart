@@ -24,6 +24,7 @@ class SplashDataModel {
   final String? newsletterEnabled;
   final String? appSessionId;
   final String? CONF_ENABLE_FORCE_UPDATE;
+  final FloatingCampaign? floatingCampaign;
 
   SplashDataModel({
     this.currencySymbol,
@@ -51,6 +52,7 @@ class SplashDataModel {
     this.newsletterEnabled,
     this.appSessionId,
     this.CONF_ENABLE_FORCE_UPDATE,
+    this.floatingCampaign,
   });
 
   factory SplashDataModel.fromJson(Map<String, dynamic> json) {
@@ -87,6 +89,9 @@ class SplashDataModel {
       newsletterEnabled: json['newsletterEnabled'],
       appSessionId: json['app_session_id'],
       CONF_ENABLE_FORCE_UPDATE: json['CONF_ENABLE_FORCE_UPDATE'],
+      floatingCampaign: json['floatingCampaign'] is Map<String, dynamic>
+          ? FloatingCampaign.fromJson(json['floatingCampaign'])
+          : null,
     );
   }
 
@@ -117,6 +122,7 @@ class SplashDataModel {
     "newsletterEnabled": newsletterEnabled,
     "app_session_id": appSessionId,
     "CONF_ENABLE_FORCE_UPDATE": CONF_ENABLE_FORCE_UPDATE,
+    "floatingCampaign": floatingCampaign?.toJson(),
   };
 }
 
@@ -196,5 +202,37 @@ class DefaultCountry {
   Map<String, dynamic> toJson() => {
     "country_id": countryId,
     "country_code": countryCode,
+  };
+}
+
+class FloatingCampaign {
+  final String? id;
+  final String? name;
+  final String? prodcatId;
+  final String? categoryName;
+  final String? image;
+
+  FloatingCampaign({
+    this.id,
+    this.name,
+    this.prodcatId,
+    this.categoryName,
+    this.image,
+  });
+
+  factory FloatingCampaign.fromJson(Map<String, dynamic> json) => FloatingCampaign(
+    id: json['id'],
+    name: json['name'],
+    prodcatId: json['prodcat_id'],
+    categoryName: json['category_name'],
+    image: json['image'],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "name": name,
+    "prodcat_id": prodcatId,
+    "category_name": categoryName,
+    "image": image,
   };
 }
