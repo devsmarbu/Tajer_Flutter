@@ -53,7 +53,7 @@ class _BannerPageViewState extends State<ProductImagesView> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade400, width: 1),
+        border: Border.all(color: Colors.grey.shade300, width: 1),
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),

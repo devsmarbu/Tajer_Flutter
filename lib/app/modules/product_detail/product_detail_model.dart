@@ -930,6 +930,7 @@ class Content {
   final ProductDetail? productDetail;
   final List<ProductOptions>? optionRows;
   final List<ProductPolicy>? productPolicies;
+  final List<ProductSpecification>? productSpecifications;
   final String? description;
   final SoldBy? shop;
   final List<ProductContent>? modelMeasurement;
@@ -950,6 +951,7 @@ class Content {
     this.optionRows,
     this.productDetail,
     this.productPolicies,
+    this.productSpecifications,
     this.description,
     this.shop,
     this.boxContent,
@@ -986,8 +988,8 @@ class Content {
         );
       case ProductDetailType.productSpecifications:
         return Content(
-          productPolicies: (json["content"] as List?)
-              ?.map((e) => ProductPolicy.fromJson(e))
+          productSpecifications: (json["content"] as List?)
+              ?.map((e) => ProductSpecification.fromJson(e))
               .toList(),
         );
       case ProductDetailType.shop:
@@ -1053,7 +1055,7 @@ class Content {
     "productImagesArr": productImagesArr?.map((x) => x.toJson()).toList(),
     "optionRows": optionRows?.map((x) => x.toJson()).toList(),
     "productDetail": productDetail?.toJson(),
-    "productSpecification": productPolicies?.map((x) => x.toJson()).toList(),
+    "productSpecification": productSpecifications?.map((x) => x.toJson()).toList(),
     "description": description,
     "shop": shop?.toJson(),
     // "volumeDiscount": volumeDiscount?.map((x) => x.toJson()).toList(),
@@ -1439,6 +1441,36 @@ class AvailableOptionValue {
     "isSelected": isSelected,
     "inStock": inStock
   };
+}
+
+class ProductSpecification {
+  final int? prodspecId;
+  final String? prodspecName;
+  final String? prodspecValue;
+  final String? prodspecGroup;
+
+  ProductSpecification({
+    this.prodspecId,
+    this.prodspecName,
+    this.prodspecValue,
+    this.prodspecGroup,
+  });
+
+  factory ProductSpecification.fromJson(Map<String, dynamic> json) => ProductSpecification(
+        prodspecId: json["prodspec_id"] is int
+            ? json["prodspec_id"]
+            : int.tryParse(json["prodspec_id"]?.toString() ?? ""),
+        prodspecName: json["prodspec_name"]?.toString(),
+        prodspecValue: json["prodspec_value"]?.toString(),
+        prodspecGroup: json["prodspec_group"]?.toString(),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "prodspec_id": prodspecId,
+        "prodspec_name": prodspecName,
+        "prodspec_value": prodspecValue,
+        "prodspec_group": prodspecGroup,
+      };
 }
 
 extension ProductDetailTypeExt on ProductDetailType {

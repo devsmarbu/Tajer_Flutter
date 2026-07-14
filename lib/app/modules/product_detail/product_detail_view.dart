@@ -46,7 +46,8 @@ class ProductDetailView extends StatefulWidget {
   State<ProductDetailView> createState() => _ProductDetailViewState();
 }
 
-class _ProductDetailViewState extends State<ProductDetailView> with SingleTickerProviderStateMixin {
+class _ProductDetailViewState extends State<ProductDetailView>
+    with SingleTickerProviderStateMixin {
   late final ProductDetailController controller;
   late final String controllerTag;
   final ScrollController _scrollController = ScrollController();
@@ -68,21 +69,20 @@ class _ProductDetailViewState extends State<ProductDetailView> with SingleTicker
       duration: const Duration(milliseconds: 600), // duration of 3 shakes
     );
 
-    _shakeAnimation = TweenSequence<double>([
-      TweenSequenceItem(tween: Tween(begin: 0, end: -8), weight: 1),
-      TweenSequenceItem(tween: Tween(begin: -8, end: 8), weight: 2),
-      TweenSequenceItem(tween: Tween(begin: 8, end: -8), weight: 2),
-      TweenSequenceItem(tween: Tween(begin: -8, end: 8), weight: 2),
-      TweenSequenceItem(tween: Tween(begin: 8, end: 0), weight: 1),
-
-    ]).animate(CurvedAnimation(
-      parent: _shakeController,
-      curve: Curves.easeInOut,
-    ));
+    _shakeAnimation =
+        TweenSequence<double>([
+          TweenSequenceItem(tween: Tween(begin: 0, end: -8), weight: 1),
+          TweenSequenceItem(tween: Tween(begin: -8, end: 8), weight: 2),
+          TweenSequenceItem(tween: Tween(begin: 8, end: -8), weight: 2),
+          TweenSequenceItem(tween: Tween(begin: -8, end: 8), weight: 2),
+          TweenSequenceItem(tween: Tween(begin: 8, end: 0), weight: 1),
+        ]).animate(
+          CurvedAnimation(parent: _shakeController, curve: Curves.easeInOut),
+        );
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final args = Get.arguments;
-debugPrint('it is being called');
+      debugPrint('it is being called');
       if (args != null && args['productId'] != null) {
         controller.loadOtherProduct(
           args['productId'].toString(),
@@ -110,7 +110,6 @@ debugPrint('it is being called');
     super.dispose();
   }
 
-
   void _startAutoShake() {
     ever(controller.inStock, (value) {
       if (value == '1') {
@@ -127,7 +126,6 @@ debugPrint('it is being called');
       return true; // keep looping
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -168,7 +166,8 @@ debugPrint('it is being called');
                 // Get.back();
                 // controller.goToMainCartPage();
                 debugPrint(Get.previousRoute);
-                if ((Get.previousRoute == AppRoutes.bottomNavigation) && (Get.find<BottomNavController>().currentIndex.value == 3)) {
+                if ((Get.previousRoute == AppRoutes.bottomNavigation) &&
+                    (Get.find<BottomNavController>().currentIndex.value == 3)) {
                   debugPrint('this is if block');
                   Get.back();
                 } else {
@@ -228,7 +227,9 @@ debugPrint('it is being called');
             Column(
               children: [
                 /// 🔥 Marquee Label
-                (PrefStore().loadString(AppConstants.promoBannerText)??'').marqueeLabel(),
+                (PrefStore().loadString(AppConstants.promoBannerText) ?? '')
+                    .marqueeLabel(),
+
                 /// 🔥 Your List
                 Expanded(
                   child: ListView(
@@ -236,8 +237,7 @@ debugPrint('it is being called');
                     children: [
                       ...List.generate(
                         productData.length,
-                            (index) =>
-                            _buildSection(productData[index], index),
+                        (index) => _buildSection(productData[index], index),
                       ),
                     ],
                   ),
@@ -258,60 +258,63 @@ debugPrint('it is being called');
         );
       }),
       bottomNavigationBar: SafeArea(
-      child: Container(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-        color: Colors.white,
-        child: SizedBox(
-          height: 50,
-          width: double.infinity,
-          child: Obx(() {
-            bool hasBoxContent = controller.productSections.any(
-                  (e) => e.type == ProductDetailType.boxContent.apiValue,
-            );
+        child: Container(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+          color: Colors.white,
+          child: SizedBox(
+            height: 50,
+            width: double.infinity,
+            child: Obx(() {
+              bool hasBoxContent = controller.productSections.any(
+                (e) => e.type == ProductDetailType.boxContent.apiValue,
+              );
 
-            final List<BoxContent> items = hasBoxContent
-                ? controller.productSections
-                .firstWhere(
-                  (e) =>
-              e.type ==
-                  ProductDetailType.boxContent.apiValue,
-            )
-                .content
-                ?.boxContent ??
-                <BoxContent>[]
-                : <BoxContent>[];
+              final List<BoxContent> items = hasBoxContent
+                  ? controller.productSections
+                            .firstWhere(
+                              (e) =>
+                                  e.type ==
+                                  ProductDetailType.boxContent.apiValue,
+                            )
+                            .content
+                            ?.boxContent ??
+                        <BoxContent>[]
+                  : <BoxContent>[];
 
-            bool allSelectedInStock = true;
+              bool allSelectedInStock = true;
 
-            for (final item in items) {
-              // if no selection → treat as not in stock
-              if (item.currentOptionValues == null ||
-                  item.currentOptionValues!.isEmpty) {
-                allSelectedInStock = true;
-                break;
+              for (final item in items) {
+                // if no selection → treat as not in stock
+                if (item.currentOptionValues == null ||
+                    item.currentOptionValues!.isEmpty) {
+                  allSelectedInStock = true;
+                  break;
+                }
+
+                final selected = item.currentOptionValues!.first;
+
+                if (selected.inStock != "1") {
+                  allSelectedInStock = false;
+                  break; // ❌ one false is enough
+                }
               }
 
-              final selected = item.currentOptionValues!.first;
+              debugPrint("all selected: $allSelectedInStock");
 
-              if (selected.inStock != "1") {
-                allSelectedInStock = false;
-                break; // ❌ one false is enough
-              }
-            }
-
-            debugPrint("all selected: $allSelectedInStock");
-
-            if (hasBoxContent == false) {
-              if (controller.inStock.value == '') {
-                return const SizedBox.shrink();
-              }
-              return Obx(() =>
-                  AnimatedBuilder(
+              if (hasBoxContent == false) {
+                if (controller.inStock.value == '') {
+                  return const SizedBox.shrink();
+                }
+                return Obx(
+                  () => AnimatedBuilder(
                     animation: _shakeAnimation,
                     builder: (context, child) {
                       final shouldShake = controller.inStock.value == '1';
                       return Transform.translate(
-                        offset: Offset(shouldShake ? _shakeAnimation.value : 0, 0),
+                        offset: Offset(
+                          shouldShake ? _shakeAnimation.value : 0,
+                          0,
+                        ),
                         child: child,
                       );
                     },
@@ -326,27 +329,33 @@ debugPrint('it is being called');
                       ),
                       onPressed: controller.inStock.value == '1'
                           ? () {
-                        final productId = controller.selProductId;
-                        final productName = controller.productName.value;
-                        final productPrice = controller.productPrice.value;
+                              final productId = controller.selProductId;
+                              final productName = controller.productName.value;
+                              final productPrice =
+                                  controller.productPrice.value;
 
-                        final sizeController =
-                        Get.put(SelectSizeController(productId));
+                              final sizeController = Get.put(
+                                SelectSizeController(productId),
+                              );
 
-                        sizeController.addToCart(
-                          productId,
-                          productName,
-                          productPrice,
-                          selProdIdsForBoxContent:
-                          controller.selectedSelProdIdForBoxContent,
-                          directAddedToCart: '1'
-                        );
-                      } : null,
+                              sizeController.addToCart(
+                                productId,
+                                productName,
+                                productPrice,
+                                selProdIdsForBoxContent:
+                                    controller.selectedSelProdIdForBoxContent,
+                                directAddedToCart: '1',
+                              );
+                            }
+                          : null,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(Icons.shopping_bag_outlined,
-                              color: Colors.white, size: 20),
+                          const Icon(
+                            Icons.shopping_bag_outlined,
+                            color: Colors.white,
+                            size: 20,
+                          ),
                           const SizedBox(width: 8),
                           Text(
                             controller.inStock.value == '1'
@@ -362,79 +371,80 @@ debugPrint('it is being called');
                         ],
                       ),
                     ),
-                  ));
-            } else {
-              return ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: allSelectedInStock == true
-                      ? Colors.black
-                      : Colors.grey[400],
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
                   ),
-                ),
-                onPressed: () {
-                  final productId = controller.selProductId;
-                  final productName = controller.productName.value;
-                  final productPrice = controller.productPrice.value;
-                  final sizeController = Get.put(
-                    SelectSizeController(productId),
-                  );
-                  sizeController.addToCart(
-                    productId,
-                    productName,
-                    productPrice,
-                    selProdIdsForBoxContent:
-                    controller.selectedSelProdIdForBoxContent,
-                  );
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(
-                      Icons.shopping_bag_outlined,
-                      color: Colors.white,
-                      size: 20,
+                );
+              } else {
+                return ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: allSelectedInStock == true
+                        ? Colors.black
+                        : Colors.grey[400],
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                    const SizedBox(width: 8),
-                    Text(
-                      allSelectedInStock == true
-                          ? AppStrings.appAddToCart.tr
-                          : AppStrings.appSoldOut.tr,
-                      style: const TextStyle(
+                  ),
+                  onPressed: () {
+                    final productId = controller.selProductId;
+                    final productName = controller.productName.value;
+                    final productPrice = controller.productPrice.value;
+                    final sizeController = Get.put(
+                      SelectSizeController(productId),
+                    );
+                    sizeController.addToCart(
+                      productId,
+                      productName,
+                      productPrice,
+                      selProdIdsForBoxContent:
+                          controller.selectedSelProdIdForBoxContent,
+                    );
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(
+                        Icons.shopping_bag_outlined,
                         color: Colors.white,
-                        fontFamily: "Nunito",
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
+                        size: 20,
                       ),
-                    ),
-                  ],
-                ),
-              );
-            }
-          }),
-        ),
-      ),
-    ),
-      floatingActionButton: showFloatingBar
-          ? Padding(
-        padding: EdgeInsets.only(bottom: Platform.isIOS ? 40 : 0),
-        child: FloatingActionButton.small(
-          backgroundColor: Colors.black,
-          onPressed: () {
-            _scrollController.animateTo(
-              0,
-              duration: const Duration(milliseconds: 500),
-              curve: Curves.easeOut,
-            );
-          },
-          child: const Icon(
-            Icons.arrow_upward,
-            color: Colors.white,
-            size: 18,
+                      const SizedBox(width: 8),
+                      Text(
+                        allSelectedInStock == true
+                            ? AppStrings.appAddToCart.tr
+                            : AppStrings.appSoldOut.tr,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontFamily: "Nunito",
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }
+            }),
           ),
         ),
-      )
+      ),
+      floatingActionButton: showFloatingBar
+          ? Padding(
+              padding: EdgeInsets.only(bottom: Platform.isIOS ? 40 : 0),
+              child: FloatingActionButton.small(
+                backgroundColor: Colors.black,
+                onPressed: () {
+                  _scrollController.animateTo(
+                    0,
+                    duration: const Duration(milliseconds: 500),
+                    curve: Curves.easeOut,
+                  );
+                },
+                child: const Icon(
+                  Icons.arrow_upward,
+                  color: Colors.white,
+                  size: 18,
+                ),
+              ),
+            )
           : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
@@ -445,7 +455,7 @@ debugPrint('it is being called');
 
     switch (datum?.customType) {
       case ProductDetailType.productImages:
-      // TODO: Handle this case.
+        // TODO: Handle this case.
         final productImages = datum?.content?.productImagesArr ?? [];
         sectionWidget = SizedBox(
           height: 440,
@@ -455,7 +465,7 @@ debugPrint('it is being called');
                 onTap: () {
                   // debugPrint("tappped");
                   Get.to(
-                        () => FullScreenProductImagesView(
+                    () => FullScreenProductImagesView(
                       images: productImages,
                       isFullScreen: true,
                     ),
@@ -471,7 +481,10 @@ debugPrint('it is being called');
                 top: 11,
                 right: 17,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 10,
+                  ),
                   decoration: const BoxDecoration(
                     color: Color(0xFFF8F8F8),
                     borderRadius: BorderRadius.only(
@@ -491,29 +504,35 @@ debugPrint('it is being called');
                             productTitle: controller.productTitle.value,
                           );
                         },
-                        child: const Icon(Icons.share_outlined, size: 20, color: Colors.black87),
+                        child: const Icon(
+                          Icons.share_outlined,
+                          size: 20,
+                          color: Colors.black87,
+                        ),
                       ),
                       const SizedBox(width: 16),
                       Obx(
-                            () => GestureDetector(
+                        () => GestureDetector(
                           onTap: () async {
                             debugPrint("Favorite tapped");
                             if ((PrefStore().loadString(
-                              AppConstants.sessionToken,
-                            ) ??
-                                "") ==
+                                      AppConstants.sessionToken,
+                                    ) ??
+                                    "") ==
                                 "") {
                               Get.bottomSheet(
                                 LoginScreen(isEmail: true, isBottomSheet: true),
                                 isScrollControlled: true,
                                 backgroundColor: Colors.transparent,
                               );
-                            } else if (controller.isInAnyWishlist.value != "0") {
-                              final result = await controller.addRemoveToWishlist(
-                                controller.productId,
-                                "0",
-                                "0",
-                              );
+                            } else if (controller.isInAnyWishlist.value !=
+                                "0") {
+                              final result = await controller
+                                  .addRemoveToWishlist(
+                                    controller.productId,
+                                    "0",
+                                    "0",
+                                  );
                               controller.isInAnyWishlist.value = result
                                   .toString();
                             } else {
@@ -521,7 +540,9 @@ debugPrint('it is being called');
                                 context: context,
                                 barrierLabel: "Wishlist",
                                 barrierDismissible: true,
-                                barrierColor: Colors.black.withValues(alpha: 0.4),
+                                barrierColor: Colors.black.withValues(
+                                  alpha: 0.4,
+                                ),
                                 transitionDuration: const Duration(
                                   milliseconds: 300,
                                 ),
@@ -532,15 +553,15 @@ debugPrint('it is being called');
                                 transitionBuilder: (_, anim, __, child) {
                                   return SlideTransition(
                                     position:
-                                    Tween(
-                                      begin: const Offset(0, 1),
-                                      end: Offset.zero,
-                                    ).animate(
-                                      CurvedAnimation(
-                                        parent: anim,
-                                        curve: Curves.easeOut,
-                                      ),
-                                    ),
+                                        Tween(
+                                          begin: const Offset(0, 1),
+                                          end: Offset.zero,
+                                        ).animate(
+                                          CurvedAnimation(
+                                            parent: anim,
+                                            curve: Curves.easeOut,
+                                          ),
+                                        ),
                                     child: child,
                                   );
                                 },
@@ -595,6 +616,7 @@ debugPrint('it is being called');
                     ),
                   ),
                   const SizedBox(height: 4),
+
                   /// Title + Rating row
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -618,7 +640,11 @@ debugPrint('it is being called');
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(Icons.star, color: Color(0xFFFFC107), size: 16),
+                              Icon(
+                                Icons.star,
+                                color: Color(0xFFFFC107),
+                                size: 16,
+                              ),
                               const SizedBox(width: 3),
                               Text(
                                 "${productDetail?.prodRating ?? "0"} (${productDetail?.totReviews ?? "0"} ${(PrefStore().loadString(AppConstants.languageCode) == "AR") ? "تقييمات" : "ratings"})",
@@ -648,6 +674,7 @@ debugPrint('it is being called');
               ),
             ),
             Divider(height: 1, thickness: 1, color: Colors.grey[200]),
+
             /// Price section
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
@@ -695,7 +722,8 @@ debugPrint('it is being called');
                               color: Colors.black87,
                             ),
                           ),
-                          if ((datum?.isSizeChartAvailable ?? "0") == "1" && productOption?.optionIsColor == "0")
+                          if ((datum?.isSizeChartAvailable ?? "0") == "1" &&
+                              productOption?.optionIsColor == "0")
                             GestureDetector(
                               onTap: () {
                                 showDialog(
@@ -703,19 +731,17 @@ debugPrint('it is being called');
                                   barrierColor: Colors.black87,
                                   builder: (_) => SizeChartScreen(
                                     productId: controller.selProductId,
-                                    productOptions:
-                                    productOption?.values ?? [],
+                                    productOptions: productOption?.values ?? [],
                                     productName: controller.productName.value,
-                                    productPrice:
-                                    controller.productPrice.value,
+                                    productPrice: controller.productPrice.value,
                                   ),
                                 );
                               },
                               child: Text(
                                 (PrefStore().loadString(
-                                  AppConstants.languageCode,
-                                ) ==
-                                    "AR")
+                                          AppConstants.languageCode,
+                                        ) ==
+                                        "AR")
                                     ? "مخطط الحجم"
                                     : "Size Chart",
                                 style: const TextStyle(
@@ -738,21 +764,31 @@ debugPrint('it is being called');
                           itemBuilder: (context, index) {
                             final value = productOption?.values?[index];
                             if (productOption?.optionIsColor == "0") {
-                              int stockValue = ((value?.stock ?? "0").toIntSafe());
+                              int stockValue = ((value?.stock ?? "0")
+                                  .toIntSafe());
 
                               return GestureDetector(
                                 onTap: () async {
-                                  if (stockValue > 0 && (value?.isSelected ?? "0") == "0") {
-                                    debugPrint("🟢 Selected option: ${value?.optionvalueName}");
-                                    await controller.updateProductOption(value?.selprodId ?? "");
+                                  if (stockValue > 0 &&
+                                      (value?.isSelected ?? "0") == "0") {
+                                    debugPrint(
+                                      "🟢 Selected option: ${value?.optionvalueName}",
+                                    );
+                                    await controller.updateProductOption(
+                                      value?.selprodId ?? "",
+                                    );
                                   }
                                 },
                                 child: Opacity(
                                   opacity: stockValue > 0 ? 1.0 : 0.3,
                                   child: Container(
                                     margin: const EdgeInsets.only(right: 10),
-                                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                                    constraints: const BoxConstraints(minWidth: 44),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                    ),
+                                    constraints: const BoxConstraints(
+                                      minWidth: 44,
+                                    ),
                                     height: 44,
                                     decoration: BoxDecoration(
                                       color: Colors.white,
@@ -760,7 +796,9 @@ debugPrint('it is being called');
                                         color: value?.isSelected == "1"
                                             ? Colors.black87
                                             : Colors.grey.shade300,
-                                        width: value?.isSelected == "1" ? 1.5 : 1,
+                                        width: value?.isSelected == "1"
+                                            ? 1.5
+                                            : 1,
                                       ),
                                       borderRadius: BorderRadius.circular(4),
                                     ),
@@ -780,13 +818,16 @@ debugPrint('it is being called');
                                   ),
                                 ),
                               );
-                            }
-                            else {
+                            } else {
                               return GestureDetector(
                                 onTap: () async {
                                   if ((value?.isSelected ?? "0") == "0") {
-                                    debugPrint("🟢 Selected option: ${value?.optionvalueName}");
-                                    await controller.updateProductOption(value?.selprodId ?? "");
+                                    debugPrint(
+                                      "🟢 Selected option: ${value?.optionvalueName}",
+                                    );
+                                    await controller.updateProductOption(
+                                      value?.selprodId ?? "",
+                                    );
                                   }
                                 },
                                 child: Container(
@@ -796,15 +837,23 @@ debugPrint('it is being called');
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     border: Border.all(
-                                      color: value?.isSelected == "1" ? Colors.black87 : Colors.transparent,
+                                      color: value?.isSelected == "1"
+                                          ? Colors.black87
+                                          : Colors.transparent,
                                       width: value?.isSelected == "1" ? 1.5 : 0,
                                     ),
                                   ),
-                                  padding: EdgeInsets.all(value?.isSelected == "1" ? 3 : 0),
+                                  padding: EdgeInsets.all(
+                                    value?.isSelected == "1" ? 3 : 0,
+                                  ),
                                   child: Container(
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
-                                      color: value?.optionvalueColorCode?.hexToColor ?? Colors.transparent,
+                                      color:
+                                          value
+                                              ?.optionvalueColorCode
+                                              ?.hexToColor ??
+                                          Colors.transparent,
                                       border: Border.all(
                                         color: Colors.grey.shade300,
                                         width: 0.5,
@@ -827,7 +876,7 @@ debugPrint('it is being called');
         );
 
       case ProductDetailType.productSpecifications:
-        final specs = datum?.content?.productPolicies ?? [];
+        final specs = datum?.content?.productSpecifications ?? [];
         if (specs.isEmpty) {
           sectionWidget = const SizedBox.shrink();
           break;
@@ -845,9 +894,7 @@ debugPrint('it is being called');
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        (PrefStore().loadString(AppConstants.languageCode) == "AR")
-                            ? "تفاصيل المنتج"
-                            : "Product Details",
+                        datum?.title ?? '',
                         style: const TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.w700,
@@ -862,22 +909,25 @@ debugPrint('it is being called');
                             barrierLabel: "Report Form",
                             barrierDismissible: true,
                             barrierColor: Colors.black.withValues(alpha: 0.4),
-                            transitionDuration: const Duration(milliseconds: 300),
+                            transitionDuration: const Duration(
+                              milliseconds: 300,
+                            ),
                             pageBuilder: (_, __, ___) => ReportFormPopover(
                               productName: controller.productName.value,
                               selprodId: controller.selProductId,
                             ),
                             transitionBuilder: (_, anim, __, child) {
                               return SlideTransition(
-                                position: Tween(
-                                  begin: const Offset(0, 1),
-                                  end: Offset.zero,
-                                ).animate(
-                                  CurvedAnimation(
-                                    parent: anim,
-                                    curve: Curves.easeOut,
-                                  ),
-                                ),
+                                position:
+                                    Tween(
+                                      begin: const Offset(0, 1),
+                                      end: Offset.zero,
+                                    ).animate(
+                                      CurvedAnimation(
+                                        parent: anim,
+                                        curve: Curves.easeOut,
+                                      ),
+                                    ),
                                 child: child,
                               );
                             },
@@ -886,10 +936,17 @@ debugPrint('it is being called');
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(Icons.outlined_flag, size: 16, color: Colors.grey.shade600),
+                            Icon(
+                              Icons.outlined_flag,
+                              size: 16,
+                              color: Colors.grey.shade600,
+                            ),
                             const SizedBox(width: 4),
                             Text(
-                              (PrefStore().loadString(AppConstants.languageCode) == "AR")
+                              (PrefStore().loadString(
+                                        AppConstants.languageCode,
+                                      ) ==
+                                      "AR")
                                   ? "الإبلاغ عن مشكلة"
                                   : "Report Issue",
                               style: TextStyle(
@@ -934,9 +991,7 @@ debugPrint('it is being called');
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    (PrefStore().loadString(AppConstants.languageCode) == "AR")
-                        ? "الوصف"
-                        : "Description",
+                    datum?.title ?? '',
                     style: const TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.w700,
@@ -948,27 +1003,27 @@ debugPrint('it is being called');
                     padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
                     child: _isHtml(description)
                         ? Html(
-                      data: description,
-                      style: {
-                        "*": Style(
-                          fontFamily: "Nunito",
-                          fontSize: FontSize(14),
-                          color: Colors.black87,
-                          lineHeight: LineHeight.number(1.5),
-                        ),
-                        "p": Style(margin: Margins.only(bottom: 8)),
-                      },
-                    )
+                            data: description,
+                            style: {
+                              "*": Style(
+                                fontFamily: "Nunito",
+                                fontSize: FontSize(14),
+                                color: Colors.black87,
+                                lineHeight: LineHeight.number(1.5),
+                              ),
+                              "p": Style(margin: Margins.only(bottom: 8)),
+                            },
+                          )
                         : ExpandableText(
-                      text: description,
-                      trimLines: 4,
-                      style: const TextStyle(
-                        color: Colors.black87,
-                        fontWeight: FontWeight.w500,
-                        fontFamily: "Nunito",
-                        fontSize: 14,
-                      ),
-                    ),
+                            text: description,
+                            trimLines: 4,
+                            style: const TextStyle(
+                              color: Colors.black87,
+                              fontWeight: FontWeight.w500,
+                              fontFamily: "Nunito",
+                              fontSize: 14,
+                            ),
+                          ),
                   ),
                 ],
               ),
@@ -1029,14 +1084,14 @@ debugPrint('it is being called');
         );
 
       case ProductDetailType.banner:
-      // TODO: Handle this case.
+        // TODO: Handle this case.
         sectionWidget = SizedBox(
           width: Get.width,
           height: 5,
           child: Container(color: Colors.grey[200]),
         );
       case ProductDetailType.similarProducts:
-      // TODO: Handle this case.
+        // TODO: Handle this case.
         sectionWidget = SizedBox(
           width: Get.width,
           height: 5,
@@ -1085,17 +1140,15 @@ debugPrint('it is being called');
                       horizontal: 10,
                       vertical: 12,
                     ),
-                    gridDelegate:
-                    SliverGridDelegateWithFixedCrossAxisCount(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                       crossAxisSpacing: 12,
                       mainAxisSpacing: 12,
                       // height > width
-                      childAspectRatio: isFolded ? 0.62:0.68,
+                      childAspectRatio: isFolded ? 0.62 : 0.68,
                     ),
                     itemCount: products.length,
                     itemBuilder: (context, index) {
-
                       // 👇 Extract colors for THIS product only
                       List<Color> colorList = [];
 
@@ -1107,14 +1160,19 @@ debugPrint('it is being called');
 
                               if (hexCode != null && hexCode.isNotEmpty) {
                                 try {
-                                  final cleanedHex = hexCode.replaceAll("#", "");
+                                  final cleanedHex = hexCode.replaceAll(
+                                    "#",
+                                    "",
+                                  );
 
                                   // Add full opacity if only 6 characters
-                                  final formattedHex =
-                                  cleanedHex.length == 6 ? "FF$cleanedHex" : cleanedHex;
+                                  final formattedHex = cleanedHex.length == 6
+                                      ? "FF$cleanedHex"
+                                      : cleanedHex;
 
-                                  final color =
-                                  Color(int.parse(formattedHex, radix: 16));
+                                  final color = Color(
+                                    int.parse(formattedHex, radix: 16),
+                                  );
 
                                   colorList.add(color);
                                 } catch (e) {
@@ -1143,15 +1201,17 @@ debugPrint('it is being called');
                                 backgroundColor: Colors.transparent,
                                 builder: (context) => SelectSizeView(
                                   price: products[index].selprodPrice ?? "",
-                                  productId: firstOptionValues.first.selprodId ?? "",
+                                  productId:
+                                      firstOptionValues.first.selprodId ?? "",
                                   productOptions: options,
                                   currencyCode:
-                                  PrefStore().loadString(
-                                    AppConstants.currencySymbol,
-                                  ) ??
+                                      PrefStore().loadString(
+                                        AppConstants.currencySymbol,
+                                      ) ??
                                       "\$",
                                   productName:
-                                  products[index].productName ?? '', isSizeChartAvailable: '',
+                                      products[index].productName ?? '',
+                                  isSizeChartAvailable: '',
                                 ),
                               );
                             } else {
@@ -1167,7 +1227,7 @@ debugPrint('it is being called');
                               products[index].selprodId ?? "",
                               products[index].productName ?? '',
                               products[index].selprodPrice ?? '',
-                              directAddedToCart: '1'
+                              directAddedToCart: '1',
                             );
                           }
                         },
@@ -1176,7 +1236,8 @@ debugPrint('it is being called');
                             products[index].selprodId ?? "",
                             products[index].productName ?? "",
                           );
-                        }, productIndex: index.toString(),
+                        },
+                        productIndex: index.toString(),
                       );
                     },
                   ),
@@ -1187,14 +1248,14 @@ debugPrint('it is being called');
         );
         break;
       case ProductDetailType.buyTogether:
-      // TODO: Handle this case.
+        // TODO: Handle this case.
         sectionWidget = SizedBox(
           width: Get.width,
           height: 5,
           child: Container(color: Colors.grey[200]),
         );
       case ProductDetailType.shop:
-      // TODO: Handle this case.
+        // TODO: Handle this case.
         final productShop = datum?.content?.shop;
 
         sectionWidget = Column(
@@ -1286,7 +1347,7 @@ debugPrint('it is being called');
                           productShop?.shopId ?? "",
                           productShop?.shopName ?? "",
                           controller.selProductId,
-                          controller.productName.value
+                          controller.productName.value,
                         );
                       },
                       child: Text(
@@ -1312,35 +1373,35 @@ debugPrint('it is being called');
         );
 
       case ProductDetailType.reviews:
-      // TODO: Handle this case.
+        // TODO: Handle this case.
         sectionWidget = SizedBox(
           width: Get.width,
           height: 5,
           child: Container(color: Colors.grey[200]),
         );
       case ProductDetailType.previewFiles:
-      // TODO: Handle this case.
+        // TODO: Handle this case.
         sectionWidget = SizedBox(
           width: Get.width,
           height: 5,
           child: Container(color: Colors.grey[200]),
         );
       case ProductDetailType.unknown:
-      // TODO: Handle this case.
+        // TODO: Handle this case.
         sectionWidget = SizedBox(
           width: Get.width,
           height: 5,
           child: Container(color: Colors.grey[200]),
         );
       case null:
-      // TODO: Handle this case.
+        // TODO: Handle this case.
         sectionWidget = SizedBox(
           width: Get.width,
           height: 5,
           child: Container(color: Colors.grey[200]),
         );
       case ProductDetailType.modelMesurement:
-      // TODO: Handle this case.
+        // TODO: Handle this case.
         final modelMeasurement = datum?.content?.modelMeasurement;
 
         sectionWidget = Column(
@@ -1470,10 +1531,10 @@ debugPrint('it is being called');
                                   borderRadius: BorderRadius.circular(8),
                                   child: item.image != null
                                       ? Image.network(
-                                    AppConstants.imageBaseURLPath +
-                                        item.imageURL!,
-                                    fit: BoxFit.contain,
-                                  )
+                                          AppConstants.imageBaseURLPath +
+                                              item.imageURL!,
+                                          fit: BoxFit.contain,
+                                        )
                                       : const Icon(Icons.image_not_supported),
                                 ),
                               ),
@@ -1522,18 +1583,18 @@ debugPrint('it is being called');
                               children: [
                                 Text(
                                   (item.availableVariants?.isNotEmpty == true &&
-                                      item
-                                          .availableVariants!
-                                          .first
-                                          .optionValues
-                                          .isNotEmpty)
+                                          item
+                                              .availableVariants!
+                                              .first
+                                              .optionValues
+                                              .isNotEmpty)
                                       ? item
-                                      .availableVariants!
-                                      .first
-                                      .optionValues
-                                      .first
-                                      .optionName ??
-                                      ""
+                                                .availableVariants!
+                                                .first
+                                                .optionValues
+                                                .first
+                                                .optionName ??
+                                            ""
                                       : "",
                                   style: const TextStyle(
                                     fontSize: 16,
@@ -1552,9 +1613,9 @@ debugPrint('it is being called');
                                           productId: item.selprodId ?? "0",
                                           productOptions: [],
                                           productName:
-                                          controller.productName.value,
+                                              controller.productName.value,
                                           productPrice:
-                                          controller.productPrice.value,
+                                              controller.productPrice.value,
                                         ),
                                         //     SizeChartOverlay(
                                         //   imageUrl: datum?.sizeChartImage ?? "",
@@ -1563,9 +1624,9 @@ debugPrint('it is being called');
                                     },
                                     child: Text(
                                       (PrefStore().loadString(
-                                        AppConstants.languageCode,
-                                      ) ==
-                                          "AR")
+                                                AppConstants.languageCode,
+                                              ) ==
+                                              "AR")
                                           ? "مخطط الحجم"
                                           : "Size Chart",
                                       style: const TextStyle(
@@ -1592,16 +1653,16 @@ debugPrint('it is being called');
                                   return GestureDetector(
                                     onTap: () async {
                                       if (item
-                                          .currentOptionValues
-                                          ?.first
-                                          .optionvalueId !=
+                                              .currentOptionValues
+                                              ?.first
+                                              .optionvalueId !=
                                           value?.optionvalueId) {
                                         debugPrint(
                                           "🟢 Selected option: ${value?.optionvalueName}",
                                         );
 
                                         final selectedVariant =
-                                        item.availableVariants![index];
+                                            item.availableVariants![index];
                                         final selectedOption =
                                             selectedVariant.optionValues.first;
                                         final selectedInStock =
@@ -1615,17 +1676,17 @@ debugPrint('it is being called');
                                           selectedOption,
                                         ];
                                         item
-                                            .currentOptionValues
-                                            ?.first
-                                            .inStock =
+                                                .currentOptionValues
+                                                ?.first
+                                                .inStock =
                                             selectedInStock;
                                         controller
-                                            .selectedSelProdIdForBoxContent?[outerIndex] =
+                                                .selectedSelProdIdForBoxContent?[outerIndex] =
                                             item
                                                 .currentOptionValues
                                                 ?.first
                                                 .selprodoptionSelprodId ??
-                                                "";
+                                            "";
                                         debugPrint(
                                           "selected product box content ids ${controller.selectedSelProdIdForBoxContent}",
                                         );
@@ -1640,15 +1701,15 @@ debugPrint('it is being called');
                                       ),
                                       constraints: const BoxConstraints(
                                         minWidth:
-                                        40, // ✅ minimum width set here
+                                            40, // ✅ minimum width set here
                                       ),
                                       decoration: BoxDecoration(
                                         color:
-                                        (item
-                                            .currentOptionValues
-                                            ?.first
-                                            .optionvalueId ==
-                                            value?.optionvalueId)
+                                            (item
+                                                    .currentOptionValues
+                                                    ?.first
+                                                    .optionvalueId ==
+                                                value?.optionvalueId)
                                             ? Colors.black
                                             : Colors.white,
                                         border: Border.all(color: Colors.black),
@@ -1659,11 +1720,11 @@ debugPrint('it is being called');
                                           value?.optionvalueName ?? "",
                                           style: TextStyle(
                                             color:
-                                            (item
-                                                .currentOptionValues
-                                                ?.first
-                                                .optionvalueId ==
-                                                value?.optionvalueId)
+                                                (item
+                                                        .currentOptionValues
+                                                        ?.first
+                                                        .optionvalueId ==
+                                                    value?.optionvalueId)
                                                 ? Colors.white
                                                 : Colors.black,
                                             fontWeight: FontWeight.w500,
@@ -1699,17 +1760,17 @@ debugPrint('it is being called');
     return htmlRegex.hasMatch(text);
   }
 
-  List<Widget> _buildSpecsList(List<ProductPolicy> specs) {
+  List<Widget> _buildSpecsList(List<ProductSpecification> specs) {
     List<Widget> children = [];
     int i = 0;
     while (i < specs.length) {
       final spec1 = specs[i];
-      final val1 = spec1.icon ?? "";
+      final val1 = spec1.prodspecValue ?? "";
       final isShort1 = val1.length < 25;
 
       if (isShort1 && i + 1 < specs.length) {
         final spec2 = specs[i + 1];
-        final val2 = spec2.icon ?? "";
+        final val2 = spec2.prodspecValue ?? "";
         final isShort2 = val2.length < 35;
 
         if (isShort2) {
@@ -1724,7 +1785,7 @@ debugPrint('it is being called');
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          spec1.title ?? "",
+                          spec1.prodspecName ?? "",
                           style: const TextStyle(
                             color: Colors.black54,
                             fontSize: 12,
@@ -1750,7 +1811,7 @@ debugPrint('it is being called');
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          spec2.title ?? "",
+                          spec2.prodspecName ?? "",
                           style: const TextStyle(
                             color: Colors.black54,
                             fontSize: 12,
@@ -1786,7 +1847,7 @@ debugPrint('it is being called');
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                spec1.title ?? "",
+                spec1.prodspecName ?? "",
                 style: const TextStyle(
                   color: Colors.black54,
                   fontSize: 12,
@@ -1828,33 +1889,27 @@ debugPrint('it is being called');
         onPressed: onPressed,
         icon: imagePath != null
             ? Image.asset(
-          imagePath,
-          width: 15,
-          height: 15,
-          color: Colors.black87, // optional tint
-        )
+                imagePath,
+                width: 15,
+                height: 15,
+                color: Colors.black87, // optional tint
+              )
             : Icon(icon, color: Colors.black87, size: 15),
       ),
     );
   }
 }
 
-
 class DiagonalCrossPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-
     final paint = Paint()
       ..color = Colors.grey
       ..strokeWidth = 1
       ..strokeCap = StrokeCap.round;
 
     // Draw diagonal inside bounds
-    canvas.drawLine(
-      Offset(size.width - 10, 5),
-      Offset(0, size.height ),
-      paint,
-    );
+    canvas.drawLine(Offset(size.width - 10, 5), Offset(0, size.height), paint);
   }
 
   @override
