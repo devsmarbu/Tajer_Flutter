@@ -10,12 +10,16 @@ class ProductImagesView extends StatefulWidget {
   final bool pageControllerHide;
   final String bannerImage;
   final bool isFullScreen;
+  final bool showIndicator;
+  final ValueChanged<int>? onPageChanged;
 
   const ProductImagesView({
     super.key,
     this.pageControllerHide = false,
     this.bannerImage = "",
     this.isFullScreen = false,
+    this.showIndicator = true,
+    this.onPageChanged,
     required this.onColorChanged,
     required this.images,
   });
@@ -45,64 +49,87 @@ class _BannerPageViewState extends State<ProductImagesView> {
   }
 
   Widget _buildImageContent(double screenWidth, {required bool expanded}) {
-    final imageWidget = widget.pageControllerHide
-        ? Image(
-      image: NetworkImage(widget.bannerImage),
-      fit: BoxFit.fitWidth,
-      width: screenWidth,
-    )
-        : PageView.builder(
-      controller: _controller,
-      itemCount: widget.images.length,
-      itemBuilder: (context, index) {
-        final provider = NetworkImage(widget.images[index].productImageUrl ?? "");
+    final imageWidget = Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey.shade400, width: 1),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(16),
+        child: widget.pageControllerHide
+            ? Image(
+          image: NetworkImage(widget.bannerImage),
+          fit: BoxFit.fitWidth,
+          width: screenWidth,
+        )
+            : PageView.builder(
+          controller: _controller,
+          itemCount: widget.images.length,
+          itemBuilder: (context, index) {
+            final provider = NetworkImage(widget.images[index].productImageUrl ?? "");
 
-        return Center(
-          child: InteractiveViewer(
-            clipBehavior: Clip.none,
-            panEnabled: true,
-            minScale: 1,
-            maxScale: 4,            // ✅ Zoom allowed up to 4x
-            onInteractionStart: (_) {
-              setState(() => _isZooming = true);   // ✅ hide UI
-            },
-            onInteractionEnd: (_) {
-              setState(() => _isZooming = false);  // ✅ show UI again
-            },
-            child: Image(
-              image: provider,
-              fit: BoxFit.contain,
-              width: screenWidth,
-              loadingBuilder: (context, child, loadingProgress) {
-                if (loadingProgress == null) {
-                  if (index == 0 && !_firstColorExtracted) {
-                    _firstColorExtracted = true;
-                    _extractColor(provider);
-                  }
-                }
-                return child;
-              },
-            ),
-          ),
-        );
-      },
-      onPageChanged: (index) {
-        _currentIndex = index;
-        final provider = NetworkImage(widget.images[index].productImageUrl ?? "");
-        _extractColor(provider);
-      },
+            return Center(
+              child: InteractiveViewer(
+                clipBehavior: Clip.none,
+                panEnabled: true,
+                minScale: 1,
+                maxScale: 4,            // ✅ Zoom allowed up to 4x
+                onInteractionStart: (_) {
+                  setState(() => _isZooming = true);   // ✅ hide UI
+                },
+                onInteractionEnd: (_) {
+                  setState(() => _isZooming = false);  // ✅ show UI again
+                },
+                child: Image(
+                  image: provider,
+                  fit: BoxFit.contain,
+                  width: screenWidth,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) {
+                      if (index == 0 && !_firstColorExtracted) {
+                        _firstColorExtracted = true;
+                        _extractColor(provider);
+                      }
+                    }
+                    return child;
+                  },
+                ),
+              ),
+            );
+          },
+          onPageChanged: (index) {
+            _currentIndex = index;
+            widget.onPageChanged?.call(index);
+            final provider = NetworkImage(widget.images[index].productImageUrl ?? "");
+            _extractColor(provider);
+          },
+        ),
+      ),
     );
 
     return Column(
       children: [
+        SizedBox(height: 10),
         expanded
-            ? Expanded(child: imageWidget)
-            : SizedBox(height: 420, child: imageWidget),
+            ? Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: imageWidget,
+                ),
+              )
+            : SizedBox(
+                height: 395,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: imageWidget,
+                ),
+              ),
 
-        if (!widget.pageControllerHide && !_isZooming)   // ✅ hide on zoom
+        if (!widget.pageControllerHide && !_isZooming && widget.showIndicator)   // ✅ hide on zoom or when external indicator
           const SizedBox(height: 12),
 
-        if (!widget.pageControllerHide && !_isZooming)   // ✅ hide on zoom
+        if (!widget.pageControllerHide && !_isZooming && widget.showIndicator)   // ✅ hide on zoom or when external indicator
           SmoothPageIndicator(
             controller: _controller,
             count: widget.images.length,

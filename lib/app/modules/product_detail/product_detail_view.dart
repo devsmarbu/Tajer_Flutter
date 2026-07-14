@@ -468,142 +468,108 @@ debugPrint('it is being called');
                 ),
               ),
               Positioned(
-                height: 30,
-                width: 80,
-                top: 20,
-                right: 5,
-                child: Row(
-                  spacing: 5,
-                  children: [
-                    _buildCircleIconButton(
-                      icon: Icons.share,
-                      onPressed: () {
-                        debugPrint("Share tapped");
-                        // ShareProductUtil.shareProduct(
-                        //   context: context, // <-- REQUIRED for iOS 16+
-                        //   productUrl: controller.productUrl.value ,
-                        //   productTitle: controller.productTitle.value,
-                        //   productDescription: controller.productDescription.value,
-                        //   imageUrl: controller.imageURL.value
-                        // );
-                        ShareProductUtil.shareProduct(
-                          context: context,
-                          productUrl: controller.productUrl.value,
-                          productTitle: controller.productTitle.value,
-                          // assetImagePath: "assets/images/app_logo.png",
-                        );
-                      },
+                top: 11,
+                right: 17,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                  decoration: const BoxDecoration(
+                    color: Color(0xFFF8F8F8),
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(16),
+                      topRight: Radius.circular(16),
                     ),
-                    const SizedBox(height: 10),
-                    Obx(
-                          () => _buildCircleIconButton(
-                        icon: controller.isInAnyWishlist.value != "0"
-                            ? Icons.favorite
-                            : Icons.favorite_border,
-                        onPressed: () async {
-                          debugPrint("Favorite tapped");
-                          if ((PrefStore().loadString(
-                            AppConstants.sessionToken,
-                          ) ??
-                              "") ==
-                              "") {
-                            Get.bottomSheet(
-                              LoginScreen(isEmail: true, isBottomSheet: true),
-                              isScrollControlled: true,
-                              backgroundColor: Colors.transparent,
-                            );
-                          } else if (controller.isInAnyWishlist.value != "0") {
-                            final result = await controller.addRemoveToWishlist(
-                              controller.productId,
-                              "0",
-                              "0",
-                            );
-                            controller.isInAnyWishlist.value = result
-                                .toString();
-                          } else {
-                            final result = await showGeneralDialog(
-                              context: context,
-                              barrierLabel: "Wishlist",
-                              barrierDismissible: true,
-                              barrierColor: Colors.black.withValues(alpha: 0.4),
-                              transitionDuration: const Duration(
-                                milliseconds: 300,
-                              ),
-                              pageBuilder: (_, __, ___) =>
-                                  WishlistNamesViewPopOver(
-                                    productId: controller.productId,
-                                  ),
-                              transitionBuilder: (_, anim, __, child) {
-                                return SlideTransition(
-                                  position:
-                                  Tween(
-                                    begin: const Offset(0, 1),
-                                    end: Offset.zero,
-                                  ).animate(
-                                    CurvedAnimation(
-                                      parent: anim,
-                                      curve: Curves.easeOut,
-                                    ),
-                                  ),
-                                  child: child,
-                                );
-                              },
-                            );
-                            if (result != null) {
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          debugPrint("Share tapped");
+                          ShareProductUtil.shareProduct(
+                            context: context,
+                            productUrl: controller.productUrl.value,
+                            productTitle: controller.productTitle.value,
+                          );
+                        },
+                        child: const Icon(Icons.share_outlined, size: 20, color: Colors.black87),
+                      ),
+                      const SizedBox(width: 16),
+                      Obx(
+                            () => GestureDetector(
+                          onTap: () async {
+                            debugPrint("Favorite tapped");
+                            if ((PrefStore().loadString(
+                              AppConstants.sessionToken,
+                            ) ??
+                                "") ==
+                                "") {
+                              Get.bottomSheet(
+                                LoginScreen(isEmail: true, isBottomSheet: true),
+                                isScrollControlled: true,
+                                backgroundColor: Colors.transparent,
+                              );
+                            } else if (controller.isInAnyWishlist.value != "0") {
+                              final result = await controller.addRemoveToWishlist(
+                                controller.productId,
+                                "0",
+                                "0",
+                              );
                               controller.isInAnyWishlist.value = result
                                   .toString();
+                            } else {
+                              final result = await showGeneralDialog(
+                                context: context,
+                                barrierLabel: "Wishlist",
+                                barrierDismissible: true,
+                                barrierColor: Colors.black.withValues(alpha: 0.4),
+                                transitionDuration: const Duration(
+                                  milliseconds: 300,
+                                ),
+                                pageBuilder: (_, __, ___) =>
+                                    WishlistNamesViewPopOver(
+                                      productId: controller.productId,
+                                    ),
+                                transitionBuilder: (_, anim, __, child) {
+                                  return SlideTransition(
+                                    position:
+                                    Tween(
+                                      begin: const Offset(0, 1),
+                                      end: Offset.zero,
+                                    ).animate(
+                                      CurvedAnimation(
+                                        parent: anim,
+                                        curve: Curves.easeOut,
+                                      ),
+                                    ),
+                                    child: child,
+                                  );
+                                },
+                              );
+                              if (result != null) {
+                                controller.isInAnyWishlist.value = result
+                                    .toString();
+                              }
                             }
-                          }
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Positioned(
-                height: 30,
-                width: 30,
-                bottom: 40,
-                right: 16,
-                child: _buildCircleIconButton(
-                  imagePath: "assets/images/ladybug.png",
-                  onPressed: () {
-                    debugPrint("this is report button");
-                    print(datum?.content?.productDetail);
-                    showGeneralDialog(
-                      context: context,
-                      barrierLabel: "Report Form",
-                      barrierDismissible: true,
-                      barrierColor: Colors.black.withValues(alpha: 0.4),
-                      transitionDuration: const Duration(milliseconds: 300),
-                      pageBuilder: (_, __, ___) => ReportFormPopover(
-                        productName: "Varia - Purple Pleated Cape Dress",
-                        selprodId: controller.selProductId,
-                      ),
-                      transitionBuilder: (_, anim, __, child) {
-                        return SlideTransition(
-                          position:
-                          Tween(
-                            begin: const Offset(0, 1),
-                            end: Offset.zero,
-                          ).animate(
-                            CurvedAnimation(
-                              parent: anim,
-                              curve: Curves.easeOut,
-                            ),
+                          },
+                          child: Icon(
+                            controller.isInAnyWishlist.value != "0"
+                                ? Icons.favorite
+                                : Icons.favorite_border,
+                            size: 20,
+                            color: controller.isInAnyWishlist.value != "0"
+                                ? Colors.red
+                                : Colors.black87,
                           ),
-                          child: child,
-                        );
-                      },
-                    );
-                  },
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
           ),
         );
       case ProductDetailType.productDetail:
-      // TODO: Handle this case.
         final productDetail = datum?.content?.productDetail;
         final productBadge = (productDetail?.badges?.isNotEmpty ?? false)
             ? productDetail?.badges!.first.url
@@ -615,298 +581,367 @@ debugPrint('it is being called');
             Padding(
               padding: EdgeInsets.all(16),
               child: Column(
-                spacing: 5,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  /// Brand name
                   Text(
-                    productDetail?.brandName ?? "",
+                    productDetail?.brandName?.toUpperCase() ?? "",
                     style: TextStyle(
-                      fontSize: 13,
-                      fontFamily: "Nunito",
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  Text(
-                    productDetail?.selprodTitle ?? "",
-                    style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 11,
                       fontFamily: "Nunito",
                       fontWeight: FontWeight.w600,
+                      color: Colors.black54,
+                      letterSpacing: 0.5,
                     ),
                   ),
-                  Text(
-                    '(${productDetail?.selprodConditionTitle ?? ""})',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontFamily: "Nunito",
-                      fontWeight: FontWeight.w600,
-                    ),
+                  const SizedBox(height: 4),
+                  /// Title + Rating row
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          productDetail?.selprodTitle ?? "",
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontFamily: "Nunito",
+                            fontWeight: FontWeight.w700,
+                            color: Colors.black87,
+                          ),
+                        ),
+                      ),
+                      if ((productDetail?.totReviews ?? "0") != "0")
+                        Padding(
+                          padding: const EdgeInsetsDirectional.only(start: 8),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.star, color: Color(0xFFFFC107), size: 16),
+                              const SizedBox(width: 3),
+                              Text(
+                                "${productDetail?.prodRating ?? "0"} (${productDetail?.totReviews ?? "0"} ${(PrefStore().loadString(AppConstants.languageCode) == "AR") ? "تقييمات" : "ratings"})",
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontFamily: "Nunito",
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.black54,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                    ],
                   ),
                   if (productBadge != null)
-                    Image(
-                      image: NetworkImage(productBadge),
-                      height: 30,
-                      width: 30,
-                      fit: BoxFit.contain,
+                    Padding(
+                      padding: const EdgeInsets.only(top: 6),
+                      child: Image(
+                        image: NetworkImage(productBadge),
+                        height: 30,
+                        width: 30,
+                        fit: BoxFit.contain,
+                      ),
                     ),
-                  Text(
-                    productDetail?.selprodPrice ?? "",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontFamily: "Nunito",
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
                 ],
               ),
             ),
-            SizedBox(
-              width: Get.width,
-              height: 5,
-              child: Container(color: Colors.grey[200]),
+            Divider(height: 1, thickness: 1, color: Colors.grey[200]),
+            /// Price section
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+              child: Text(
+                productDetail?.selprodPrice ?? "",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontFamily: "Nunito",
+                  fontWeight: FontWeight.w800,
+                  color: Colors.black,
+                ),
+              ),
             ),
+            Divider(height: 1, thickness: 1, color: Colors.grey[200]),
           ],
         );
       case ProductDetailType.productOption:
-      // TODO: Handle this case.
         final productOptions = datum?.content?.optionRows;
 
         sectionWidget = Column(
           children: [
-            SizedBox(
-              height: (datum?.content?.optionRows?.length ?? 0) * 100.0,
-              // or a calculated height
-              child: ListView.builder(
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                scrollDirection: Axis.vertical,
-                itemCount: productOptions?.length ?? 0,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemBuilder: (context, outerIndex) {
-                  final productOption = productOptions?[outerIndex];
-                  return Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 4),
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              productOption?.optionName ?? "",
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontFamily: "Nunito",
-                                fontWeight: FontWeight.w600,
-                              ),
+            ListView.builder(
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              scrollDirection: Axis.vertical,
+              itemCount: productOptions?.length ?? 0,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemBuilder: (context, outerIndex) {
+                final productOption = productOptions?[outerIndex];
+                return Container(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            productOption?.optionName ?? "",
+                            style: const TextStyle(
+                              fontSize: 15,
+                              fontFamily: "Nunito",
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
                             ),
-                            if ((datum?.isSizeChartAvailable ?? "0") == "1" && productOption?.optionIsColor == "0")
-                              GestureDetector(
-                                onTap: () {
-                                  showDialog(
-                                    context: context,
-                                    barrierColor: Colors.black87,
-                                    // dark background
-                                    builder: (_) => SizeChartScreen(
-                                      productId: controller.selProductId,
-                                      productOptions:
-                                      productOption?.values ?? [],
-                                      productName: controller.productName.value,
-                                      productPrice:
-                                      controller.productPrice.value,
-                                    ),
-                                    //     SizeChartOverlay(
-                                    //   imageUrl: datum?.sizeChartImage ?? "",
-                                    // ),
-                                  );
-                                },
-                                child: Text(
-                                  (PrefStore().loadString(
-                                    AppConstants.languageCode,
-                                  ) ==
-                                      "AR")
-                                      ? "مخطط الحجم"
-                                      : "Size Chart",
-                                  style: const TextStyle(
-                                    color: Colors.blue,
-                                    fontSize: 14,
-                                    fontFamily: "Nunito",
-                                    fontWeight: FontWeight.w600,
+                          ),
+                          if ((datum?.isSizeChartAvailable ?? "0") == "1" && productOption?.optionIsColor == "0")
+                            GestureDetector(
+                              onTap: () {
+                                showDialog(
+                                  context: context,
+                                  barrierColor: Colors.black87,
+                                  builder: (_) => SizeChartScreen(
+                                    productId: controller.selProductId,
+                                    productOptions:
+                                    productOption?.values ?? [],
+                                    productName: controller.productName.value,
+                                    productPrice:
+                                    controller.productPrice.value,
                                   ),
+                                );
+                              },
+                              child: Text(
+                                (PrefStore().loadString(
+                                  AppConstants.languageCode,
+                                ) ==
+                                    "AR")
+                                    ? "مخطط الحجم"
+                                    : "Size Chart",
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 13,
+                                  fontFamily: "Nunito",
+                                  fontWeight: FontWeight.w600,
+                                  decoration: TextDecoration.underline,
                                 ),
                               ),
-                          ],
-                        ),
-                        const SizedBox(height: 12),
-                        SizedBox(
-                          height: 40, // height of inner horizontal list
-                          child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: productOption?.values?.length ?? 0,
-                            itemBuilder: (context, index) {
-                              final value = productOption?.values?[index];
-                              if (productOption?.optionIsColor == "0") {
-                                int stockValue = ((value?.stock ?? "0").toIntSafe());
+                            ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      SizedBox(
+                        height: productOption?.optionIsColor == "0" ? 44 : 38,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: productOption?.values?.length ?? 0,
+                          itemBuilder: (context, index) {
+                            final value = productOption?.values?[index];
+                            if (productOption?.optionIsColor == "0") {
+                              int stockValue = ((value?.stock ?? "0").toIntSafe());
 
-                                return GestureDetector(
-                                  onTap: () async {
-                                    if (stockValue > 0 && (value?.isSelected ?? "0") == "0") {
-                                      debugPrint("🟢 Selected option: ${value?.optionvalueName}");
-                                      await controller.updateProductOption(value?.selprodId ?? "");
-                                    }
-                                  },
-                                  child: ClipRRect( // 🔒 ADD THIS
-                                    borderRadius: BorderRadius.circular(10),
-                                    child: Stack(
-                                      children: [
-                                        Opacity(
-                                          opacity: stockValue > 0 ? 1 : 0.4,
-                                          child: Container(
-                                            margin: const EdgeInsets.only(right: 8),
-                                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                                            constraints: const BoxConstraints(minWidth: 40),
-                                            decoration: BoxDecoration(
-                                              color: value?.isSelected == "1"
-                                                  ? Colors.black
-                                                  : Colors.white,
-                                              border: Border.all(color: Colors.black),
-                                              borderRadius: BorderRadius.circular(10),
-                                            ),
-                                            child: Center(
-                                              child: Text(
-                                                value?.optionvalueName ?? "",
-                                                style: TextStyle(
-                                                  color: value?.isSelected == "1"
-                                                      ? Colors.white
-                                                      : Colors.black,
-                                                  fontWeight: FontWeight.w500,
-                                                  fontFamily: "Nunito",
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-
-                                        if (stockValue == 0)
-                                          Positioned.fill(
-                                            child: CustomPaint(
-                                              painter: DiagonalCrossPainter(),
-                                            ),
-                                          ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              }
-                              else {
-                                return GestureDetector(
-                                  onTap: () async {
-                                    if ((value?.isSelected ?? "0") == "0") {
-                                      debugPrint("🟢 Selected option: ${value?.optionvalueName}");
-                                      await controller.updateProductOption(value?.selprodId ?? "");
-                                    }
-                                  },
-                                  child: AnimatedScale(
-                                    scale: value?.isSelected == "1" ? 1.15 : 1.0,
-                                    duration: const Duration(milliseconds: 200),
-                                    curve: Curves.easeOut,
-                                    child: Container(
-                                      margin: const EdgeInsets.all(0),
-                                      width: 56,
-                                      height: 56,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        border: Border.all(
-                                          color: value?.isSelected == "1"
-                                              ? Colors.black
-                                              : Colors.grey.shade400,
-                                          width: value?.isSelected == "1" ? 2.5 : 1,
-                                        ),
+                              return GestureDetector(
+                                onTap: () async {
+                                  if (stockValue > 0 && (value?.isSelected ?? "0") == "0") {
+                                    debugPrint("🟢 Selected option: ${value?.optionvalueName}");
+                                    await controller.updateProductOption(value?.selprodId ?? "");
+                                  }
+                                },
+                                child: Opacity(
+                                  opacity: stockValue > 0 ? 1.0 : 0.3,
+                                  child: Container(
+                                    margin: const EdgeInsets.only(right: 10),
+                                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                                    constraints: const BoxConstraints(minWidth: 44),
+                                    height: 44,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      border: Border.all(
+                                        color: value?.isSelected == "1"
+                                            ? Colors.black87
+                                            : Colors.grey.shade300,
+                                        width: value?.isSelected == "1" ? 1.5 : 1,
                                       ),
-                                      child: Center(
-                                        child: Container(
-                                          width: value?.isSelected == "1" ? 26 : 46,
-                                          height: value?.isSelected == "1" ? 26 : 46,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: value?.optionvalueColorCode?.hexToColor ?? Colors.transparent,
-                                            border: Border.all(color: Colors.white, width: 1),
-                                            boxShadow: value?.isSelected == "1"
-                                                ? [
-                                              BoxShadow(
-                                                color: Colors.black.withValues(alpha: 0.2),
-                                                blurRadius: 6,
-                                                spreadRadius: 1,
-                                                offset: const Offset(0, 2),
-                                              ),
-                                            ]
-                                                : [],
-                                          ),
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        value?.optionvalueName ?? "",
+                                        style: TextStyle(
+                                          color: Colors.black87,
+                                          fontWeight: value?.isSelected == "1"
+                                              ? FontWeight.w700
+                                              : FontWeight.w400,
+                                          fontSize: 13,
+                                          fontFamily: "Nunito",
                                         ),
                                       ),
                                     ),
                                   ),
-                                );
-                              }
-                            },
-                          ),
+                                ),
+                              );
+                            }
+                            else {
+                              return GestureDetector(
+                                onTap: () async {
+                                  if ((value?.isSelected ?? "0") == "0") {
+                                    debugPrint("🟢 Selected option: ${value?.optionvalueName}");
+                                    await controller.updateProductOption(value?.selprodId ?? "");
+                                  }
+                                },
+                                child: Container(
+                                  margin: const EdgeInsets.only(right: 12),
+                                  width: 36,
+                                  height: 36,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: value?.isSelected == "1" ? Colors.black87 : Colors.transparent,
+                                      width: value?.isSelected == "1" ? 1.5 : 0,
+                                    ),
+                                  ),
+                                  padding: EdgeInsets.all(value?.isSelected == "1" ? 3 : 0),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: value?.optionvalueColorCode?.hexToColor ?? Colors.transparent,
+                                      border: Border.all(
+                                        color: Colors.grey.shade300,
+                                        width: 0.5,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }
+                          },
                         ),
-                      ],
-                    ),
-                  );
-                },
-              ),
+                      ),
+                    ],
+                  ),
+                );
+              },
             ),
-            SizedBox(
-              width: Get.width,
-              height: 5,
-              child: Container(color: Colors.grey[200]),
-            ),
+            Divider(height: 1, thickness: 1, color: Colors.grey[200]),
           ],
         );
 
       case ProductDetailType.productSpecifications:
-        sectionWidget = SizedBox(
-          width: Get.width,
-          height: 5,
-          child: Container(color: Colors.grey[200]),
-        );
-
-      case ProductDetailType.volumeDiscount:
-      // TODO: Handle this case.
-        sectionWidget = SizedBox(
-          width: Get.width,
-          height: 5,
-          child: Container(color: Colors.grey[200]),
-        );
-      case ProductDetailType.productDescription:
-      // TODO: Handle this case.
-      // sectionWidget = SizedBox(
-      //   width: Get.width,
-      //   height: 5,
-      //   child: Container(color: Colors.grey[300]),
-      // );
-        final description = datum?.content?.description ?? "";
+        final specs = datum?.content?.productPolicies ?? [];
+        if (specs.isEmpty) {
+          sectionWidget = const SizedBox.shrink();
+          break;
+        }
 
         sectionWidget = Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
+              padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        (PrefStore().loadString(AppConstants.languageCode) == "AR")
+                            ? "تفاصيل المنتج"
+                            : "Product Details",
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w700,
+                          fontFamily: "Nunito",
+                          fontSize: 15,
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          showGeneralDialog(
+                            context: context,
+                            barrierLabel: "Report Form",
+                            barrierDismissible: true,
+                            barrierColor: Colors.black.withValues(alpha: 0.4),
+                            transitionDuration: const Duration(milliseconds: 300),
+                            pageBuilder: (_, __, ___) => ReportFormPopover(
+                              productName: controller.productName.value,
+                              selprodId: controller.selProductId,
+                            ),
+                            transitionBuilder: (_, anim, __, child) {
+                              return SlideTransition(
+                                position: Tween(
+                                  begin: const Offset(0, 1),
+                                  end: Offset.zero,
+                                ).animate(
+                                  CurvedAnimation(
+                                    parent: anim,
+                                    curve: Curves.easeOut,
+                                  ),
+                                ),
+                                child: child,
+                              );
+                            },
+                          );
+                        },
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.outlined_flag, size: 16, color: Colors.grey.shade600),
+                            const SizedBox(width: 4),
+                            Text(
+                              (PrefStore().loadString(AppConstants.languageCode) == "AR")
+                                  ? "الإبلاغ عن مشكلة"
+                                  : "Report Issue",
+                              style: TextStyle(
+                                color: Colors.grey.shade800,
+                                fontWeight: FontWeight.w600,
+                                fontFamily: "Nunito",
+                                fontSize: 13,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  ..._buildSpecsList(specs),
+                ],
+              ),
+            ),
+            Divider(height: 1, thickness: 1, color: Colors.grey[200]),
+          ],
+        );
+        break;
+
+      case ProductDetailType.volumeDiscount:
+        sectionWidget = const SizedBox.shrink();
+        break;
+
+      case ProductDetailType.productDescription:
+        final description = datum?.content?.description ?? "";
+        if (description.isEmpty) {
+          sectionWidget = const SizedBox.shrink();
+          break;
+        }
+
+        sectionWidget = Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    datum?.title ?? "",
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                    (PrefStore().loadString(AppConstants.languageCode) == "AR")
+                        ? "الوصف"
+                        : "Description",
                     style: const TextStyle(
                       color: Colors.black,
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.w700,
                       fontFamily: "Nunito",
-                      fontSize: 16,
+                      fontSize: 15,
                     ),
                   ),
                   Container(
@@ -938,16 +973,12 @@ debugPrint('it is being called');
                 ],
               ),
             ),
-            SizedBox(
-              width: Get.width,
-              height: 5,
-              child: Container(color: Colors.grey[200]),
-            ),
+            Divider(height: 1, thickness: 1, color: Colors.grey[200]),
           ],
         );
+        break;
 
       case ProductDetailType.productPolicies:
-      // TODO: Handle this case.
         final productSpecifications = datum?.content?.productPolicies;
         // TODO: Handle this case.
         sectionWidget = Column(
@@ -1666,6 +1697,119 @@ debugPrint('it is being called');
   bool _isHtml(String text) {
     final htmlRegex = RegExp(r'<[^>]+>');
     return htmlRegex.hasMatch(text);
+  }
+
+  List<Widget> _buildSpecsList(List<ProductPolicy> specs) {
+    List<Widget> children = [];
+    int i = 0;
+    while (i < specs.length) {
+      final spec1 = specs[i];
+      final val1 = spec1.icon ?? "";
+      final isShort1 = val1.length < 25;
+
+      if (isShort1 && i + 1 < specs.length) {
+        final spec2 = specs[i + 1];
+        final val2 = spec2.icon ?? "";
+        final isShort2 = val2.length < 35;
+
+        if (isShort2) {
+          children.add(
+            Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          spec1.title ?? "",
+                          style: const TextStyle(
+                            color: Colors.black54,
+                            fontSize: 12,
+                            fontFamily: "Nunito",
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          val1,
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            fontFamily: "Nunito",
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          spec2.title ?? "",
+                          style: const TextStyle(
+                            color: Colors.black54,
+                            fontSize: 12,
+                            fontFamily: "Nunito",
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          val2,
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            fontFamily: "Nunito",
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+          i += 2;
+          continue;
+        }
+      }
+
+      children.add(
+        Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                spec1.title ?? "",
+                style: const TextStyle(
+                  color: Colors.black54,
+                  fontSize: 12,
+                  fontFamily: "Nunito",
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                val1,
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  fontFamily: "Nunito",
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+      i++;
+    }
+    return children;
   }
 
   Widget _buildCircleIconButton({

@@ -52,6 +52,14 @@ android {
             )
         }
     }
+
+    // Fix: "Release app bundle failed to strip debug symbols from native libraries"
+    // media_kit ships prebuilt .so files that NDK's strip tool cannot process.
+    packaging {
+        jniLibs {
+            useLegacyPackaging = true
+        }
+    }
 }
 
 flutter {
