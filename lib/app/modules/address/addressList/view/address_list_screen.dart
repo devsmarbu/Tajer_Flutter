@@ -29,7 +29,7 @@ class AddressListScreen extends StatelessWidget {
           ),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.close),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             final comeFromCart = (Get.arguments != null && Get.arguments is Map)
                 ? Get.arguments["comeFromCart"] ?? "0"
@@ -66,15 +66,15 @@ class AddressListScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Text(
-                  AppStrings.appDeliverTo.toUpperCase().tr,
-                  style: TextStyle(
-                    fontFamily: 'Nunito',
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16,
-                  ),
-                ),
+                padding: EdgeInsets.all(10.0),
+                // child: Text(
+                //   AppStrings.appDeliverTo.toUpperCase().tr,
+                //   style: TextStyle(
+                //     fontFamily: 'Nunito',
+                //     fontWeight: FontWeight.w600,
+                //     fontSize: 16,
+                //   ),
+                // ),
               ),
 
               Expanded(
@@ -138,8 +138,8 @@ class AddressListScreen extends StatelessWidget {
                                           IconButton(
                                             icon: SvgPicture.asset(
                                               "assets/icons/ic_delete.svg",
-                                              width: 20,
-                                              height: 20,
+                                              width: 30,
+                                              height: 30,
                                             ),
                                             padding: EdgeInsets.zero,
                                             visualDensity:
@@ -154,8 +154,8 @@ class AddressListScreen extends StatelessWidget {
                                         IconButton(
                                           icon: SvgPicture.asset(
                                             "assets/icons/ic_edit.svg",
-                                            width: 20,
-                                            height: 20,
+                                            width: 30,
+                                            height: 30,
                                           ),
                                           padding: EdgeInsets.zero,
                                           visualDensity: VisualDensity.compact,
@@ -225,6 +225,8 @@ class AddressListScreen extends StatelessWidget {
                                     ],
                                   ),
                                 ),
+
+                                const SizedBox(height: 10),
 
                                 /// --- Phone and title ---
                                 Row(

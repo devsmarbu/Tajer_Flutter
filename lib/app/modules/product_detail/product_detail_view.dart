@@ -1255,94 +1255,113 @@ class _ProductDetailViewState extends State<ProductDetailView>
           child: Container(color: Colors.grey[200]),
         );
       case ProductDetailType.shop:
-        // TODO: Handle this case.
         final productShop = datum?.content?.shop;
 
         sectionWidget = Column(
-          spacing: 5,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              margin: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "APP_SOLD_BY".tr,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontFamily: "Nunito",
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  Transform.translate(
-                    offset: const Offset(-10, 0),
-                    child: TextButton(
-                      onPressed: () {
-                        controller.goToShopDetailView(
-                          productShop?.shopId ?? "",
-                          productShop?.shopUserId ?? "",
-                        );
-                      },
-                      child: Text(
-                        productShop?.shopName ?? "",
-                        style: TextStyle(
-                          decoration: TextDecoration.underline,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        (PrefStore().loadString(AppConstants.languageCode) == "AR")
+                            ? "تفاصيل البائع"
+                            : "Seller Details",
+                        style: const TextStyle(
                           color: Colors.black,
+                          fontWeight: FontWeight.w700,
                           fontFamily: "Nunito",
-                          fontWeight: FontWeight.w500,
                           fontSize: 15,
                         ),
-                        textAlign: TextAlign.start,
                       ),
-                    ),
-                  ),
-                  if ((productShop?.shopTotalReviews.toIntSafe() ?? 0) > 0)
-                    Row(
-                      spacing: 10,
-                      children: [
-                        Row(
-                          spacing: 5,
+                      GestureDetector(
+                        onTap: () {
+                          // Standard action for emailing seller (e.g. mailto)
+                        },
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
+                            Icon(Icons.mail_outlined, size: 16, color: Colors.grey.shade600),
+                            const SizedBox(width: 4),
                             Text(
-                              productShop?.shopRating ?? "0",
+                              (PrefStore().loadString(AppConstants.languageCode) == "AR")
+                                  ? "مراسلة البائع"
+                                  : "Email Seller",
                               style: TextStyle(
-                                fontSize: 12,
+                                color: Colors.grey.shade800,
+                                fontWeight: FontWeight.w600,
                                 fontFamily: "Nunito",
-                                fontWeight: FontWeight.w500,
+                                fontSize: 13,
                               ),
-                            ),
-                            Image.asset(
-                              "assets/images/star.png",
-                              width: 15,
-                              height: 15,
                             ),
                           ],
                         ),
-                        Container(width: 1, height: 20, color: Colors.black),
-                        Text(
-                          "${productShop?.shopTotalReviews ?? 0} ${AppStrings.appShopReviews.tr}",
-                          style: TextStyle(
-                            fontSize: 12,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          controller.goToShopDetailView(
+                            productShop?.shopId ?? "",
+                            productShop?.shopUserId ?? "",
+                          );
+                        },
+                        child: Text(
+                          productShop?.shopName ?? "",
+                          style: const TextStyle(
+                            decoration: TextDecoration.underline,
+                            color: Colors.black87,
                             fontFamily: "Nunito",
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      if (productShop?.shopRating != null) ...[
+                        Text(
+                          "★ ${productShop?.shopRating ?? '0'}",
+                          style: TextStyle(
+                            color: Colors.grey.shade800,
+                            fontWeight: FontWeight.w700,
+                            fontFamily: "Nunito",
+                            fontSize: 13,
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          "(${productShop?.shopTotalReviews ?? '0'} seller reviews)",
+                          style: TextStyle(
+                            color: Colors.grey.shade600,
+                            fontFamily: "Nunito",
+                            fontSize: 12,
                           ),
                         ),
                       ],
-                    ),
-                  SizedBox(height: 15),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
                   SizedBox(
                     width: Get.width - 32,
-                    height: 40,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
+                    height: 44,
+                    child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: Colors.black,
+                        side: const BorderSide(color: Colors.black87, width: 1),
                         shape: RoundedRectangleBorder(
-                          side: BorderSide(color: Colors.black, width: 1),
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
                       onPressed: () {
-                        // your onTap logic here
                         controller.goToAskAQuestionView(
                           productShop?.shopId ?? "",
                           productShop?.shopName ?? "",
@@ -1351,8 +1370,10 @@ class _ProductDetailViewState extends State<ProductDetailView>
                         );
                       },
                       child: Text(
-                        "APP_ASK_A_QUESTIONS".tr,
-                        style: TextStyle(
+                        (PrefStore().loadString(AppConstants.languageCode) == "AR")
+                            ? "طرح سؤال"
+                            : "Ask a question",
+                        style: const TextStyle(
                           color: Colors.black,
                           fontFamily: "Nunito",
                           fontSize: 14,
@@ -1364,11 +1385,7 @@ class _ProductDetailViewState extends State<ProductDetailView>
                 ],
               ),
             ),
-            SizedBox(
-              width: Get.width,
-              height: 5,
-              child: Container(color: Colors.grey[200]),
-            ),
+            Divider(height: 1, thickness: 1, color: Colors.grey[200]),
           ],
         );
 
