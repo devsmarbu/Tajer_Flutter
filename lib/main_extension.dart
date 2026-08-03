@@ -378,6 +378,17 @@ class DeepLinkService {
     });
   }
 
+  /// Public method to handle a URL string from any file.
+  /// Usage: DeepLinkService.instance.handleUrl('https://tajershops.com/...');
+  void handleUrl(String urlString) {
+    final uri = Uri.tryParse(urlString);
+    if (uri != null) {
+      _handleUri(uri);
+    } else {
+      debugPrint('❌ DeepLinkService.handleUrl: Invalid URL → $urlString');
+    }
+  }
+
   void dispose() {
     _sub?.cancel();
   }

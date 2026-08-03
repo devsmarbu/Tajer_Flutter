@@ -24,6 +24,13 @@ class WebviewView extends GetView<WebviewController> {
             ),
           ),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.close, color: Colors.black),
+            tooltip: 'Close',
+            onPressed: () => Get.back(),
+          ),
+        ],
       ),
       body: Stack(
         children: [
@@ -39,3 +46,4 @@ class WebviewView extends GetView<WebviewController> {
     );
   }
 }
+

@@ -1,10 +1,14 @@
 import 'dart:async';
 import 'dart:ffi';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:tajer/app/core/routes/app_routes.dart';
+import 'package:tajer/app/core/constants/app_constants.dart';
+import 'package:tajer/utils/app_params.dart';
+import 'package:tajer/main_extension.dart';
 import '../../../Extensions/image_color_utils.dart';
 import '../../../../utils/app_colors.dart';
 import '../home_model.dart';
@@ -96,7 +100,12 @@ class _BannerPageViewState extends State<BannerPageView> {
         padding: widget.addPadding
             ? const EdgeInsets.symmetric(horizontal: 16, vertical: 10)
             : EdgeInsets.zero,
-        child: SizedBox(height: 200,key: const Key('banner_container'), width: screenSize, child: bannerContent),
+        child: SizedBox(
+          height: 200,
+          key: const Key('banner_container'),
+          width: screenSize,
+          child: bannerContent,
+        ),
       ),
     );
   }
@@ -126,7 +135,7 @@ class _BannerPageViewState extends State<BannerPageView> {
 
             return Semantics(
               label:
-              'banner_item_${widget.slides![index].slideUrlTitle}_$index',
+                  'banner_item_${widget.slides![index].slideUrlTitle}_$index',
               button: true,
               child: GestureDetector(
                 key: Key('banner_item_tap_$index'),
@@ -170,8 +179,7 @@ class _BannerPageViewState extends State<BannerPageView> {
                       },
                       errorBuilder: (context, error, stackTrace) {
                         return Container(
-                          key: Key(
-                              'banner_image_error_$index'),
+                          key: Key('banner_image_error_$index'),
                           color: Colors.grey[300],
                           child: const Icon(
                             Icons.broken_image,
@@ -240,14 +248,16 @@ class _BannerPageViewState extends State<BannerPageView> {
                 widget.bannerTitle ?? "",
               );
             },
-            child : Image.network(
+            child: Image.network(
               key: const Key('single_banner_image'),
               widget.bannerImage ?? "",
               fit: BoxFit.fitWidth,
               width: screenSize,
               loadingBuilder: (context, child, loadingProgress) {
                 if (loadingProgress == null) return child;
-                return const Center(child: CircularProgressIndicator(color: Colors.black));
+                return const Center(
+                  child: CircularProgressIndicator(color: Colors.black),
+                );
               },
               errorBuilder: (_, __, ___) => Container(
                 key: const Key('single_banner_error'),
@@ -282,7 +292,8 @@ class _BannerPageViewState extends State<BannerPageView> {
   ) {
     switch (slideUrlType) {
       case "1":
-        openUrl(slideUrl);
+        openUrl(slideUrl, title: slideUrlTitle);
+
         break;
 
       case "2":
@@ -321,14 +332,18 @@ class _BannerPageViewState extends State<BannerPageView> {
     }
   }
 
-  static Future<void> openUrl(String? urlString) async {
+  static void openUrl(String? urlString, {String title = ''}) {
     if (urlString == null || urlString.isEmpty) return;
 
-    final uri = Uri.tryParse(urlString);
-    if (uri != null && await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
-    } else {
-      debugPrint('❌ Cannot open URL: $urlString');
-    }
+    // ✅ Navigate to the in-app WebView screen which has a title bar,
+    // back button (page history) and a close (✕) button to dismiss.
+    // This does NOT trigger Android App Links / splash re-initialization.
+    Get.toNamed(
+      AppRoutes.webViewScreen,
+      arguments: {
+        AppParams.title: title,
+        AppParams.webViewUrl: urlString,
+      },
+    );
   }
 }
