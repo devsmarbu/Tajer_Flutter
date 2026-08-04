@@ -9,6 +9,16 @@ mixin AppLoader {
 
   /// Show full screen loader
   void showLoader(BuildContext context, {String message = "Loading..."}) {
+    showLoaderStatic(context, message: message);
+  }
+
+  /// Hide the loader
+  void hideLoader(BuildContext context) {
+    hideLoaderStatic(context);
+  }
+
+  /// Static show loader
+  static void showLoaderStatic(BuildContext context, {String message = "Loading..."}) {
     if (_isDialogOpen) return;
     _isDialogOpen = true;
 
@@ -20,8 +30,8 @@ mixin AppLoader {
     );
   }
 
-  /// Hide the loader
-  void hideLoader(BuildContext context) {
+  /// Static hide loader
+  static void hideLoaderStatic(BuildContext context) {
     if (_isDialogOpen) {
       Navigator.of(context, rootNavigator: true).pop();
       _isDialogOpen = false;

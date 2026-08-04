@@ -1,4 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+import 'package:tajer/app/data/respository/product_list_repository.dart';
+import 'package:tajer/app/modules/productList/controllers/product_controller.dart';
+import 'package:tajer/utils/app_loader.dart';
 import 'package:tajer/app/modules/authentication/registrationSuccess/employee_success_screen.dart';
 import 'package:tajer/app/modules/authentication/registrationSuccess/registration_success_screen.dart';
 import 'package:tajer/app/modules/categories/brands_list/brands_list_view.dart';
@@ -172,7 +176,7 @@ class AppRoutes {
     GetPage(name: employeeSuccessScreen, page: () => EmployeeSuccessScreen()),
   ];
 
-  static void goToProductListPage({
+  static Future<void> goToProductListPage({
     required String brandId,
     required String prodCatId,
     required String productVideoAvailable,
@@ -181,7 +185,47 @@ class AppRoutes {
     String? condition,
     String? imagePath,
     String? keyword,
-  }) {
+  }) async {
+    final context = Get.context;
+    if (context != null) {
+      AppLoader.showLoaderStatic(context);
+    }
+
+    final uniqueId = DateTime.now().millisecondsSinceEpoch.toString();
+
+    Map<String, dynamic> baseParams = {};
+    if (prodCatId.isNotEmpty) {
+      baseParams["prodcat"] = prodCatId;
+    }
+    baseParams["keyword"] = (keyword == "null" || keyword == null) ? "" : keyword;
+    baseParams["brand"] = brandId;
+    baseParams["image"] = image ?? '';
+    baseParams["productVideoAvailable"] = productVideoAvailable;
+    if (condition != null && condition.isNotEmpty) {
+      baseParams["condition"] = [condition];
+    }
+
+    if (productVideoAvailable == "1") {
+      baseParams["productIds"] = [];
+      baseParams["pageSize"] = "5";
+    }
+
+    baseParams["page"] = 1;
+
+    try {
+      final data = await ProductListRepository().fetchPaginatedProducts(baseParams);
+      if (data != null) {
+        ProductController.preloadedDataMap[uniqueId] = data;
+      }
+    } catch (e) {
+      debugPrint("Preloading product list error: $e");
+    } finally {
+      final currentContext = Get.context;
+      if (currentContext != null) {
+        AppLoader.hideLoaderStatic(currentContext);
+      }
+    }
+
     Get.toNamed(
       productListPage,
       parameters: {
@@ -193,7 +237,7 @@ class AppRoutes {
         "condition": condition ?? '',
         "image": image ?? '',
         "imagePath": imagePath ?? '',
-        "uniqueId": DateTime.now().millisecondsSinceEpoch.toString(),
+        "uniqueId": uniqueId,
       },
     );
   }

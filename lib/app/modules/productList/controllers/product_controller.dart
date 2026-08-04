@@ -33,6 +33,8 @@ class ProductController extends GetxController {
   List<String> condition = [];
   File? imageFile;
 
+  static Map<String, Data?> preloadedDataMap = {};
+
   @override
   void onInit() {
     super.onInit();
@@ -40,6 +42,12 @@ class ProductController extends GetxController {
     // ✅ Read parameters passed via Get.toNamed(..., parameters: {...})
     final params = Get.parameters;
     debugPrint("Received Params: $params");
+
+    final tag = params['uniqueId'];
+    Data? initialData;
+    if (tag != null && preloadedDataMap.containsKey(tag)) {
+      initialData = preloadedDataMap.remove(tag);
+    }
 
     if (params.isNotEmpty) {
       if (params['prodCatId'] != null && params['prodCatId'] != "") {
@@ -83,7 +91,14 @@ class ProductController extends GetxController {
         baseParams["pageSize"] = "5";
       }
 
-      loadProducts(baseParams);
+      if (initialData != null) {
+        productData.value = initialData;
+        products.assignAll(initialData.products ?? []);
+        if ((initialData.products ?? []).isEmpty) hasMore(false);
+        isLoading(false);
+      } else {
+        loadProducts(baseParams);
+      }
     } else {
       debugPrint("⚠️ No arguments passed to ProductController");
     }
