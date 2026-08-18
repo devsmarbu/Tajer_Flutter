@@ -24,6 +24,8 @@ class BrandController extends GetxController {
 
   /// 🔹 Fetch Brand List (GET)
   Future<void> fetchBrandList() async {
+    // Skip if already loaded
+    if (brandList.isNotEmpty) return;
     try {
       isLoading(true);
       final response = await _repository.fetchBrandListData();
@@ -41,6 +43,8 @@ class BrandController extends GetxController {
 
   /// 🔹 Fetch Shop List (POST) — initial load
   Future<void> fetchShopList({String page = "1"}) async {
+    // Skip if already loaded
+    if (shopList.isNotEmpty) return;
     try {
       isLoading(true);
       currentPage.value = 1;

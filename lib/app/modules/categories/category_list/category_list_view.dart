@@ -124,14 +124,11 @@ class _CategoryListViewState extends State<CategoryListView> {
                   SliverToBoxAdapter(
                     child: GestureDetector(
                       onTap: () {
-                        Get.toNamed(
-                          AppRoutes.productListPage,
-                          parameters: {
-                            "prodCatId": subCat.prodcatId ?? "",
-                          //  "brandId": subCat. ?? "",
-                            "productVideoAvailable": "0",
-                            "titleHeader": subCat.prodcatName ?? "",
-                          },
+                        AppRoutes.goToProductListPage(
+                          brandId: '',
+                          prodCatId: subCat.prodcatId ?? '',
+                          productVideoAvailable: '0',
+                          titleHeader: subCat.prodcatName ?? '',
                         );
                       },
                       child: Padding(
@@ -174,13 +171,11 @@ class _CategoryListViewState extends State<CategoryListView> {
                         if (index == 0) {
                           return GestureDetector(
                             onTap: () {
-                              Get.toNamed(
-                                AppRoutes.productListPage,
-                                parameters: {
-                                  "prodCatId": subCat.prodcatId ?? "",
-                                  "productVideoAvailable": "0",
-                                  "titleHeader": subCat.prodcatName ?? "",
-                                },
+                              AppRoutes.goToProductListPage(
+                                brandId: '',
+                                prodCatId: subCat.prodcatId ?? '',
+                                productVideoAvailable: '0',
+                                titleHeader: subCat.prodcatName ?? '',
                               );
                             },
                             child: Column(

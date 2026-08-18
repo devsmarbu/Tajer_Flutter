@@ -54,9 +54,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                   const SizedBox(width: 12),
                   for (int i = 0; i < 3; i++)
                     GestureDetector(
-                      onTap: () {
-                        controller.selectedTab.value = i;
-                      },
+                      onTap: () => _onTabTap(i),
                       child: Container(
                         margin: const EdgeInsets.only(right: 8),
                         padding: const EdgeInsets.symmetric(
@@ -149,10 +147,10 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                     );
 
                   case 1: // ✅ Brands tab
-                    return BrandsListView(key: UniqueKey(), index: "1");
+                    return BrandsListView(key: const ValueKey('brands'), index: "1");
 
                   case 2: // ✅ Shops tab
-                    return BrandsListView(key: UniqueKey(), index: "2");
+                    return BrandsListView(key: const ValueKey('shops'), index: "2");
 
                   default:
                     return const SizedBox.shrink();
@@ -167,9 +165,17 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    controller.fetchCategories();
+    // Only fetch if categories haven't been loaded yet
+    if (controller.categories.isEmpty) {
+      controller.fetchCategories();
+    }
+  }
+
+  /// Switch sub-tab directly — data is cached in BrandController
+  void _onTabTap(int tabIndex) {
+    if (tabIndex == controller.selectedTab.value) return;
+    controller.selectedTab.value = tabIndex;
   }
 }
 

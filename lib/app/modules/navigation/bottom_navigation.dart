@@ -158,13 +158,11 @@ class _BottomNavigationState extends State<BottomNavigation> {
                                         onTap: (index) {
                                           if (index == 2 && hasCampaign) {
                                             // Handle SUMMER PICKS navigation if user clicks the blank slot area
-                                            Get.toNamed(
-                                              AppRoutes.productListPage,
-                                              parameters: {
-                                                "prodCatId": campaign?.prodcatId ?? "",
-                                                "productVideoAvailable": "0",
-                                                "titleHeader": campaign?.name ?? "",
-                                              },
+                                            AppRoutes.goToProductListPage(
+                                              brandId: '',
+                                              prodCatId: campaign?.prodcatId ?? '',
+                                              productVideoAvailable: '0',
+                                              titleHeader: campaign?.name ?? '',
                                             );
                                           } else {
                                             // Navigate normally to the selected tab
@@ -182,14 +180,11 @@ class _BottomNavigationState extends State<BottomNavigation> {
                                           bottom: 15, // positioned relative to the padded container bottom
                                           child: GestureDetector(
                                             onTap: () {
-                                              Get.toNamed(
-                                                AppRoutes.productListPage,
-                                                parameters: {
-                                                  "prodCatId": campaign?.prodcatId ?? "",
-                                                  //  "brandId": subCat. ?? "",
-                                                  "productVideoAvailable": "0",
-                                                  "titleHeader": campaign?.name ?? "",
-                                                },
+                                              AppRoutes.goToProductListPage(
+                                                brandId: '',
+                                                prodCatId: campaign.prodcatId ?? '',
+                                                productVideoAvailable: '0',
+                                                titleHeader: campaign.name ?? '',
                                               );
                                             },
                                             child: Container(
@@ -241,13 +236,11 @@ class _BottomNavigationState extends State<BottomNavigation> {
                               unselectedItemColor: Colors.grey,
                               onTap: (index) {
                                 if (index == 2 && hasCampaign) {
-                                  Get.toNamed(
-                                    AppRoutes.productListPage,
-                                    parameters: {
-                                      "prodCatId": campaign?.prodcatId ?? "",
-                                      "productVideoAvailable": "0",
-                                      "titleHeader": campaign?.name ?? "",
-                                    },
+                                  AppRoutes.goToProductListPage(
+                                    brandId: '',
+                                    prodCatId: campaign.prodcatId ?? '',
+                                    productVideoAvailable: '0',
+                                    titleHeader: campaign.name ?? '',
                                   );
                                 } else {
                                   bottomNav.changeTab(index);
@@ -292,13 +285,11 @@ class _BottomNavigationState extends State<BottomNavigation> {
                                 top: -20,
                                 child: GestureDetector(
                                   onTap: () {
-                                    Get.toNamed(
-                                      AppRoutes.productListPage,
-                                      parameters: {
-                                        "prodCatId": campaign?.prodcatId ?? "",
-                                        "productVideoAvailable": "0",
-                                        "titleHeader": campaign?.name ?? "",
-                                      },
+                                    AppRoutes.goToProductListPage(
+                                      brandId: '',
+                                      prodCatId: campaign.prodcatId ?? '',
+                                      productVideoAvailable: '0',
+                                      titleHeader: campaign.name ?? '',
                                     );
                                   },
                                   child: Container(

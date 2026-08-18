@@ -370,14 +370,11 @@ class _ReelCellState extends State<ReelCell> {
                         if (widget.controller.value.isInitialized) {
                           await widget.controller.pause();
                         }
-                        await Get.toNamed(
-                          AppRoutes.productListPage,
-                          parameters: {
-                            "brandId": product.brandId ?? '',
-                            "prodCatId": '',
-                            "productVideoAvailable": '0',
-                            "titleHeader": product.brandName ?? '',
-                          },
+                        await AppRoutes.goToProductListPage(
+                          brandId: product.brandId ?? '',
+                          prodCatId: '',
+                          productVideoAvailable: '0',
+                          titleHeader: product.brandName ?? '',
                         );
                         // ▶️ Resume when coming back (optional)
                         if (mounted && widget.controller.value.isInitialized) {

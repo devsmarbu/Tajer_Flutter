@@ -9,8 +9,9 @@ import 'brand_tile.dart';
 class BrandsListView extends StatefulWidget {
   final String index;
   final String? title;
+  final bool skipInitialLoad;
 
-  const BrandsListView({super.key, required this.index, this.title});
+  const BrandsListView({super.key, required this.index, this.title, this.skipInitialLoad = false});
 
   @override
   State<BrandsListView> createState() => _BrandListViewState();
@@ -38,7 +39,9 @@ class _BrandListViewState extends State<BrandsListView> {
       }
     });
 
-    _loadData();
+    if (!widget.skipInitialLoad) {
+      _loadData();
+    }
   }
 
   void _loadData() {

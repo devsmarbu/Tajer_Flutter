@@ -5,7 +5,7 @@ import 'models/category.dart';
 class CategoryController extends GetxController {
   final _repository = CategoryRepository();
 
-  var isLoading = true.obs;
+  var isLoading = false.obs;
   var categories = <NewCategory>[].obs;
   var selectedIndex = 0.obs;
   var selectedTab = 0.obs;
@@ -18,6 +18,9 @@ class CategoryController extends GetxController {
   }
 
   Future<void> fetchCategories() async {
+    // Skip if already loaded
+    if (categories.isNotEmpty) return;
+
     try {
       isLoading(true);
       final response = await _repository.fetchCategoryListData(parentId: "");
