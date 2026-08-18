@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:tajer/marque_label.dart';
 import '../../../utils/pref_store.dart';
 import '../../core/constants/app_constants.dart';
+import '../../modules/categories/brands_list/brand_controller.dart';
 import '../../modules/categories/brands_list/brands_list_view.dart';
 import '../../modules/categories/category_list/category_list_view.dart';
 import '../../../utils/app_colors.dart';
@@ -170,9 +171,20 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
     if (controller.categories.isEmpty) {
       controller.fetchCategories();
     }
+
+    // Pre-load Brands and Shops in the background so tab switching is instant
+    final brandCtrl = Get.put(BrandController(), tag: "1", permanent: true);
+    if (brandCtrl.brandModel.value == null) {
+      brandCtrl.fetchBrandList();
+    }
+
+    final shopCtrl = Get.put(BrandController(), tag: "2", permanent: true);
+    if (shopCtrl.shopModel.value == null) {
+      shopCtrl.fetchShopList();
+    }
   }
 
-  /// Switch sub-tab directly — data is cached in BrandController
+  /// Switch sub-tab directly — data is pre-loading in background
   void _onTabTap(int tabIndex) {
     if (tabIndex == controller.selectedTab.value) return;
     controller.selectedTab.value = tabIndex;

@@ -40,7 +40,9 @@ class _ShopDetailPageState extends State<ShopDetailPage>
   void initState() {
     super.initState();
     _tabController = TabController(length: 5, vsync: this);
-    controllerTag = UniqueKey().toString();
+    final args = Get.arguments as Map<String, dynamic>?;
+    final shopId = args?['shopId']?.toString() ?? "default";
+    controllerTag = shopId;
     controller = Get.put(ShopDetailController(), tag: controllerTag);
     // controller.loadShopDetail();
 
