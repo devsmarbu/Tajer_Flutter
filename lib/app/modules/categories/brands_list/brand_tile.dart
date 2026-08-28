@@ -31,7 +31,7 @@ class BrandTile extends StatelessWidget {
         if (displayItem.isBrand == "1") {
           AppRoutes.goToProductListPage(brandId: displayItem.id, productVideoAvailable: "0", titleHeader: displayItem.name, prodCatId: '');
         } else {
-          _navigateToShopDetail(context, displayItem.id, displayItem.shopUserID ?? "");
+          AppRoutes.goToShopDetailPage(displayItem.id, displayItem.shopUserID ?? "");
         }
       },
       child: Column(
@@ -71,31 +71,5 @@ class BrandTile extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  Future<void> _navigateToShopDetail(BuildContext context, String shopId, String shopUserId) async {
-    AppLoader.showLoaderStatic(context);
-    bool isLoaded = false;
-    try {
-      final controllerTag = shopId;
-      final controller = Get.put(ShopDetailController(), tag: controllerTag);
-      
-      if (controller.shopDetail.value == null) {
-        controller.shopId = shopId;
-        controller.shopUserId = shopUserId;
-        controller.baseParams = {"shop_id": shopId, "page": 1};
-        await controller.loadShopDetail();
-      }
-      isLoaded = true;
-    } finally {
-      AppLoader.hideLoaderStatic(context);
-    }
-    
-    if (isLoaded) {
-      Get.toNamed(
-        AppRoutes.shopDetailView,
-        arguments: {"shopId": shopId, "shopUserId": shopUserId},
-      );
-    }
   }
 }

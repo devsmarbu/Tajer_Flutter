@@ -135,10 +135,7 @@ class HomeController extends GetxController with AppLoader {
   }
 
   void goToProductDetailView(String productId, String productName) {
-    Get.toNamed(
-      AppRoutes.productDetail,
-      arguments: {'productId': productId, 'productName': productName},
-    );
+    AppRoutes.goToProductDetailPage(productId, productName);
   }
 
   @override

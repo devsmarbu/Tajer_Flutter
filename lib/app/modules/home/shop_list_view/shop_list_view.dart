@@ -51,9 +51,9 @@ class _ShopListViewState extends State<ShopListView> {
                   debugPrint("$index");
                   return GestureDetector(
                     onTap: () {
-                      Get.toNamed(
-                        AppRoutes.shopDetailView,
-                        arguments: {"shopId": widget.collection?.shops?[index].shopId, "shopUserId": widget.collection?.shops?[index].shopUserId},
+                      AppRoutes.goToShopDetailPage(
+                        widget.collection?.shops?[index].shopId ?? "", 
+                        widget.collection?.shops?[index].shopUserId ?? ""
                       );
                     },
                     child: Padding(

@@ -46,12 +46,9 @@ class ProductCard extends StatelessWidget {
           onTap:
               onTap ??
               () {
-                Get.to(
-                  () => ProductDetailView(titleHeader: "Product Detail"),
-                  arguments: {
-                    'productId': product.selprodId ?? "",
-                    'productName': product.productName ?? "",
-                  },
+                AppRoutes.goToProductDetailPage(
+                  product.selprodId ?? "", 
+                  product.productName ?? ""
                 );
               },
           highlightColor: Colors.transparent,

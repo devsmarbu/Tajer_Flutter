@@ -58,9 +58,9 @@ class _ProductDetailViewState extends State<ProductDetailView> with SingleTicker
   @override
   void initState() {
     super.initState();
-    // controller.loadProductDetail();
-    controllerTag = UniqueKey().toString();
-    // 🔥 Always create fresh controller for every pushed ProductDetailView
+    
+    final args = Get.arguments as Map<String, dynamic>?;
+    controllerTag = args?['controllerTag']?.toString() ?? UniqueKey().toString();
     controller = Get.put(ProductDetailController(), tag: controllerTag);
 
     _shakeController = AnimationController(
@@ -80,16 +80,15 @@ class _ProductDetailViewState extends State<ProductDetailView> with SingleTicker
       curve: Curves.easeInOut,
     ));
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final args = Get.arguments;
-debugPrint('it is being called');
+    // If the controller hasn't been pre-loaded, load it now
+    if (controller.productSections.isEmpty) {
       if (args != null && args['productId'] != null) {
         controller.loadOtherProduct(
           args['productId'].toString(),
           args['productName']?.toString() ?? "",
         );
       }
-    });
+    }
 
     _startAutoShake();
 

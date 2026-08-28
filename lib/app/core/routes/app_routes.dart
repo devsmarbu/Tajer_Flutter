@@ -39,6 +39,8 @@ import '../../modules/product_detail/product_detail_view.dart';
 import '../../modules/productList/views/product_list_page.dart';
 import '../../modules/product_detail/search_view/search_view.dart';
 import '../../modules/product_detail/shop_detail_view/shop_detail_view.dart';
+import '../../modules/product_detail/shop_detail_view/shop_detail_controller.dart';
+import '../../modules/product_detail/product_detail_controller.dart';
 import '../../modules/request_my_data/view/request_my_data.dart';
 import '../../modules/return/returnRequest/view/return_request_screen.dart';
 import '../../modules/return/returnRequestDetail/view/return_request_detail_screen.dart';
@@ -247,6 +249,76 @@ class AppRoutes {
       brandsListView,
       parameters: {"collectionId": collectionId ?? "",'title':title??''},
     );
+  }
+
+  static Future<void> goToProductDetailPage(String productId, String productName) async {
+    final context = Get.context;
+    if (context != null) {
+      AppLoader.showLoaderStatic(context);
+    }
+    
+    bool isLoaded = false;
+    final uniqueTag = "${productId}_${DateTime.now().millisecondsSinceEpoch}";
+    try {
+      // Pre-create the controller
+      final controller = Get.put(ProductDetailController(), tag: uniqueTag);
+      
+      // If it hasn't loaded data yet, load it manually
+      if (controller.productSections.isEmpty) {
+        controller.productId = productId;
+        controller.productName.value = productName;
+        await controller.loadProductDetail();
+      }
+      isLoaded = true;
+    } finally {
+      final currentContext = Get.context;
+      if (currentContext != null) {
+        AppLoader.hideLoaderStatic(currentContext);
+      }
+    }
+    
+    if (isLoaded) {
+      Get.toNamed(
+        productDetail,
+        arguments: {
+          "productId": productId, 
+          "productName": productName,
+          "controllerTag": uniqueTag
+        },
+      );
+    }
+  }
+
+  static Future<void> goToShopDetailPage(String shopId, String shopUserId) async {
+    final context = Get.context;
+    if (context != null) {
+      AppLoader.showLoaderStatic(context);
+    }
+    bool isLoaded = false;
+    try {
+      final controllerTag = shopId;
+      final controller = Get.put(ShopDetailController(), tag: controllerTag);
+      
+      if (controller.shopDetail.value == null) {
+        controller.shopId = shopId;
+        controller.shopUserId = shopUserId;
+        controller.baseParams = {"shop_id": shopId, "page": 1};
+        await controller.loadShopDetail();
+      }
+      isLoaded = true;
+    } finally {
+      final currentContext = Get.context;
+      if (currentContext != null) {
+        AppLoader.hideLoaderStatic(currentContext);
+      }
+    }
+    
+    if (isLoaded) {
+      Get.toNamed(
+        shopDetailView,
+        arguments: {"shopId": shopId, "shopUserId": shopUserId},
+      );
+    }
   }
 
   static void goToShopListViewPage({String? collectionId}) {
