@@ -138,8 +138,14 @@ class _ProductDetailViewState extends State<ProductDetailView> with SingleTicker
         scrolledUnderElevation: 0,
         elevation: 0,
         leading: IconButton(
-          onPressed: () => Get.back(),
-          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            if (Navigator.canPop(context)) {
+              Navigator.pop(context);
+            } else {
+              Get.offAllNamed(AppRoutes.bottomNavigation);
+            }
+          },
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
         ),
 
         title: Obx(() {
@@ -169,7 +175,7 @@ class _ProductDetailViewState extends State<ProductDetailView> with SingleTicker
                 debugPrint(Get.previousRoute);
                 if ((Get.previousRoute == AppRoutes.bottomNavigation) && (Get.find<BottomNavController>().currentIndex.value == 3)) {
                   debugPrint('this is if block');
-                  Get.back();
+                  Navigator.pop(context);
                 } else {
                   debugPrint('this is else block');
                   controller.goToMainCartPage();
