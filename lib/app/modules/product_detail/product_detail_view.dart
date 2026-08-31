@@ -800,9 +800,13 @@ class _ProductDetailViewState extends State<ProductDetailView> with SingleTicker
                                 );
                               }
                               else {
+                                int stockValue = ((value?.stock ?? "0").toIntSafe());
+                                Color circleColor = value?.optionvalueColorCode?.hexToColor ?? Colors.transparent;
+                                Color lineColor = circleColor.computeLuminance() > 0.5 ? Colors.black38 : Colors.white;
+                                
                                 return GestureDetector(
                                   onTap: () async {
-                                    if ((value?.isSelected ?? "0") == "0") {
+                                    if (stockValue > 0 && (value?.isSelected ?? "0") == "0") {
                                       debugPrint("🟢 Selected option: ${value?.optionvalueName}");
                                       await controller.updateProductOption(value?.selprodId ?? "");
                                     }
@@ -811,40 +815,58 @@ class _ProductDetailViewState extends State<ProductDetailView> with SingleTicker
                                     scale: value?.isSelected == "1" ? 1.15 : 1.0,
                                     duration: const Duration(milliseconds: 200),
                                     curve: Curves.easeOut,
-                                    child: Container(
-                                      margin: const EdgeInsets.all(0),
-                                      width: 56,
-                                      height: 56,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        border: Border.all(
-                                          color: value?.isSelected == "1"
-                                              ? Colors.black
-                                              : Colors.grey.shade400,
-                                          width: value?.isSelected == "1" ? 2.5 : 1,
-                                        ),
-                                      ),
-                                      child: Center(
-                                        child: Container(
-                                          width: value?.isSelected == "1" ? 26 : 46,
-                                          height: value?.isSelected == "1" ? 26 : 46,
+                                    child: Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        Container(
+                                          margin: const EdgeInsets.all(0),
+                                          width: 56,
+                                          height: 56,
                                           decoration: BoxDecoration(
                                             shape: BoxShape.circle,
-                                            color: value?.optionvalueColorCode?.hexToColor ?? Colors.transparent,
-                                            border: Border.all(color: Colors.white, width: 1),
-                                            boxShadow: value?.isSelected == "1"
-                                                ? [
-                                              BoxShadow(
-                                                color: Colors.black.withValues(alpha: 0.2),
-                                                blurRadius: 6,
-                                                spreadRadius: 1,
-                                                offset: const Offset(0, 2),
+                                            border: Border.all(
+                                              color: value?.isSelected == "1"
+                                                  ? Colors.black
+                                                  : Colors.grey.shade400,
+                                              width: value?.isSelected == "1" ? 2.5 : 1,
+                                            ),
+                                          ),
+                                          child: Center(
+                                            child: Container(
+                                              width: value?.isSelected == "1" ? 26 : 46,
+                                              height: value?.isSelected == "1" ? 26 : 46,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: circleColor,
+                                                border: Border.all(color: Colors.white, width: 1),
+                                                boxShadow: value?.isSelected == "1"
+                                                    ? [
+                                                  BoxShadow(
+                                                    color: Colors.black.withValues(alpha: 0.2),
+                                                    blurRadius: 6,
+                                                    spreadRadius: 1,
+                                                    offset: const Offset(0, 2),
+                                                  ),
+                                                ]
+                                                    : [],
                                               ),
-                                            ]
-                                                : [],
+                                              clipBehavior: Clip.hardEdge,
+                                              child: stockValue == 0
+                                                  ? Center(
+                                                child: Transform.rotate(
+                                                  angle: -0.785398,
+                                                  child: Container(
+                                                    width: 60,
+                                                    height: 1.5,
+                                                    color: lineColor,
+                                                  ),
+                                                ),
+                                              )
+                                                  : null,
+                                            ),
                                           ),
                                         ),
-                                      ),
+                                      ],
                                     ),
                                   ),
                                 );
