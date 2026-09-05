@@ -329,61 +329,67 @@ class _HomeViewState extends State<HomeView> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
+                          const Expanded(child: SizedBox()),
                           Image.asset(
                             key: const Key('home_tajer_logo'),
                             "assets/icons/ic_eid_icon.png",
                             height: 38,
                           ),
-                          GestureDetector(
-                            onTap: () async {
-                              final result = await showDialog(
-                                context: context,
-                                builder: (_) => CountrySelectDialog(
-                                  selectedCountryName: PrefStore().loadString(
-                                    AppConstants.countryName,
-                                  ),
-                                ),
-                              );
-                              if (result != null) {
-                                final selected = result as Result;
-                                controller.setCountry(
-                                  "${selected.id ?? 0}",
-                                  selected.text ?? "Qatar",
-                                );
-                              }
-                            },
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                SvgPicture.asset(
-                                  "assets/icons/ic_location_new.svg",
-                                  height: 18,
-                                  colorFilter: ColorFilter.mode(
-                                    ThemeData.estimateBrightnessForColor(
-                                              appBarColor,
-                                            ) ==
-                                            Brightness.dark
-                                        ? Colors.white
-                                        : Colors.black,
-                                    BlendMode.srcIn,
-                                  ),
-                                ),
-                                const SizedBox(width: 4),
-                                Text(
-                                  "${(PrefStore().loadString(AppConstants.countryName) ?? "").isEmpty ? "Qatar" : PrefStore().loadString(AppConstants.countryName)}",
-                                  style: TextStyle(
-                                    color:
+                          Expanded(
+                            child: Align(
+                              alignment: Alignment.centerRight,
+                              child: GestureDetector(
+                                onTap: () async {
+                                  final result = await showDialog(
+                                    context: context,
+                                    builder: (_) => CountrySelectDialog(
+                                      selectedCountryName: PrefStore().loadString(
+                                        AppConstants.countryName,
+                                      ),
+                                    ),
+                                  );
+                                  if (result != null) {
+                                    final selected = result as Result;
+                                    controller.setCountry(
+                                      "${selected.id ?? 0}",
+                                      selected.text ?? "Qatar",
+                                    );
+                                  }
+                                },
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    SvgPicture.asset(
+                                      "assets/icons/ic_location_new.svg",
+                                      height: 18,
+                                      colorFilter: ColorFilter.mode(
                                         ThemeData.estimateBrightnessForColor(
-                                              appBarColor,
-                                            ) ==
-                                            Brightness.dark
-                                        ? Colors.white
-                                        : Colors.black,
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 14,
-                                  ),
+                                                  appBarColor,
+                                                ) ==
+                                                Brightness.dark
+                                            ? Colors.white
+                                            : Colors.black,
+                                        BlendMode.srcIn,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      "${(PrefStore().loadString(AppConstants.countryName) ?? "").isEmpty ? "Qatar" : PrefStore().loadString(AppConstants.countryName)}",
+                                      style: TextStyle(
+                                        color:
+                                            ThemeData.estimateBrightnessForColor(
+                                                  appBarColor,
+                                                ) ==
+                                                Brightness.dark
+                                            ? Colors.white
+                                            : Colors.black,
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ],
+                              ),
                             ),
                           ),
                         ],
