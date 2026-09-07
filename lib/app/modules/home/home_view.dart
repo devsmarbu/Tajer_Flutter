@@ -491,16 +491,16 @@ class _HomeViewState extends State<HomeView> {
                         ...List.generate(controller.posts.length, (index) {
                           return Column(
                             children: [
-                              (controller.posts[index].layoutType !=
-                                      CollectionLayoutType.smallBrandLayoutNew)
-                                  ? Container(
-                                      height: 16,
-                                      color: AppColors.colorBackgroundHomeNew,
-                                    )
-                                  : Container(
-                                      height: 16,
-                                      color: AppColors.white,
-                                    ),
+                              // (controller.posts[index].layoutType !=
+                              //         CollectionLayoutType.smallBrandLayoutNew)
+                              //     ? Container(
+                              //         height: 16,
+                              //         color: AppColors.colorBackgroundHomeNew,
+                              //       )
+                              //     : Container(
+                              //         height: 16,
+                              //         color: AppColors.white,
+                              //       ),
 
                               _buildSection(controller.posts[index], index),
                             ],
