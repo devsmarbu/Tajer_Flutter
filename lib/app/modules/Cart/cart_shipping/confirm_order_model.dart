@@ -3,18 +3,21 @@ class ConfirmOrderModel {
   final String? responseCode;
   final String? msg;
   final ConfirmModelData? data;
+  final String? isCouponInvalid;
 
   ConfirmOrderModel({
     this.status,
     this.responseCode,
     this.msg,
     this.data,
+    this.isCouponInvalid
   });
 
   factory ConfirmOrderModel.fromJson(Map<String, dynamic> json) => ConfirmOrderModel(
     status: json["status"],
     responseCode: json["responseCode"],
     msg: json["msg"],
+    isCouponInvalid: json["isCouponInvalid"],
     data: json["data"] == null ? null : ConfirmModelData.fromJson(json["data"]),
   );
 
@@ -22,6 +25,7 @@ class ConfirmOrderModel {
     "status": status,
     "responseCode": responseCode,
     "msg": msg,
+    "isCouponInvalid": isCouponInvalid,
     "data": data?.toJson(),
   };
 }

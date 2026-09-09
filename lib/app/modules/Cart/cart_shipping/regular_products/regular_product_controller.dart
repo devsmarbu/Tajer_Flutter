@@ -514,12 +514,25 @@ class RegularProductController extends GetxController with AppLoader {
           debugPrint("sfbsfbsbfsdfvs......jsbfbsfs");
         }
       } else {
-        isLoading(false);
-        showAlertMessage(
-          Get.context!,
-          title: "Error",
-          message: response?.msg ?? "",
-        );
+        if (response?.isCouponInvalid == "1") {
+          isLoading(false);
+          showAlertMessage(
+            Get.context!,
+            title: "Error",
+            message: response?.msg ?? "",
+            onOk: () {
+              debugPrint('calling api');
+              getpaymentSummary();
+            },
+          );
+        } else {
+          isLoading(false);
+          showAlertMessage(
+            Get.context!,
+            title: "Error",
+            message: response?.msg ?? "",
+          );
+        }
       }
     } catch (e) {
       isLoading(false);
