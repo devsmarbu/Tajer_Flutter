@@ -41,7 +41,7 @@ class RegularProductController extends GetxController with AppLoader {
   var cartOrderId = "";
   var usedRewardPoints = "0";
   var isDeliverAllTogether = false.obs;
-  var appliedCouponCode = "";
+  RxString appliedCouponCode = "".obs;
   var pluginId = "";
   PaymentMethod? selectedPaymentMethod;
   SelectedPlugin? selectedPlugin;
@@ -382,7 +382,8 @@ class RegularProductController extends GetxController with AppLoader {
       );
       if (response?.status != "0") {
         isCouponLoading(false);
-        appliedCouponCode = couponCode;
+        appliedCouponCode.value = couponCode;
+        couponErrorMessage.value = "";
         getpaymentSummary();
         debugPrint("✅ $response");
       } else {
@@ -408,7 +409,8 @@ class RegularProductController extends GetxController with AppLoader {
       );
       if (response?.status != "0") {
         // isLoading(false);
-        appliedCouponCode = "";
+        appliedCouponCode.value = "";
+        couponErrorMessage.value = "";
         getpaymentSummary();
         debugPrint("✅ $response");
       } else {
@@ -522,7 +524,11 @@ class RegularProductController extends GetxController with AppLoader {
             message: response?.msg ?? "",
             onOk: () {
               debugPrint('calling api');
-              getpaymentSummary();
+              resetVariables();
+              getCartListing(
+                isDeliverAllTogether.value == true ? "1" : "0",
+                cartTypee,
+              );
             },
           );
         } else {
@@ -652,6 +658,7 @@ class RegularProductController extends GetxController with AppLoader {
     isWalletLoading.value = false;
     couponErrorMessage.value = "";
     isCouponLoading.value = false;
+    appliedCouponCode.value = "";
   }
 
 

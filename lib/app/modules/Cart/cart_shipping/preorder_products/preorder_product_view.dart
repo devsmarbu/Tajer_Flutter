@@ -60,14 +60,7 @@ class _PreOrderCartPageState extends State<PreOrderCartPage> {
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Obx(() {
-        if (controller.isLoading.value) {
-          return SizedBox(
-            height: Get.height,
-            child: const Center(
-              child: CircularProgressIndicator(color: Colors.black),
-            ),
-          );
-        }
+        Widget buildContent() {
         if ((controller.cartListingModel.value?.status == "0") ||
             (controller.cartListingModel.value == null)) {
           if (controller.groupedCombo.isEmpty) {
@@ -106,6 +99,7 @@ class _PreOrderCartPageState extends State<PreOrderCartPage> {
             }
           }
         }
+
         return SingleChildScrollView(
           controller: _scrollController, // Attached here
           child: Column(
@@ -301,20 +295,25 @@ class _PreOrderCartPageState extends State<PreOrderCartPage> {
 
               SizedBox(height: 10),
               if (controller.paymentSummaryModel.value?.data != null)
-                SizedBox(
-                  height: 120,
-                  child: CouponInput(
-                    couponCode: controller.appliedCouponCode,
-                    errorMessage: controller.couponErrorMessage.value,
-                    onTextChanged: () {
-                      controller.couponErrorMessage.value = "";
-                    },
-                    onApplyingCoupon: (coupon) {
-                      controller.applyCouponCode(coupon, "2");
-                    },
-                    onRemovingCoupon: () {
-                      controller.removeCoupon("2");
-                    }, isLoading: controller.isCouponLoading.value,
+                Obx(
+                  () => AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    height: controller.couponErrorMessage.value.isNotEmpty
+                        ? 130
+                        : 110,
+                    child: CouponInput(
+                      couponCode: controller.appliedCouponCode.value,
+                      errorMessage: controller.couponErrorMessage.value,
+                      onTextChanged: () {
+                        controller.couponErrorMessage.value = "";
+                      },
+                      onApplyingCoupon: (coupon) {
+                        controller.applyCouponCode(coupon, "2");
+                      },
+                      onRemovingCoupon: () {
+                        controller.removeCoupon("2");
+                      }, isLoading: controller.isCouponLoading.value,
+                    ),
                   ),
                 ),
               SizedBox(height: 10),
@@ -406,6 +405,19 @@ class _PreOrderCartPageState extends State<PreOrderCartPage> {
               PlatformInfo.isIOS26OrHigher() ? SizedBox(height: 90) : SizedBox.shrink()
             ],
           ),
+        );
+        }
+        return Stack(
+          children: [
+            buildContent(),
+            if (controller.isLoading.value)
+              Container(
+                color: Colors.black.withOpacity(0.1),
+                child: const Center(
+                  child: CircularProgressIndicator(color: Colors.black),
+                ),
+              ),
+          ],
         );
       }),
     );

@@ -66,57 +66,48 @@ class _CartPageState extends State<CartPage> with AppLoader {
        key: Key("regular_product_view"),
       backgroundColor: Colors.transparent,
       body: Obx(() {
-        if (controller.isLoading.value) {
-          return SizedBox(
-             key: Key("size_chart_loading_view"),
-            height: Get.height,
-            child: const Center(
-              child: CircularProgressIndicator(color: Colors.black),
-            ),
-          );
-        }
-
-        if ((controller.cartListingModel.value?.status == "0") ||
-            (controller.cartListingModel.value == null)) {
-          return Center(
-            child: EmptyCartWidget(
-               key: Key("empty_cart_widget"),
-              imagePath: 'assets/images/shopping_cart.png',
-              // message: AppStrings.appYourCartIsEmpty.toUpperCase().tr,
-              message: AppStrings.appYourCartIsEmpty.tr,
-            ),
-          );
-        }
-
-        if (isGuestUser) {
-          if (controller
-                  .cartListingModel
-                  .value
-                  ?.data
-                  ?.products
-                  ?.available
-                  ?.isEmpty ==
-              true) {
+        Widget buildContent() {
+          if ((controller.cartListingModel.value?.status == "0") ||
+              (controller.cartListingModel.value == null)) {
             return Center(
               child: EmptyCartWidget(
-                 key: Key("empty_cart_widget2"),
+                 key: Key("empty_cart_widget"),
                 imagePath: 'assets/images/shopping_cart.png',
+                // message: AppStrings.appYourCartIsEmpty.toUpperCase().tr,
                 message: AppStrings.appYourCartIsEmpty.tr,
               ),
             );
           }
-        } else {
-          if (controller.groupedCombo.isEmpty) {
-            return Center(
-              child: EmptyCartWidget(
-                 key: Key("empty_cart_widget3"),
-                imagePath: 'assets/images/shopping_cart.png',
-                message: AppStrings.appYourCartIsEmpty.tr,
-              ),
-            );
+
+          if (isGuestUser) {
+            if (controller
+                    .cartListingModel
+                    .value
+                    ?.data
+                    ?.products
+                    ?.available
+                    ?.isEmpty ==
+                true) {
+              return Center(
+                child: EmptyCartWidget(
+                   key: Key("empty_cart_widget2"),
+                  imagePath: 'assets/images/shopping_cart.png',
+                  message: AppStrings.appYourCartIsEmpty.tr,
+                ),
+              );
+            }
+          } else {
+            if (controller.groupedCombo.isEmpty) {
+              return Center(
+                child: EmptyCartWidget(
+                   key: Key("empty_cart_widget3"),
+                  imagePath: 'assets/images/shopping_cart.png',
+                  message: AppStrings.appYourCartIsEmpty.tr,
+                ),
+              );
+            }
           }
-        }
-        return SingleChildScrollView(
+          return SingleChildScrollView(
            key: Key("single_child_scroll_view"),
           controller: _scrollController, // Attached here
           child: Column(
@@ -337,7 +328,7 @@ class _CartPageState extends State<CartPage> with AppLoader {
                         : 110,
 
                     child: CouponInput(
-                      couponCode: controller.appliedCouponCode,
+                      couponCode: controller.appliedCouponCode.value,
                       errorMessage: controller.couponErrorMessage.value,
                       onTextChanged: () {
                         controller.couponErrorMessage.value = "";
@@ -459,6 +450,19 @@ class _CartPageState extends State<CartPage> with AppLoader {
                   : SizedBox.shrink(),
             ],
           ),
+        );
+        }
+        return Stack(
+          children: [
+            buildContent(),
+            if (controller.isLoading.value)
+              Container(
+                color: Colors.black.withOpacity(0.1),
+                child: const Center(
+                  child: CircularProgressIndicator(color: Colors.black),
+                ),
+              ),
+          ],
         );
       }),
     );
