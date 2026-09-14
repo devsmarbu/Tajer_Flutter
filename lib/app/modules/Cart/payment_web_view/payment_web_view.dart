@@ -35,6 +35,11 @@ class _PaymentWebProcessPageState extends State<PaymentWebProcessPage> {
   final isLoading = false.obs;
   String tempToken = "";
 
+  /// Guard flag — ensures Get.back() is only called once even if the user
+  /// taps the back button rapidly or both system-back and the AppBar button
+  /// fire simultaneously.
+  bool _isClosing = false;
+
   @override
   void initState() {
     super.initState();
@@ -160,46 +165,53 @@ class _PaymentWebProcessPageState extends State<PaymentWebProcessPage> {
     }
   }
 
-  void _handleSuccess(String url) {
+  /// Single exit point for all success/failure/cancel/back paths.
+  /// The [_isClosing] guard prevents double-pop if the user taps quickly.
+  void _exitPage(Map<String, dynamic> result) {
+    if (_isClosing) return;
+    _isClosing = true;
     _restoreChatbot();
-    Get.back(
-      result: {
-        "status": "success",
-        "orderId": widget.orderId,
-        "isGift": widget.isFromGift,
-      },
-    );
+    Navigator.of(context).pop(result);
+  }
+
+  void _handleSuccess(String url) {
+    _exitPage({
+      "status": "success",
+      "orderId": widget.orderId,
+      "isGift": widget.isFromGift,
+    });
   }
 
   void _handleFailure() {
-    _restoreChatbot();
-    Get.back(result: {"status": "failed", "orderId": widget.orderId});
+    _exitPage({"status": "failed", "orderId": widget.orderId});
   }
 
   void _handleCancel() {
-    _restoreChatbot();
-    Get.back(result: {"status": "cancel", "orderId": widget.orderId});
+    _exitPage({"status": "cancel", "orderId": widget.orderId});
   }
 
+  /// Called by the AppBar back button and the system back gesture.
+  /// Always exits the payment page — does NOT navigate within WebView history.
+  /// Payment redirects (3DS, bank pages, etc.) should not be navigated back
+  /// through, so we always treat back as "user cancelled / went back".
   void _onBackPressed() {
-    _restoreChatbot();
-    Get.back(
-      result: {
-        "status": "back",
-        "orderId": widget.orderId,
-        "isGift": widget.isFromGift,
-        "message": "User pressed back",
-      },
-    );
+    _exitPage({
+      "status": "back",
+      "orderId": widget.orderId,
+      "isGift": widget.isFromGift,
+      "message": "User pressed back",
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: false, // prevent default pop
-      onPopInvoked: (didPop) {
+      canPop: false,
+      onPopInvokedWithResult: (bool didPop, dynamic result) {
+        // didPop is always false here because canPop: false.
+        // We handle the pop manually via _onBackPressed.
         if (!didPop) {
-          _onBackPressed(); // return params using Get.back()
+          _onBackPressed();
         }
       },
       child: Scaffold(
