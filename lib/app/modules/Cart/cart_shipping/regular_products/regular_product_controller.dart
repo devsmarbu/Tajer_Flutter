@@ -45,6 +45,8 @@ class RegularProductController extends GetxController with AppLoader {
   var pluginId = "";
   PaymentMethod? selectedPaymentMethod;
   SelectedPlugin? selectedPlugin;
+  RxList<PaymentMethod> paymentMethodsList = <PaymentMethod>[].obs;
+  RxInt selectedPaymentMethodIndex = 0.obs;
   String cartTypee = "5";
   String orderType = "1";
   String isUseWalletPayment = "1";
@@ -192,12 +194,22 @@ class RegularProductController extends GetxController with AppLoader {
         //   debugPrint("this is redeemed points$usedRewardPoints");
         // }
 
-        if (paymentSummaryModel.value?.data?.paymentMethods?.isNotEmpty ==
-            true) {
-          final selectedPlugin = paymentSummaryModel.value?.data?.paymentMethods
-              ?.firstWhereOrNull((m) => m.pluginId == "56");
-          cardTokens = selectedPlugin?.tokens;
-          selectedPaymentMethod = selectedPlugin;
+        final methods =
+            paymentSummaryModel.value?.data?.paymentMethods ?? [];
+        if (methods.isNotEmpty) {
+          paymentMethodsList.assignAll(methods);
+          // Keep currently selected index if still valid, else default to 0
+          if (selectedPaymentMethodIndex.value >= methods.length) {
+            selectedPaymentMethodIndex.value = 0;
+          }
+          final currentMethod =
+              methods[selectedPaymentMethodIndex.value];
+          cardTokens = currentMethod.tokens;
+          selectedPaymentMethod = currentMethod;
+        } else {
+          paymentMethodsList.clear();
+          cardTokens = null;
+          selectedPaymentMethod = null;
         }
         orderType = paymentSummaryModel.value?.data?.orderType ?? "1";
         // isLoading(false);
@@ -659,7 +671,13 @@ class RegularProductController extends GetxController with AppLoader {
     couponErrorMessage.value = "";
     isCouponLoading.value = false;
     appliedCouponCode.value = "";
+    paymentMethodsList.clear();
+    selectedPaymentMethodIndex.value = 0;
+    selectedPaymentMethod = null;
+    selectedPlugin = null;
+    cardTokens = null;
   }
+
 
 
 }

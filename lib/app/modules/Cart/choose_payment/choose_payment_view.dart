@@ -40,9 +40,8 @@ class PaymentSelectionPage extends StatefulWidget {
   _PaymentSelectionPageState createState() => _PaymentSelectionPageState();
 }
 
-class _PaymentSelectionPageState extends State<PaymentSelectionPage> with AppLoader{
-
-
+class _PaymentSelectionPageState extends State<PaymentSelectionPage>
+    with AppLoader {
   RxString selectedCardToken = "".obs;
   var selectedCardIndex = 0;
 
@@ -60,58 +59,88 @@ class _PaymentSelectionPageState extends State<PaymentSelectionPage> with AppLoa
 
     final wallet =
         widget.paymentSummaryModel?.data?.userWalletBalance.toIntSafe() ?? 0;
-
     final total =
         widget.paymentSummaryModel?.data?.orderNetAmount.toIntSafe() ?? 0;
 
-    /// ✅ CASE 1: Wallet has some balance
     if (wallet > 0) {
       controller.useWallet.value = true;
-
-      /// If wallet is NOT sufficient → allow both
       if (wallet < total) {
-        controller.useCard.value = false; // default only wallet selected
-        controller.selectedMethod = "both"; // for internal tracking
+        controller.useCard.value = false;
+        controller.selectedMethod = "both";
       } else {
-        /// Wallet sufficient → only wallet
         controller.useCard.value = false;
         controller.selectedMethod = "WALLET";
       }
     } else {
-      /// No wallet → fallback to card
       controller.useWallet.value = false;
-     // controller.useCard.value = true;
-     // selectedMethod = "card";
     }
 
-    // selectedMethod =
-    // widget.paymentSummaryModel?.data?.cartSummary?.cartWalletSelected == "1"
-    //     ? AppStrings.appWallet.toUpperCase().tr
-    //     : "card";
-
-    /// Auto-select first card ONLY if tokens exist
     if (controller.selectedMethod == "card") {
       if (widget.cards.isNotEmpty) {
         selectedCardToken.value = widget.cards.first.token ?? "";
         selectedCardIndex = 0;
-        debugPrint("Auto-selected saved card: ${selectedCardToken.value}");
       } else {
-        /// NO TOKENS → Do NOT pre-select other card
         selectedCardToken.value = "";
-        debugPrint("No saved cards available.");
       }
     }
-
-    debugPrint('this is selected method: $controller.selectedMethod');
-
-    debugPrint("this is the wallet balance");
-    debugPrint((widget.paymentSummaryModel?.data?.displayUserWalletBalance ?? "0"));
   }
+
+  void _selectPaymentMethod(int methodIndex, PaymentMethod method) {
+    setState(() {
+      controller.selectedPaymentMethodIndex.value = methodIndex;
+      controller.selectedPaymentMethod = method;
+      controller.cardTokens = method.tokens;
+      controller.useCard.value = true;
+
+      if (controller.isWalletSufficient) {
+        controller.useWallet.value = false;
+        controller.selectedMethod = "card";
+      } else {
+        controller.selectedMethod =
+            controller.useWallet.value ? "both" : "card";
+      }
+
+      // Auto-select first token if available
+      final tokens = method.tokens ?? [];
+      if (tokens.isNotEmpty) {
+        selectedCardToken.value = tokens.first.token ?? "";
+        selectedCardIndex = 0;
+        final plugin = SelectedPlugin(
+          pluginId: method.pluginId ?? "",
+          pluginCode: method.pluginCode ?? "",
+          token: tokens.first,
+        );
+        controller.selectedPlugin = plugin;
+        widget.onRadioSelected?.call(tokens.length, plugin);
+      } else if (method.pluginId == "56") {
+        // SkipCash with no saved tokens → pre-select "Other Card"
+        selectedCardToken.value = otherCardToken.token ?? "";
+        final plugin = SelectedPlugin(
+          pluginId: method.pluginId ?? "",
+          pluginCode: method.pluginCode ?? "",
+          token: otherCardToken,
+        );
+        controller.selectedPlugin = plugin;
+        widget.onRadioSelected?.call(0, plugin);
+      } else {
+        // Non-card method with no tokens → just set plugin, no token selection needed
+        selectedCardToken.value = "";
+        final plugin = SelectedPlugin(
+          pluginId: method.pluginId ?? "",
+          pluginCode: method.pluginCode ?? "",
+          token: Token(token: "", cardNumber: "", cardExpiry: ""),
+        );
+        controller.selectedPlugin = plugin;
+        widget.onRadioSelected?.call(0, plugin);
+      }
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      key: Key("choose_payment_view"),
+      key: const Key("choose_payment_view"),
       children: [
         /// ——— HEADER ———
         Container(
@@ -127,7 +156,7 @@ class _PaymentSelectionPageState extends State<PaymentSelectionPage> with AppLoa
           ),
           child: Text(
             AppStrings.appChoosePaymentMethod.toUpperCase().tr,
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.white,
               fontFamily: "Nunito",
               fontWeight: FontWeight.bold,
@@ -153,7 +182,7 @@ class _PaymentSelectionPageState extends State<PaymentSelectionPage> with AppLoa
 
               /// ——— WALLET ———
               if ((widget.paymentSummaryModel?.data?.userWalletBalance ?? "0")
-                  .toIntSafe() >
+                      .toIntSafe() >
                   0)
                 Row(
                   children: [
@@ -173,7 +202,7 @@ class _PaymentSelectionPageState extends State<PaymentSelectionPage> with AppLoa
                         Text(
                           "${AppStrings.appAvailableBalance.toUpperCase().tr}  ${widget.paymentSummaryModel?.data?.displayUserWalletBalance ?? ""}",
                           style:
-                          TextStyle(fontSize: 12, color: Colors.grey[700]),
+                              TextStyle(fontSize: 12, color: Colors.grey[700]),
                         ),
                       ],
                     ),
@@ -185,227 +214,250 @@ class _PaymentSelectionPageState extends State<PaymentSelectionPage> with AppLoa
                         if (controller.isWalletLoading.value) return;
 
                         controller.isWalletLoading.value = true;
-
-                        showLoader(context); // ✅ SHOW APP LOADER
+                        showLoader(context);
 
                         setState(() {
-                          controller.useWallet.value = !(controller.useWallet.value);
+                          controller.useWallet.value =
+                              !(controller.useWallet.value);
 
                           if (controller.isWalletSufficient) {
                             controller.useCard.value = false;
                             controller.selectedMethod = "WALLET";
                           } else {
                             controller.selectedMethod =
-                            controller.useWallet.value ? "both" : "card";
+                                controller.useWallet.value ? "both" : "card";
                           }
                         });
 
                         try {
-                          await widget.walletMethodSelected(); // API call
+                          await widget.walletMethodSelected();
                         } catch (e) {
                           debugPrint("Wallet API error: $e");
                         } finally {
                           controller.isWalletLoading.value = false;
-
-                          hideLoader(context); // ✅ HIDE APP LOADER
+                          hideLoader(context);
                         }
                       },
-                    )
+                    ),
                   ],
                 ),
 
               const SizedBox(height: 12),
 
-              /// ——— CREDIT/DEBIT CARD ———
-              Row(
-                children: [
-                  Radio<String>(
-                    activeColor: Colors.black,
-                    value: "card",
-                    groupValue: controller.useCard.value ? "card" : null,
-                    onChanged: (value) {
+              /// ——— DYNAMIC PAYMENT METHODS ———
+              Obx(() {
+                final methods = controller.paymentMethodsList;
 
-                      setState(() {
-                        controller.selectedMethod = "card";
-                        controller.useCard.value = true;
+                if (methods.isEmpty) {
+                  // Fallback: no payment methods from API
+                  return const SizedBox.shrink();
+                }
 
-                        if (controller.isWalletSufficient) {
-                          /// Wallet alone is enough → disable wallet toggle
-                          controller.useWallet.value = false;
-                        } else {
-                          /// Partial wallet → allow both
-                          if (controller.useWallet.value) {
-                            controller.selectedMethod = "both";
-                          }
-                        }
-                      });
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: methods.asMap().entries.map((entry) {
+                    final methodIndex = entry.key;
+                    final method = entry.value;
+                    final isSelected =
+                        controller.selectedPaymentMethodIndex.value ==
+                            methodIndex;
+                    final tokens = method.tokens ?? [];
 
-                      if (widget.cards.isNotEmpty) {
-                        /// Saved cards exist
-                        selectedCardIndex = 0;
-                        selectedCardToken.value =
-                            widget.cards.first.token ?? "";
-
-                        final selectedPlugin = SelectedPlugin(
-                          pluginId:
-                          widget.selectedPaymentMethod?.pluginId ?? "",
-                          pluginCode:
-                          widget.selectedPaymentMethod?.pluginCode ?? "",
-                          token: widget.cards.first,
-                        );
-
-                        widget.onRadioSelected?.call(
-                            widget.cards.length, selectedPlugin);
-                      } else {
-                        /// NO saved cards → Implicitly Other Card
-                        selectedCardToken.value = otherCardToken.token ?? "";
-
-                        final selectedPlugin = SelectedPlugin(
-                          pluginId:
-                          widget.selectedPaymentMethod?.pluginId ?? "",
-                          pluginCode:
-                          widget.selectedPaymentMethod?.pluginCode ?? "",
-                          token: otherCardToken,
-                        );
-
-                        widget.onRadioSelected?.call(
-                            widget.cards.length, selectedPlugin);
-                      }
-
-                    },
-                  ),
-                  Expanded(
-                    child: Text(
-                      AppStrings.APP_CREDIT_DEBIT_CARD.tr,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                  Image.asset(
-                    // "assets/images/placeholder_image.png",
-                    "assets/images/credit-card.png",
-                    height: 28,
-                  ),
-                  const SizedBox(width: 10),
-                ],
-              ),
-
-              const SizedBox(height: 20),
-
-              /// ——— CARD LIST (ONLY WHEN TOKENS EXIST) ———
-              if (controller.useCard.value && widget.cards.isNotEmpty)
-                ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: widget.cards.length + 1, // +1 = Other Card option
-                  itemBuilder: (context, index) {
-                    final isOtherCard = index == widget.cards.length;
-
-                    final card = isOtherCard
-                        ? Token(
-                      cardNumber:
-                      AppStrings.appOtherCard.toUpperCase().tr,
-                      cardExpiry: "",
-                    )
-                        : widget.cards[index];
-
-                    return Container(
-                      margin: const EdgeInsets.only(bottom: 10),
-                      padding: const EdgeInsets.fromLTRB(12, 0, 2, 0),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey.shade300),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Column(
-                              spacing: 10,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                if (card.cardExpiry?.isEmpty ?? true)
-                                  const SizedBox(height: 4),
-                                Text(
-                                  card.cardNumber ?? "",
-                                  style:
-                                  const TextStyle(fontWeight: FontWeight.bold),
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        /// Payment method row
+                        Row(
+                          children: [
+                            Radio<int>(
+                              activeColor: Colors.black,
+                              value: methodIndex,
+                              groupValue: controller.useCard.value
+                                  ? controller
+                                      .selectedPaymentMethodIndex.value
+                                  : null,
+                              onChanged: (value) {
+                                _selectPaymentMethod(methodIndex, method);
+                              },
+                            ),
+                            Expanded(
+                              child: Text(
+                                method.pluginName ?? "",
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
                                 ),
-                                if (card.cardExpiry?.isNotEmpty ?? false)
-                                  Text(
-                                    "${AppStrings.appExpiry.toUpperCase().tr} : ${card.cardExpiry}",
-                                    style: const TextStyle(
-                                      fontFamily: "Nunito",
-                                    ),
+                              ),
+                            ),
+                            // Show plugin image if available, else fall back to card icon
+                            if (method.image != null &&
+                                method.image!.isNotEmpty)
+                              Image.network(
+                                method.image!,
+                                height: 28,
+                                errorBuilder: (_, __, ___) => Image.asset(
+                                  "assets/images/credit-card.png",
+                                  height: 28,
+                                ),
+                              )
+                            else
+                              Image.asset(
+                                "assets/images/credit-card.png",
+                                height: 28,
+                              ),
+                            const SizedBox(width: 10),
+                          ],
+                        ),
+
+                        /// Token list for the selected payment method
+                        if (isSelected && controller.useCard.value && tokens.isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                left: 8, right: 0, bottom: 8),
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              // "Other Card" appended only for SkipCash (pluginId 56)
+                              itemCount: method.pluginId == "56"
+                                  ? tokens.length + 1
+                                  : tokens.length,
+                              itemBuilder: (context, index) {
+                                final isOtherCard =
+                                    method.pluginId == "56" &&
+                                        index == tokens.length;
+                                final card = isOtherCard
+                                    ? Token(
+                                        cardNumber: AppStrings.appOtherCard
+                                            .toUpperCase()
+                                            .tr,
+                                        cardExpiry: "",
+                                      )
+                                    : tokens[index];
+
+                                return Container(
+                                  margin: const EdgeInsets.only(bottom: 10),
+                                  padding: const EdgeInsets.fromLTRB(
+                                      12, 0, 2, 0),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: Colors.grey.shade300),
+                                    borderRadius: BorderRadius.circular(8),
                                   ),
-                              ],
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: Column(
+                                          spacing: 10,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            if (card.cardExpiry?.isEmpty ??
+                                                true)
+                                              const SizedBox(height: 4),
+                                            Text(
+                                              card.cardNumber ?? "",
+                                              style: const TextStyle(
+                                                  fontWeight:
+                                                      FontWeight.bold),
+                                            ),
+                                            if (card.cardExpiry?.isNotEmpty ??
+                                                false)
+                                              Text(
+                                                "${AppStrings.appExpiry.toUpperCase().tr} : ${card.cardExpiry}",
+                                                style: const TextStyle(
+                                                    fontFamily: "Nunito"),
+                                              ),
+                                          ],
+                                        ),
+                                      ),
+                                      Column(
+                                        children: [
+                                          Obx(() => Radio<String>(
+                                                value: card.token ??
+                                                    (isOtherCard
+                                                        ? otherCardToken
+                                                                .token ??
+                                                            ""
+                                                        : ""),
+                                                groupValue:
+                                                    selectedCardToken.value,
+                                                onChanged: (val) {
+                                                  selectedCardToken.value =
+                                                      val!;
+
+                                                  final plugin =
+                                                      SelectedPlugin(
+                                                    pluginId:
+                                                        method.pluginId ??
+                                                            "",
+                                                    pluginCode:
+                                                        method.pluginCode ??
+                                                            "",
+                                                    token: isOtherCard
+                                                        ? otherCardToken
+                                                        : card,
+                                                  );
+
+                                                  controller.selectedPlugin =
+                                                      plugin;
+
+                                                  widget.onRadioSelected
+                                                      ?.call(
+                                                    tokens.length,
+                                                    plugin,
+                                                  );
+                                                },
+                                              )),
+                                          if (card.cardExpiry?.isNotEmpty ??
+                                              false)
+                                            IconButton(
+                                              icon: Image.asset(
+                                                'assets/images/bin.png',
+                                                width: 20,
+                                                height: 20,
+                                              ),
+                                              onPressed: () {
+                                                final targetCard =
+                                                    tokens[index];
+                                                showAlertMessage(
+                                                  context,
+                                                  title: AppLabels.APP_NAME,
+                                                  message: AppStrings
+                                                      .appRemoveCartItemLabel
+                                                      .toUpperCase()
+                                                      .tr,
+                                                  onOk: () async {
+                                                    await controller
+                                                        .removeCardItem(
+                                                      "2",
+                                                      targetCard.token ?? "",
+                                                    );
+                                                  },
+                                                  onCancel: () {
+                                                    debugPrint("dismissed");
+                                                  },
+                                                );
+                                              },
+                                            ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
                             ),
                           ),
-                          Column(
-                            children: [
-                              Obx(() => Radio<String>(
-                                value: card.token ??
-                                    (isOtherCard
-                                        ? otherCardToken.token ?? ""
-                                        : ""),
-                                groupValue: selectedCardToken.value,
-                                onChanged: (val) {
-                                  selectedCardToken.value = val!;
 
-                                  final selectedPlugin = SelectedPlugin(
-                                    pluginId: widget
-                                        .selectedPaymentMethod
-                                        ?.pluginId ??
-                                        "",
-                                    pluginCode: widget
-                                        .selectedPaymentMethod
-                                        ?.pluginCode ??
-                                        "",
-                                    token:
-                                    isOtherCard ? otherCardToken : card,
-                                  );
 
-                                  widget.onRadioSelected?.call(
-                                    widget.cards.length,
-                                    selectedPlugin,
-                                  );
-                                },
-                              )),
-                              if (card.cardExpiry?.isNotEmpty ?? false)
-                                IconButton(
-                                  icon: Image.asset(
-                                    'assets/images/bin.png',
-                                    width: 20,
-                                    height: 20,
-                                  ),
-                                    onPressed: () {
-                                      final card = widget.cards[index];
-
-                                      showAlertMessage(
-                                        context,
-                                        title: AppLabels.APP_NAME,
-                                        message: AppStrings.appRemoveCartItemLabel.toUpperCase().tr, // reuse same text
-                                        onOk: () async {
-                                          await controller.removeCardItem(
-                                            "2",
-                                            card.token ?? "",
-                                          );
-
-                                        },
-                                        onCancel: () {
-                                          debugPrint("dismissed");
-                                        },
-                                      );
-                                    }
-                                ),
-                            ],
-                          ),
-                        ],
-                      ),
+                        if (methodIndex < methods.length - 1)
+                          Divider(color: Colors.grey[200]),
+                      ],
                     );
-                  },
-                ),
+                  }).toList(),
+                );
+              }),
+
+              const SizedBox(height: 8),
             ],
           ),
         ),
