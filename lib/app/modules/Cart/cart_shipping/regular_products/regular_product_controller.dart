@@ -273,28 +273,30 @@ class RegularProductController extends GetxController with AppLoader {
   }
 
   Future<void> saveForLaterProduct(String selProductId) async {
-    isLoading(true);
+    showLoader(Get.context!);
     try {
       final response = await _repository.saveForLaterProduct(
         fulfilmentType: "2",
         selproductId: selProductId,
       );
       if (response != null) {
-        getCartListing(
+        await getCartListing(
           isDeliverAllTogether.value == true ? "1" : "0",
           cartTypee,
         );
         print("✅ $response");
         // paymentSummaryModel.value = response;
+      } else {
+        hideLoader(Get.context!);
       }
     } catch (e) {
-      isLoading(false);
+      hideLoader(Get.context!);
       print("❌ cart listing fetch error: $e");
     }
   }
 
   Future<void> moveItemToCart(String selProductId, String quantity,{String isRemovingSaveForLater = ''}) async {
-    isLoading(true);
+    showLoader(Get.context!);
     try {
       final response = await _repository.moveItemToCart(
         selproductId: selProductId,
@@ -302,16 +304,16 @@ class RegularProductController extends GetxController with AppLoader {
       );
       if (response?.status == "1") {
         if (isRemovingSaveForLater == '') {
-          getCartListing(
-          isDeliverAllTogether.value == true ? "1" : "0",
-          cartTypee,
-        );
-        }else {
-          isLoading(false);
+          await getCartListing(
+            isDeliverAllTogether.value == true ? "1" : "0",
+            cartTypee,
+          );
+        } else {
+          hideLoader(Get.context!);
         }
         print("✅ $response");
       } else {
-        isLoading(false);
+        hideLoader(Get.context!);
         showAlertMessage(
           Get.context!,
           title: AppLabels.APP_NAME,
@@ -319,13 +321,12 @@ class RegularProductController extends GetxController with AppLoader {
         );
       }
     } catch (e) {
-      isLoading(false);
+      hideLoader(Get.context!);
       print("❌ cart listing fetch error: $e");
     }
   }
 
   Future<bool> productQuantityUpdate(String key, String quantity) async {
-    //isLoading(true);
     showLoader(Get.context!);
     try {
       final response = await _repository.updateCartQuantity(
@@ -340,7 +341,6 @@ class RegularProductController extends GetxController with AppLoader {
         print("✅ $response");
         return true;
       } else {
-        //isLoading(false);
         hideLoader(Get.context!);
         showAlertMessage(
           Get.context!,
@@ -350,7 +350,6 @@ class RegularProductController extends GetxController with AppLoader {
         return false;
       }
     } catch (e) {
-     // isLoading(false);
       hideLoader(Get.context!);
       print("❌ cart listing fetch error: $e");
       return false;
@@ -358,7 +357,7 @@ class RegularProductController extends GetxController with AppLoader {
   }
 
   Future<void> deleteCartItem(String key, String fulfilmentType,Available item) async {
-    isLoading(true);
+    showLoader(Get.context!);
     try {
       final response = await _repository.deleteCartItem(
         key: key,
@@ -366,13 +365,13 @@ class RegularProductController extends GetxController with AppLoader {
       );
       if (response?.status != "0") {
         AppAnalyticsService.removeFromCart(productId: key, name: item.productName??'', value: double.tryParse(item.total ?? '0')??0);
-        getCartListing(
+        await getCartListing(
           isDeliverAllTogether.value == true ? "1" : "0",
           cartTypee,
         );
         print("✅ $response");
       } else {
-        isLoading(false);
+        hideLoader(Get.context!);
         showAlertMessage(
           Get.context!,
           title: "Error",
@@ -380,7 +379,7 @@ class RegularProductController extends GetxController with AppLoader {
         );
       }
     } catch (e) {
-      isLoading(false);
+      hideLoader(Get.context!);
       print("❌ delete cart item fetch error: $e");
     }
   }
@@ -603,7 +602,7 @@ class RegularProductController extends GetxController with AppLoader {
     bool removeItem,
       Available item
   ) async {
-    isLoading(true);
+    showLoader(Get.context!);
     try {
       final response = await _repository.addRemoveItemSaveFromLater(
         fulfilmentType: fulfilmentType,
@@ -613,16 +612,16 @@ class RegularProductController extends GetxController with AppLoader {
       );
       if (response?.status != "0") {
         if (removeItem == true) {
-          deleteCartItem(key, fulfilmentType,item);
+          await deleteCartItem(key, fulfilmentType, item);
         } else {
-          getCartListing(
+          await getCartListing(
             isDeliverAllTogether.value == true ? "1" : "0",
             cartTypee,
           );
         }
         print("✅ $response");
       } else {
-        isLoading(false);
+        hideLoader(Get.context!);
         showAlertMessage(
           Get.context!,
           title: "Error",
@@ -630,7 +629,7 @@ class RegularProductController extends GetxController with AppLoader {
         );
       }
     } catch (e) {
-      isLoading(false);
+      hideLoader(Get.context!);
       print("❌ add/remove save for later cart item fetch error: $e");
     }
   }

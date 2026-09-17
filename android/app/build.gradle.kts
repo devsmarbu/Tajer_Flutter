@@ -28,7 +28,7 @@ android {
         applicationId = "com.tajershops.tajer"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
-        versionCode = 184
+        versionCode = 188
         versionName = "7.9.0"
     }
 
