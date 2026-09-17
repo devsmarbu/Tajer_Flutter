@@ -512,6 +512,24 @@ class RegularProductController extends GetxController with AppLoader {
             debugPrint(orderId);
             debugPrint("-------------------");
             if (status == "back") {
+              Get.snackbar(
+                "Error",
+                "Payment Cancelled",
+                snackPosition: SnackPosition.BOTTOM,
+              );
+
+              ScaffoldMessenger.of(Get.context!).showSnackBar(
+                SnackBar(
+                  content: Text('Payment Cancelled'),
+                  backgroundColor: Colors.black87,
+                  duration: const Duration(seconds: 2),
+                  behavior: SnackBarBehavior.floating,
+                  margin: const EdgeInsets.all(12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+              );
 
               resetVariables();
 
