@@ -70,7 +70,13 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => Get.back(),
+          onPressed: () {
+            if (Navigator.canPop(context)) {
+              Navigator.pop(context);
+            } else {
+              Get.back();
+            }
+          },
         ),
         actions: [
           Obx(() {

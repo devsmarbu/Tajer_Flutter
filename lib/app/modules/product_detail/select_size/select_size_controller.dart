@@ -118,23 +118,33 @@ class SelectSizeController extends GetxController {
                 .toString(),
             value: double.tryParse(price) ?? 0.0,
           );
-          // if (comeFromSizeChart == "1") {
           if (directAddedToCart == '0') {
-            Navigator.pop(Get.context!);
+            if (Get.isBottomSheetOpen == true || Get.isDialogOpen == true) {
+              Get.back();
+            } else {
+              Navigator.of(Get.context!).pop();
+            }
           }
-          // }
         }
-        Get.showSnackbar(
-          GetSnackBar(
-            message: response.msg ?? "",
-            backgroundColor: Colors.black87,
-            duration: Duration(seconds: 2),
-            snackPosition: SnackPosition.BOTTOM,
-            margin: EdgeInsets.all(12),
-            borderRadius: 8,
-            isDismissible: true,
-          ),
-        );
+        
+        final msg = (response.msg != null && response.msg!.isNotEmpty)
+            ? response.msg!
+            : (response.status == "1" ? "Added to cart successfully" : "Something went wrong");
+
+        if (Get.context != null) {
+          ScaffoldMessenger.of(Get.context!).showSnackBar(
+            SnackBar(
+              content: Text(msg),
+              backgroundColor: Colors.black87,
+              duration: const Duration(seconds: 2),
+              behavior: SnackBarBehavior.floating,
+              margin: const EdgeInsets.all(12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+          );
+        }
       }
     } catch (e) {
       print("❌ add to cart error: $e");

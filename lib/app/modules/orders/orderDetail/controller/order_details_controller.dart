@@ -150,17 +150,25 @@ class OrderDetailsController extends GetxController with OrderApiClient, AppLoad
 
         hideLoader(Get.context!);
         if(responseOrder.responseCode=="200"){
-          Get.showSnackbar(
-            GetSnackBar(
-              message: responseOrder.msg,
-              backgroundColor: Colors.black87,
-              duration: Duration(seconds: 2),
-              snackPosition: SnackPosition.BOTTOM,
-              margin: EdgeInsets.all(12),
-              borderRadius: 8,
-              isDismissible: true,
-            ),
-          );
+          debugPrint('sdfgh');
+          final msg = (responseOrder.msg != null && responseOrder.msg.isNotEmpty)
+              ? responseOrder.msg
+              : "Reordered successfully";
+
+          if (Get.context != null) {
+            ScaffoldMessenger.of(Get.context!).showSnackBar(
+              SnackBar(
+                content: Text(msg),
+                backgroundColor: Colors.black87,
+                duration: const Duration(seconds: 2),
+                behavior: SnackBarBehavior.floating,
+                margin: const EdgeInsets.all(12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+            );
+          }
         }
         else if(responseOrder.displayLoginForm=="1"){
           Get.toNamed(AppRoutes.login);
