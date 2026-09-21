@@ -113,7 +113,9 @@ class RegularProductController extends GetxController with AppLoader {
         groupedCombo.assignAll(groupedCombos);
         if (cartListingModel.value?.data?.products?.available?.isNotEmpty ==
             true) {
-          getpaymentSummary(payFromWallet: "1");
+          final walletBalance = cartListingModel.value?.data?.userWalletBalance.toIntSafe() ?? 0;
+          isUseWalletPayment = walletBalance > 0 ? "1" : "0";
+          getpaymentSummary(payFromWallet: isUseWalletPayment);
         }
         final products = cartListingModel.value?.data?.products;
         final totalAmount =
@@ -152,7 +154,7 @@ class RegularProductController extends GetxController with AppLoader {
         orderId: orderId ?? "",
         redeemPoints: redeemPoints ?? "",
         fulfilmentType: "2",
-        payFromWallet: payFromWallet ?? "1",
+        payFromWallet: payFromWallet ?? isUseWalletPayment,
         shippingMethods: mutableShippingMethods,
       );
       if (response?.status == "1") {
@@ -213,7 +215,8 @@ class RegularProductController extends GetxController with AppLoader {
         }
         orderType = paymentSummaryModel.value?.data?.orderType ?? "1";
         // isLoading(false);
-        isUseWalletPayment = payFromWallet ?? "0";
+        isUseWalletPayment = payFromWallet ?? isUseWalletPayment;
+        useWallet.value = (isUseWalletPayment == "1");
         debugPrint("-------------------$payFromWallet");
       } else {
         debugPrint('this is payment summary api ${PrefStore().loadString(AppConstants.sessionId)}');

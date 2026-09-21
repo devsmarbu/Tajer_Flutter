@@ -44,7 +44,7 @@ class PlaceOrderView extends StatelessWidget {
                   ),
                   padding: EdgeInsets.all(15),
                   child: Text(
-                    paymentSummaryModel?.data?.netPayable?.value ?? "",
+                    paymentSummaryModel?.data?.cartSummary?.orderPaymentGatewayCharges ?? "",
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontFamily: "Nunito",
