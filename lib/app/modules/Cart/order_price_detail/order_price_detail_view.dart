@@ -48,35 +48,48 @@ class OrderPriceDetailView extends StatelessWidget {
 
                   // Check if row is Shipping Free
                   final isShippingFree =
-                  keyText.toLowerCase().contains("shipping free") || keyText.toLowerCase().contains("الشحن مجاني");
+                      keyText.toLowerCase().contains("shipping free") ||
+                      keyText.toLowerCase().contains("الشحن مجاني");
                   //
                   // final isCouponDiscount =
                   // keyText.toLowerCase().contains("discount");
 
-                 // final isGreenRow = isShippingFree || isCouponDiscount;
+                  // final isGreenRow = isShippingFree || isCouponDiscount;
 
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                       keyText,
-                        style: TextStyle(fontFamily: "Nunito",
+                        keyText,
+                        style: TextStyle(
+                          fontFamily: "Nunito",
                           color: Color(
                             int.parse(
-                              (paymentSummaryModel?.data?.priceDetail?[index].colorCode ?? "0xFF000000")
+                              (paymentSummaryModel
+                                          ?.data
+                                          ?.priceDetail?[index]
+                                          .colorCode ??
+                                      "0xFF000000")
                                   .replaceFirst("#", "0xFF"),
                             ),
                           ),
-                          fontWeight: FontWeight.w600),
+                          fontWeight: FontWeight.w600,
+                          fontSize: 13,
+                        ),
                       ),
                       Text(
                         valueText,
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
+                          fontSize: 13,
                           fontFamily: "Nunito",
                           color: Color(
                             int.parse(
-                              (paymentSummaryModel?.data?.priceDetail?[index].colorCode ?? "0xFF000000")
+                              (paymentSummaryModel
+                                          ?.data
+                                          ?.priceDetail?[index]
+                                          .colorCode ??
+                                      "0xFF000000")
                                   .replaceFirst("#", "0xFF"),
                             ),
                           ),
@@ -84,9 +97,10 @@ class OrderPriceDetailView extends StatelessWidget {
                           decoration: isShippingFree
                               ? TextDecoration.lineThrough
                               : TextDecoration.none,
-                          decorationColor:
-                          isShippingFree ? Colors.green : Colors.transparent,
-                            decorationThickness: 2.5
+                          decorationColor: isShippingFree
+                              ? Colors.green
+                              : Colors.transparent,
+                          decorationThickness: 2.5,
                         ),
                       ),
                     ],
@@ -105,7 +119,7 @@ class OrderPriceDetailView extends StatelessWidget {
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontFamily: "Nunito",
-                      fontSize: 16,
+                      fontSize: 14,
                     ),
                   ),
                   Text(
@@ -113,7 +127,7 @@ class OrderPriceDetailView extends StatelessWidget {
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontFamily: "Nunito",
-                      fontSize: 16,
+                      fontSize: 14,
                     ),
                   ),
                 ],
