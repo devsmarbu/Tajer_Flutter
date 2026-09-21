@@ -194,11 +194,11 @@ class _PaymentSelectionPageState extends State<PaymentSelectionPage>
                         Text(
                           AppStrings.appWallet.toUpperCase().tr,
                           style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
-                        const SizedBox(height: 4),
+                        // const SizedBox(height: 4),
                         Text(
                           "${AppStrings.appAvailableBalance.toUpperCase().tr}  ${widget.paymentSummaryModel?.data?.displayUserWalletBalance ?? ""}",
                           style:
@@ -242,7 +242,7 @@ class _PaymentSelectionPageState extends State<PaymentSelectionPage>
                   ],
                 ),
 
-              const SizedBox(height: 12),
+              const SizedBox(height: 20),
 
               /// ——— DYNAMIC PAYMENT METHODS ———
               Obx(() {
@@ -272,8 +272,14 @@ class _PaymentSelectionPageState extends State<PaymentSelectionPage>
                           children: [
                             Row(
                               children: [
+                                SizedBox(width: 1),
                                 Radio<int>(
                                   activeColor: Colors.black,
+                                  visualDensity: const VisualDensity(
+                                    horizontal: VisualDensity.minimumDensity,
+                                    vertical: VisualDensity.minimumDensity,
+                                  ),
+                                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                   value: methodIndex,
                                   groupValue: controller.useCard.value
                                       ? controller
@@ -283,12 +289,13 @@ class _PaymentSelectionPageState extends State<PaymentSelectionPage>
                                     _selectPaymentMethod(methodIndex, method);
                                   },
                                 ),
+                                const SizedBox(width: 8),
                                 Expanded(
                                   child: Text(
                                     method.pluginName ?? "",
                                     style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w500,
                                     ),
                                   ),
                                 ),
@@ -296,7 +303,7 @@ class _PaymentSelectionPageState extends State<PaymentSelectionPage>
                               ],
                             ),
                             Padding(
-                              padding: const EdgeInsets.only(left: 48.0, bottom: 12.0),
+                              padding: const EdgeInsets.only(left: 32.0, bottom: 12.0, top: 0),
                               child: (method.cardsImage != null && method.cardsImage!.isNotEmpty)
                                   ? Image.network(
                                       method.cardsImage!,
@@ -455,7 +462,11 @@ class _PaymentSelectionPageState extends State<PaymentSelectionPage>
 
 
                         if (methodIndex < methods.length - 1)
-                          Divider(color: Colors.grey[200]),
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 12.0),
+                            child: Divider(height: 1, color: Colors.grey[100]),
+                          ),
+                        SizedBox(height: 5)
                       ],
                     );
                   }).toList(),
