@@ -267,45 +267,50 @@ class _PaymentSelectionPageState extends State<PaymentSelectionPage>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         /// Payment method row
-                        Row(
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Radio<int>(
-                              activeColor: Colors.black,
-                              value: methodIndex,
-                              groupValue: controller.useCard.value
-                                  ? controller
-                                      .selectedPaymentMethodIndex.value
-                                  : null,
-                              onChanged: (value) {
-                                _selectPaymentMethod(methodIndex, method);
-                              },
-                            ),
-                            Expanded(
-                              child: Text(
-                                method.pluginName ?? "",
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
+                            Row(
+                              children: [
+                                Radio<int>(
+                                  activeColor: Colors.black,
+                                  value: methodIndex,
+                                  groupValue: controller.useCard.value
+                                      ? controller
+                                          .selectedPaymentMethodIndex.value
+                                      : null,
+                                  onChanged: (value) {
+                                    _selectPaymentMethod(methodIndex, method);
+                                  },
                                 ),
-                              ),
-                            ),
-                            // Show plugin image if available, else fall back to card icon
-                            if (method.image != null &&
-                                method.image!.isNotEmpty)
-                              Image.network(
-                                method.image!,
-                                height: 28,
-                                errorBuilder: (_, __, ___) => Image.asset(
-                                  "assets/images/credit-card.png",
-                                  height: 28,
+                                Expanded(
+                                  child: Text(
+                                    method.pluginName ?? "",
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
                                 ),
-                              )
-                            else
-                              Image.asset(
-                                "assets/images/credit-card.png",
-                                height: 28,
-                              ),
-                            const SizedBox(width: 10),
+                                const SizedBox(width: 10),
+                              ],
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 48.0, bottom: 12.0),
+                              child: (method.cardsImage != null && method.cardsImage!.isNotEmpty)
+                                  ? Image.network(
+                                      method.cardsImage!,
+                                      height: 28,
+                                      errorBuilder: (_, __, ___) => Image.asset(
+                                        "assets/images/credit-card.png",
+                                        height: 28,
+                                      ),
+                                    )
+                                  : Image.asset(
+                                      "assets/images/credit-card.png",
+                                      height: 28,
+                                    ),
+                            ),
                           ],
                         ),
 

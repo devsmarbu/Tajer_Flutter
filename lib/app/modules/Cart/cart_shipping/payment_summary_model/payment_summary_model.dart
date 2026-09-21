@@ -306,6 +306,7 @@ class PaymentMethod {
   final String? pluginActive;
   final List<Token>? tokens;
   final String? image;
+  final String? cardsImage;
 
   PaymentMethod({
     this.pluginId,
@@ -316,6 +317,7 @@ class PaymentMethod {
     this.pluginActive,
     this.tokens,
     this.image,
+    this.cardsImage
   });
 
   factory PaymentMethod.fromJson(Map<String, dynamic> json) => PaymentMethod(
@@ -327,6 +329,7 @@ class PaymentMethod {
     pluginActive: json["plugin_active"],
     tokens: json["tokens"] == null ? [] : List<Token>.from(json["tokens"]!.map((x) => Token.fromJson(x))),
     image: json["image"],
+    cardsImage: json["cards_image"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -338,6 +341,7 @@ class PaymentMethod {
     "plugin_active": pluginActive,
     "tokens": tokens == null ? [] : List<dynamic>.from(tokens!.map((x) => x.toJson())),
     "image": image,
+    "cards_image": cardsImage,
   };
 }
 
