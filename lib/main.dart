@@ -18,6 +18,7 @@ import 'app/modules/authentication/splash/controller/splash_controller.dart';
 import 'app/modules/chatbot/controller/chatbot_controller.dart';
 import 'app/modules/navigation/bottom_navigation.dart';
 import 'common/widgets/restart_widget.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 import 'main_extension.dart';
 import 'my_root_app.dart';
 
@@ -122,7 +123,24 @@ void main() async {
     androidOptions: androidOptions,
     iosOptions: iosOptions,
   );
-  runApp(RestartWidget(child: MyRootApp()));
+
+  await LiquidGlassWidgets.initialize();
+
+  runApp(
+    RestartWidget(
+      child: LiquidGlassWidgets.wrap(
+        adaptiveQuality: true,
+        respectSystemAccessibility: true,
+        brightnessResolver: Theme.maybeBrightnessOf,
+        theme: GlassThemeData.simple(
+          blur: 12,
+          thickness: 25,
+          quality: GlassQuality.standard,
+        ),
+        child: MyRootApp(),
+      ),
+    ),
+  );
 }
 
 

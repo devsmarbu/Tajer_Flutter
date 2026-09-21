@@ -13,10 +13,10 @@ packages:
     dependency: "direct main"
     description:
       name: adaptive_platform_ui
-      sha256: "864c19ecfca6eff6268e32d34e7f426fd83b5a2ee19c8108ae2bad71e54a7677"
+      sha256: "87d68bd7b8de32768891cfc39a3dccbf0f539e4c6b714ada31d86e4d11b08822"
       url: "https://pub.dev"
     source: hosted
-    version: "0.1.100"
+    version: "1.0.1"
   app_links:
     dependency: "direct main"
     description:
@@ -189,10 +189,10 @@ packages:
     dependency: "direct main"
     description:
       name: cupertino_native_better
-      sha256: "0517c80360bbd49640d0f8c6fb0f46971b3de6352f25ff976ee3b52440d7af51"
+      sha256: "41c2a8ed69bc3448c2c05e3797e92e04fae340f1443ace396f8163035313903a"
       url: "https://pub.dev"
     source: hosted
-    version: "1.5.1"
+    version: "1.6.0"
   dbus:
     dependency: transitive
     description:
@@ -509,6 +509,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  foldable:
+    dependency: transitive
+    description:
+      name: foldable
+      sha256: "657476daf0848ccea5b7c7f133232b70a31bd9635770e1488057c930b74ad57c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.4"
   fuchsia_remote_debug_protocol:
     dependency: transitive
     description: flutter
@@ -735,6 +743,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.1.1"
+  liquid_glass_widgets:
+    dependency: "direct main"
+    description:
+      name: liquid_glass_widgets
+      sha256: "548eb5400f79ac9b90b86bd8eccc24182c3802b798f4b7716c2c6d7f48747be2"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.7.1"
   list_counter:
     dependency: transitive
     description:
@@ -1622,4 +1638,4 @@ packages:
     version: "3.1.3"
 sdks:
   dart: ">=3.10.0-0 <4.0.0"
-  flutter: ">=3.35.0"
+  flutter: ">=3.41.0"

@@ -445,9 +445,10 @@ class _CartPageState extends State<CartPage> with AppLoader {
                     usedRewardPoint: controller.usedRewardPoints,
                   ),
                 ),
-              PlatformInfo.isIOS26OrHigher()
-                  ? SizedBox(height: 90)
-                  : SizedBox.shrink(),
+              // PlatformInfo.isIOS26OrHigher()
+              //     ?
+                  SizedBox(height: 90)
+                  // : SizedBox.shrink(),
             ],
           ),
         );
