@@ -46,7 +46,9 @@ class OrderCard extends StatelessWidget {
 
     final selProdId = isParentOrder
         ? (order!.opSelprodId ?? '')
-        : (childOrderDetailItem?.selprod_id ?? '');
+        : (childOrderDetailItem?.selprod_id?.isNotEmpty == true
+            ? childOrderDetailItem!.selprod_id!
+            : (childOrderDetailItem?.op_selprod_id ?? ''));
 
     final productImage = isParentOrder
         ? (order!.productImageUrl ?? '')
@@ -80,7 +82,7 @@ class OrderCard extends StatelessWidget {
 
     final title = isParentOrder
         ? (order!.opSelprodTitle ?? '')
-        : (childOrderDetailItem?.op_selprod_title ?? '');
+        : (childOrderDetailItem?.op_selprod_title ?? childOrderDetailItem?.selprod_title ?? '');
 
     final qty = isParentOrder
         ? (order!.opQty ?? '')
@@ -149,21 +151,35 @@ class OrderCard extends StatelessWidget {
         : int.tryParse("0") ?? 0;
     final isRTL = Directionality.of(context) == TextDirection.rtl;
 
+    void openProductDetail() {
+      final targetSelProdId = selProdId.isNotEmpty
+          ? selProdId
+          : (childOrderDetailItem?.selprod_id ?? childOrderDetailItem?.op_selprod_id ?? '');
+      debugPrint("Opening product detail page for selProdId: $targetSelProdId");
+      if (targetSelProdId.isNotEmpty) {
+        AppRoutes.goToProductDetailPage(targetSelProdId, title);
+      }
+    }
+
     return Material(
       color: Colors.transparent,
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
         onTap: () {
-          debugPrint(selProdId);
-          Get.to(
-            () => OrderDetailsScreen(
-              orderId: orderId,
-              orderProductId: productId,
-              orderNumber: orderNumber,
-              quantity: qty,
-              selProdId: selProdId,
-            ),
-          );
+          if (childOrderDetailItem != null) {
+            openProductDetail();
+          } else {
+            debugPrint(selProdId);
+            Get.to(
+              () => OrderDetailsScreen(
+                orderId: orderId,
+                orderProductId: productId,
+                orderNumber: orderNumber,
+                quantity: qty,
+                selProdId: selProdId,
+              ),
+            );
+          }
         },
         child: Container(
           padding: const EdgeInsets.all(12),
@@ -240,102 +256,93 @@ class OrderCard extends StatelessWidget {
               ),
 
               const SizedBox(height: 22),
-              // Divider(color: Colors.grey.shade300, thickness: 1),
-              // const SizedBox(height: 8),
 
               // 🔹 Product row
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: Image.network(
-                      productImage,
-                      width: 90,
-                      height: 90,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) =>
-                          const Icon(Icons.image_not_supported),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-
-                  Expanded(
-                    child: Align(
-                      alignment: Alignment.topLeft, // keeps text top aligned
-                      child: Column(
-                        spacing: 2,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(height: 2),
-                          Text(
-                            title,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontSize: 13,
-                              fontFamily: 'nunito',
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.black1,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            "QTY: $qty | $options",
-                            style: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                              fontFamily: 'Nunito',
-                              color: Colors.black54,
-                            ),
-                          ),
-                          const SizedBox(height: 6),
-                          Text(
-                            '${'APP_ORDER_NO'.tr} $invoiceNumber',
-                            style: const TextStyle(
-                              fontSize: 12,
-                              color: Colors.black54,
-                              fontFamily: 'Nunito',
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          // const SizedBox(height: 6),
-                          // if (totalOrders > 1 && isParentOrder)
-                          //   GestureDetector(
-                          //     onTap: () {
-                          //       Get.to(
-                          //         () => MyOrdersView(),
-                          //         arguments: {
-                          //           AppParams.orderId: orderId,
-                          //           AppParams.orderNumber: orderNumber,
-                          //         },
-                          //       );
-                          //     },
-                          //     child: Text(
-                          //       AppStrings.appViewCompleteOrder
-                          //           .toUpperCase()
-                          //           .tr,
-                          //       style: const TextStyle(
-                          //         fontSize: 14,
-                          //         fontFamily: 'Nunito',
-                          //         fontWeight: FontWeight.w400,
-                          //         color: AppColors.black1,
-                          //         decoration: TextDecoration.underline,
-                          //       ),
-                          //     ),
-                          //   ),
-                        ],
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
+                  if (childOrderDetailItem != null) {
+                    openProductDetail();
+                  } else {
+                    debugPrint(selProdId);
+                    Get.to(
+                      () => OrderDetailsScreen(
+                        orderId: orderId,
+                        orderProductId: productId,
+                        orderNumber: orderNumber,
+                        quantity: qty,
+                        selProdId: selProdId,
+                      ),
+                    );
+                  }
+                },
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.network(
+                        productImage,
+                        width: 90,
+                        height: 90,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) =>
+                            const Icon(Icons.image_not_supported),
                       ),
                     ),
-                  ),
-                  // ✅ THIS is the key fix
-                  SizedBox(
-                    height: 90, // same as image height
-                    child: Center(
-                      child: Icon(Icons.chevron_right, color: Colors.black54),
+                    const SizedBox(width: 10),
+
+                    Expanded(
+                      child: Align(
+                        alignment: Alignment.topLeft, // keeps text top aligned
+                        child: Column(
+                          spacing: 2,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(height: 2),
+                            Text(
+                              title,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontSize: 13,
+                                fontFamily: 'nunito',
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.black1,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              "QTY: $qty | $options",
+                              style: const TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                                fontFamily: 'Nunito',
+                                color: Colors.black54,
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                              '${'APP_ORDER_NO'.tr} $invoiceNumber',
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: Colors.black54,
+                                fontFamily: 'Nunito',
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
-                ],
+                    SizedBox(
+                      height: 90, // same as image height
+                      child: Center(
+                        child: Icon(Icons.chevron_right, color: Colors.black54),
+                      ),
+                    ),
+                  ],
+                ),
               ),
               // 🔹 Buttons Row
               if (canExchangeOrder == '1' || canReturnOrder == '1')

@@ -54,8 +54,11 @@ class AddressController extends GetxController
     );
 
     // ✅ Refresh list automatically after address added
-    if (result == true) {
+    if (result != null && result != false) {
       await getAddressList();
+      if (result is String && result.isNotEmpty) {
+        AppDialog.showMessage(result);
+      }
     }
   }
 
@@ -66,8 +69,11 @@ class AddressController extends GetxController
     );
 
     // ✅ Refresh list automatically after address added
-    if (result == true) {
+    if (result != null && result != false) {
       await getAddressList();
+      if (result is String && result.isNotEmpty) {
+        AppDialog.showMessage(result);
+      }
     }
   }
 

@@ -402,13 +402,9 @@ class AddAddressController extends GetxController with AddressApiClient, AppLoad
 
       if (addressData.responseCode == "200" &&
           addressData.status == AppConstants.SUCCESS) {
-        Future.delayed(const Duration(milliseconds: 300), () {
-          Get.back(result: true);
-          Get.snackbar(
-            AppConstants.appName,
-            addressData.msg,
-            snackPosition: SnackPosition.TOP,
-            duration: const Duration(seconds: 2),
+        Future.delayed(const Duration(milliseconds: 100), () {
+          Get.back(
+            result: addressData.msg.isNotEmpty ? addressData.msg : true,
           );
         });
       } else {
