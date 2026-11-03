@@ -98,6 +98,7 @@ class AppConstants {
  static const String signUpApi = "guest-user/register";
  static const String loginUser = "guest-user/login";
  static const String loginWithOtp = "guest-user/get-login-otp";
+ static const String getEmailLoginOtp = "guest-user/get-email-login-otp";
  static const String forgotPassword = "guest-user/forgot-password";
  static const String googleLoginApi = "google-login";
  static const String appleLoginApi = "apple-login";

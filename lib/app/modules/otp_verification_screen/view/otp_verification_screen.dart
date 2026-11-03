@@ -10,15 +10,25 @@ class ConfirmPhoneOtpView extends StatelessWidget {
   final String dCode;
   final String userId;
   final bool isUpdate;
+  /// When true, [phoneNumber] is actually an email address
+  final bool isEmail;
 
-  const ConfirmPhoneOtpView({super.key,required this.dCode, required this.phoneNumber,required this.userId, required this.isUpdate});
+  const ConfirmPhoneOtpView({
+    super.key,
+    required this.dCode,
+    required this.phoneNumber,
+    required this.userId,
+    required this.isUpdate,
+    this.isEmail = false,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(ConfirmPhoneOtpController(phoneNumber));
+    final controller = Get.put(ConfirmPhoneOtpController(phoneNumber, isEmail: isEmail));
     controller.userID.value=userId;
     controller.isUpdate.value=isUpdate;
     controller.dCode.value=dCode;
+    controller.isEmail.value=isEmail;
 
     final defaultPinTheme = PinTheme(
       width: 60,
@@ -45,9 +55,9 @@ class ConfirmPhoneOtpView extends StatelessWidget {
           icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
           onPressed: () => Get.back(),
         ),
-        title: const Text(
-          AppStrings.app_confirm_your_number,
-          style: TextStyle(
+        title: Text(
+          isEmail ? "Verify OTP" : AppStrings.app_confirm_your_number,
+          style: const TextStyle(
             color: Colors.black,
             fontFamily: 'Nunito',
             fontWeight: FontWeight.w700,
@@ -61,7 +71,9 @@ class ConfirmPhoneOtpView extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "We have sent a verification code to\n${controller.dCode+controller.phoneNumber}",
+              isEmail
+                  ? "We have sent a verification code to\n${controller.phoneNumber}"
+                  : "We have sent a verification code to\n${controller.dCode + controller.phoneNumber}",
               style: const TextStyle(
                 fontSize: 15,
                 fontFamily: "Nunito",

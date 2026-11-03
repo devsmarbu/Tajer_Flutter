@@ -79,6 +79,45 @@ class AuthenticationApiClient {
     );
   }
 
+  Future<Response> loginWithEmailOtp(String email) async {
+    return await getEmailLoginOtp(email);
+  }
+
+  Future<Response> getEmailLoginOtp(String email) async {
+    return await _api.dio.post(
+      AppConstants.getEmailLoginOtp,
+      data: FormData.fromMap({
+        'username': email,
+      }),
+      options: Options(
+        headers: {
+          'X-APP-SESSION-ID': PrefStore().loadString(AppConstants.sessionId) ?? "",
+        },
+      ),
+    );
+  }
+
+  Future<Response> loginWithOtpApi({
+    required String username,
+    required String otp,
+    int userType = 1,
+  }) async {
+    return await _api.dio.post(
+      AppConstants.loginUser,
+      data: FormData.fromMap({
+        'username': username,
+        'loginWithOtp': 1,
+        'upv_otp': otp,
+        'userType': userType,
+      }),
+      options: Options(
+        headers: {
+          'X-APP-SESSION-ID': PrefStore().loadString(AppConstants.sessionId) ?? "",
+        },
+      ),
+    );
+  }
+
   Future<Response> saveFirebaseTokenApi(
       String deviceToken,
       String deviceOs,

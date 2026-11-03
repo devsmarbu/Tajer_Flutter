@@ -46,6 +46,9 @@ class LoginController extends GetxController {
   final isFormValid = false.obs;
   final selectedCountryCode = "+91-in".obs;
 
+  /// Whether the user has toggled "Login with OTP" (email OTP mode)
+  final isLoginWithOtp = false.obs;
+
   String deviceType = Platform.isAndroid ? "1" : "0";
 
 
@@ -143,11 +146,18 @@ class LoginController extends GetxController {
 
   void checkFormValid() {
     if (isEmail.value) {
-      isFormValid.value =
-          emailError.value.isEmpty &&
-              passwordError.value.isEmpty &&
-              emailController.text.trim().isNotEmpty &&
-              passwordController.text.trim().isNotEmpty;
+      if (isLoginWithOtp.value) {
+        // OTP mode: only email is required
+        isFormValid.value =
+            emailError.value.isEmpty &&
+            emailController.text.trim().isNotEmpty;
+      } else {
+        isFormValid.value =
+            emailError.value.isEmpty &&
+                passwordError.value.isEmpty &&
+                emailController.text.trim().isNotEmpty &&
+                passwordController.text.trim().isNotEmpty;
+      }
     } else {
       isFormValid.value =
           phoneError.value.isEmpty &&
@@ -172,6 +182,10 @@ class LoginController extends GetxController {
   bool validateAll() {
     if (isEmail.value) {
       validateEmail(emailController.text, isSubmit: true);
+      if (isLoginWithOtp.value) {
+        // OTP mode — only email needed
+        return emailError.value.isEmpty && emailController.text.isNotEmpty;
+      }
       validatePassword(passwordController.text, isSubmit: true);
       return emailError.value.isEmpty &&
           passwordError.value.isEmpty &&
@@ -189,7 +203,11 @@ class LoginController extends GetxController {
 
     if (validateAll()) {
       TextInput.finishAutofillContext();
-        isEmail.value ? loginUser():loginUserWithOtp();
+      if (isEmail.value) {
+        isLoginWithOtp.value ? loginWithEmailOtp() : loginUser();
+      } else {
+        loginUserWithOtp();
+      }
     } else {
       Get.snackbar(
         "Error",
@@ -250,6 +268,47 @@ class LoginController extends GetxController {
       }
     }
 
+  }
+
+  /// 🔹 Login with Email OTP — sends OTP to the given email
+  Future<void> loginWithEmailOtp() async {
+    if (await AppFunction.isInternetAvailable()) {
+      try {
+        isLoading.value = true;
+
+        final response = await _apiClient.getEmailLoginOtp(emailController.text.trim());
+
+        dynamic body = response.data;
+        if (body is String) body = json.decode(body);
+
+        final common = BaseResponse<LoginData>.fromJson(
+          body,
+          fromJsonT: (data) => LoginData.fromJson(data),
+        );
+
+        if (common.responseCode == "200") {
+          if (common.status == AppConstants.SUCCESS) {
+            Get.to(() => ConfirmPhoneOtpView(
+              dCode: '',
+              phoneNumber: emailController.text.trim(),
+              userId: common.data?.userId ?? '',
+              isUpdate: false,
+              isEmail: true,
+            ));
+          } else {
+            AppDialog.showMessage(common.msg);
+          }
+        } else if (common.responseCode == "404") {
+          showRegisterDialog(Get.context!, "Your email does not exist. Do you want to Register?");
+        } else {
+          AppDialog.showMessage(common.msg);
+        }
+      } catch (e) {
+        print('❌ Exception in loginWithEmailOtp: $e');
+      } finally {
+        isLoading.value = false;
+      }
+    }
   }
 
 

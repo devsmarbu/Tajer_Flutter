@@ -1,12 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../../common/functions/app_function.dart';
 import '../../../../common/widgets/app_dialog.dart';
 import '../../../../utils/base_response.dart';
 import '../../../../utils/pref_store.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/routes/app_routes.dart';
+import '../../../data/events/app_analytics_service.dart';
 import '../../../data/service/authentication_api_client.dart';
 import '../../authentication/login/login_data.dart';
 
@@ -21,9 +24,12 @@ class ConfirmPhoneOtpController extends GetxController {
   var isLoading = false.obs;
   var isUpdate = false.obs;
   var dCode = ''.obs;
+  var isEmail = false.obs;
   final _apiClient = AuthenticationApiClient();
 
-  ConfirmPhoneOtpController(this.phoneNumber);
+  ConfirmPhoneOtpController(this.phoneNumber, {bool isEmail = false}) {
+    this.isEmail.value = isEmail;
+  }
 
   @override
   void onInit() {
@@ -45,8 +51,11 @@ class ConfirmPhoneOtpController extends GetxController {
     if (remainingSeconds.value == 0) {
       remainingSeconds.value = 59;
       _startCountdown();
-      resendOtpApi();
-     // Get.snackbar("OTP Resent", "Verification code sent again");
+      if (isEmail.value) {
+        resendEmailOtpApi();
+      } else {
+        resendOtpApi();
+      }
     }
   }
 
@@ -56,9 +65,75 @@ class ConfirmPhoneOtpController extends GetxController {
           snackPosition: SnackPosition.TOP);
       return;
     }
-    verifyOtpApi();
-    // ✅ Simulate success
-   // AppDialog.showMessage("Phone number verified successfully!");
+    if (isEmail.value) {
+      verifyEmailOtpApi();
+    } else {
+      verifyOtpApi();
+    }
+  }
+
+  Future<void> verifyEmailOtpApi() async {
+    try {
+      isLoading.value = true;
+
+      final response = await _apiClient.loginWithOtpApi(
+        username: phoneNumber,
+        otp: otpController.text.trim(),
+        userType: 1,
+      );
+
+      dynamic body = response.data;
+      if (body is String) body = json.decode(body);
+
+      final common = BaseResponse<LoginData>.fromJson(
+        body,
+        fromJsonT: (data) => LoginData.fromJson(data),
+      );
+
+      if (common.responseCode == "200") {
+        if (common.status == AppConstants.SUCCESS) {
+          await saveLoginData(common.data);
+        } else {
+          AppDialog.showMessage(common.msg);
+        }
+      } else {
+        AppDialog.showMessage(common.msg);
+      }
+    } catch (e) {
+      print('❌ Exception in verifyEmailOtpApi: $e');
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> resendEmailOtpApi() async {
+    try {
+      isLoading.value = true;
+
+      final response = await _apiClient.getEmailLoginOtp(phoneNumber);
+
+      dynamic body = response.data;
+      if (body is String) body = json.decode(body);
+
+      final common = BaseResponse<LoginData>.fromJson(
+        body,
+        fromJsonT: (data) => LoginData.fromJson(data),
+      );
+
+      if (common.responseCode == "200") {
+        if (common.status == AppConstants.SUCCESS) {
+          Get.snackbar(AppConstants.appName, common.msg.isNotEmpty ? common.msg : "OTP resent successfully");
+        } else {
+          AppDialog.showMessage(common.msg);
+        }
+      } else {
+        AppDialog.showMessage(common.msg);
+      }
+    } catch (e) {
+      print('❌ Exception in resendEmailOtpApi: $e');
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   Future<void> verifyOtpApi() async {
@@ -141,7 +216,7 @@ class ConfirmPhoneOtpController extends GetxController {
   }
 
   Future<void> saveLoginData(LoginData? data) async {
-     await pref.saveString(AppConstants.sessionToken, data?.token ?? "");
+    await pref.saveString(AppConstants.sessionToken, data?.token ?? "");
     await pref.saveString(AppConstants.userId, data?.userId ?? "");
     await pref.saveString(AppConstants.userName, data?.userName ?? "");
     await pref.saveString(AppConstants.userEmail, data?.credentialEmail ?? "");
@@ -154,6 +229,17 @@ class ConfirmPhoneOtpController extends GetxController {
       jsonEncode(data?.toJson()),
     );
 
+    String fcmToken = pref.loadString(AppConstants.fcmToken) ?? "";
+    if (fcmToken == "") {
+      fcmToken = await AppFunction.saveFcmToken(pref);
+    }
+    _apiClient.saveFirebaseTokenApi(
+      fcmToken,
+      Platform.isAndroid ? "1" : "0",
+      AppConstants.buyerUserType,
+    );
+
+    AppAnalyticsService.login();
     Get.offAllNamed(AppRoutes.bottomNavigation);
   }
 

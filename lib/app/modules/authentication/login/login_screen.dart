@@ -114,28 +114,64 @@ class LoginScreen extends StatelessWidget {
                                     ),
                                   ),
 
-                                  const SizedBox(height: 20),
-
-                                  Semantics(
-                                    label: 'password_field',
-                                    textField: true,
-                                    child: CommonTextField(
-                                      key: const Key("password_field"),
-                                      label: AppStrings.appPassword.toUpperCase().tr,
-                                      hint: AppStrings.appPassword.toUpperCase().tr,
-                                      controller: controller.passwordController,
-                                      autofillHints: const [
-                                        AutofillHints.password,
-                                      ],
-                                      textInputAction: TextInputAction.done,
-                                      obscureText: true,
-                                      errorText:
-                                      controller.passwordError.value.isNotEmpty
-                                          ? controller.passwordError.value
-                                          : null,
-                                      onChanged: controller.validatePassword,
-                                    ),
+                                  /// LOGIN WITH OTP TOGGLE
+                                  const SizedBox(height: 12),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text(
+                                        "Login with OTP",
+                                        style: TextStyle(
+                                          fontFamily: "Nunito",
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                          color: AppColors.black1,
+                                        ),
+                                      ),
+                                      Obx(() => Switch(
+                                        key: const Key("otp_switch"),
+                                        value: controller.isLoginWithOtp.value,
+                                        activeThumbColor: AppColors.black1,
+                                        activeTrackColor: AppColors.black1.withOpacity(0.4),
+                                        onChanged: (val) {
+                                          controller.isLoginWithOtp.value = val;
+                                          controller.checkFormValid();
+                                        },
+                                      )),
+                                    ],
                                   ),
+
+                                  /// PASSWORD FIELD — hidden in OTP mode
+                                  Obx(() {
+                                    if (controller.isLoginWithOtp.value) {
+                                      return const SizedBox.shrink();
+                                    }
+                                    return Column(
+                                      children: [
+                                        const SizedBox(height: 8),
+                                        Semantics(
+                                          label: 'password_field',
+                                          textField: true,
+                                          child: CommonTextField(
+                                            key: const Key("password_field"),
+                                            label: AppStrings.appPassword.toUpperCase().tr,
+                                            hint: AppStrings.appPassword.toUpperCase().tr,
+                                            controller: controller.passwordController,
+                                            autofillHints: const [
+                                              AutofillHints.password,
+                                            ],
+                                            textInputAction: TextInputAction.done,
+                                            obscureText: true,
+                                            errorText:
+                                            controller.passwordError.value.isNotEmpty
+                                                ? controller.passwordError.value
+                                                : null,
+                                            onChanged: controller.validatePassword,
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  }),
                                 ],
                               ),
                             ),
@@ -158,7 +194,7 @@ class LoginScreen extends StatelessWidget {
 
                     /// FORGOT PASSWORD
                     Obx(() {
-                      if (controller.isEmail.value) {
+                      if (controller.isEmail.value && !controller.isLoginWithOtp.value) {
                         return Align(
                           alignment: Alignment.centerRight,
                           child: Semantics(
