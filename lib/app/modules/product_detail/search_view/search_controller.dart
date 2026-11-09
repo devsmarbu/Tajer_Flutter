@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:tajer/app/data/respository/search_repository.dart';
+import 'package:tajer/app/modules/categories/brands_list/models/brand.dart';
 import 'package:tajer/app/modules/product_detail/search_view/search_model.dart';
 import '../../../core/routes/app_routes.dart';
 
@@ -11,6 +12,9 @@ class SearchViewController extends GetxController {
 
   final RxList<SearchProduct> products = <SearchProduct>[].obs;
   final RxList<Tag> productsTags = <Tag>[].obs;
+  final RxList<AllBrand> brands = <AllBrand>[].obs;
+  final RxList<AllShop> shops = <AllShop>[].obs;
+  final RxList<Category> categories = <Category>[].obs;
   final isLoading = false.obs;
   final keyword = ''.obs;
 
@@ -28,6 +32,10 @@ class SearchViewController extends GetxController {
         loadSearchData(keyword, "");
       } else {
         products.clear();
+        brands.clear();
+        shops.clear();
+        categories.clear();
+        productsTags.clear();
       }
     });
   }
@@ -43,6 +51,9 @@ class SearchViewController extends GetxController {
       final newSearch = await _repository.fetchSearchData(keyword, recordId);
       productsTags.value = newSearch?.data?.suggestions?.tags ?? [];
       products.value = newSearch?.data?.suggestions?.products ?? [];
+      brands.value = newSearch?.data?.suggestions?.brands ?? [];
+      shops.value = newSearch?.data?.suggestions?.shops ?? [];
+      categories.value = newSearch?.data?.suggestions?.categories ?? [];
 
     } finally {
       isLoading(false);
@@ -81,11 +92,47 @@ class SearchViewController extends GetxController {
     );
   }
 
+  void goToBrandProductListing(String brandId, String brandName) {
+    AppRoutes.goToProductListPage(
+      brandId: brandId,
+      productVideoAvailable: "0",
+      titleHeader: brandName,
+      prodCatId: '',
+      condition: "",
+      keyword: "",
+    );
+  }
+
+  void goToShopDetail(String shopId, String shopUserId) {
+    AppRoutes.goToShopDetailPage(shopId, shopUserId);
+  }
+
+  void goToCategoryProductListing(String categoryId, String categoryName) {
+    AppRoutes.goToProductListPage(
+      brandId: "",
+      productVideoAvailable: "0",
+      titleHeader: categoryName,
+      prodCatId: categoryId,
+      condition: "",
+      keyword: "",
+    );
+  }
+
+  bool get hasAnyResults =>
+      brands.isNotEmpty ||
+      shops.isNotEmpty ||
+      categories.isNotEmpty ||
+      products.isNotEmpty ||
+      productsTags.isNotEmpty;
+
   @override
   void onClose() {
     _debounce?.cancel();
     productsTags.clear();
     products.clear();
+    brands.clear();
+    shops.clear();
+    categories.clear();
     super.onClose();
   }
 }

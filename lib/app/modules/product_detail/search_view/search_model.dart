@@ -67,12 +67,14 @@ class SearchData {
 class Suggestions {
   final List<Category>? categories;
   final List<AllBrand>? brands;
+  final List<AllShop>? shops;
   final List<Tag>? tags;
   final List<SearchProduct>? products;
 
   Suggestions({
     this.categories,
     this.brands,
+    this.shops,
     this.tags,
     this.products,
   });
@@ -87,6 +89,11 @@ class Suggestions {
         ? []
         : List<AllBrand>.from(
       json["brands"].map((x) => AllBrand.fromJson(x)),
+    ),
+    shops: json["shops"] == null
+        ? []
+        : List<AllShop>.from(
+      json["shops"].map((x) => AllShop.fromJson(x)),
     ),
     tags: json["tags"] == null
         ? []
@@ -107,6 +114,9 @@ class Suggestions {
     "brands": brands == null
         ? []
         : List<dynamic>.from(brands!.map((x) => x.toJson())),
+    "shops": shops == null
+        ? []
+        : List<dynamic>.from(shops!.map((x) => x.toJson())),
     "tags": tags == null
         ? []
         : List<dynamic>.from(tags!.map((x) => x.toJson())),

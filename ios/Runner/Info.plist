@@ -2,8 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>OneSignal_app_id</key>
-	<string>5652c9b5-8841-4a8e-8961-6e0cea0dfcf2</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
@@ -39,20 +37,43 @@
 			</array>
 		</dict>
 	</array>
+	<key>CFBundleVersion</key>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>FacebookAppID</key>
 	<string>1198178208421881</string>
 	<key>FacebookClientToken</key>
 	<string>df75118e795252de5154151a05a18dcf</string>
 	<key>FacebookDisplayName</key>
 	<string>Tajer</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>This app needs microphone access for voice search.</string>
-	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>This app uses speech recognition to convert voice to text.</string>
-	<key>CFBundleVersion</key>
-	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>FlutterDeepLinkingEnabled</key>
+	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>Allow Tajer - تاجر  to use your phone camera to capture live photo for your profile image.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Allow Tajer - تاجر  to use Current Location for search nearby Products or Shops</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Allow Tajer - تاجر  to use Current Location for search nearby Products or Shops</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Allow Tajer - تاجر  to use Current Location for search nearby Products or Shops</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This app needs microphone access for voice search.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Allow Tajer - تاجر  to use your phone library to save downloaded Photos and Videos files.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Allow Tajer - تاجر  to use your phone camera to capture live photo for your profile image</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>This app uses speech recognition to convert voice to text.</string>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>This identifier will be used to deliver personalized ads.</string>
+	<key>OneSignal_app_id</key>
+	<string>5652c9b5-8841-4a8e-8961-6e0cea0dfcf2</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>
@@ -76,26 +97,5 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>NSAppTransportSecurity</key>
-	<dict>
-		<key>NSAllowsArbitraryLoads</key>
-		<true/>
-	</dict>
-	<key>FlutterDeepLinkingEnabled</key>
-	<false/>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Allow Tajer - تاجر  to use Current Location for search nearby Products or Shops</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Allow Tajer - تاجر  to use Current Location for search nearby Products or Shops</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Allow Tajer - تاجر  to use Current Location for search nearby Products or Shops</string>
-	<key>NSCameraUsageDescription</key>
-	<string>Allow Tajer - تاجر  to use your phone camera to capture live photo for your profile image.</string>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Allow Tajer - تاجر  to use your phone library to save downloaded Photos and Videos files.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Allow Tajer - تاجر  to use your phone camera to capture live photo for your profile image</string>
-	<key>NSUserTrackingUsageDescription</key>
-	<string>This identifier will be used to deliver personalized ads.</string>
 </dict>
 </plist>

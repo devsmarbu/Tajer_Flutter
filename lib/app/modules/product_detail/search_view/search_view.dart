@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:tajer/app/modules/product_detail/search_view/search_controller.dart';
-import 'package:tajer/app/modules/product_detail/search_view/search_model.dart';
 import 'package:tajer/utils/app_strings.dart';
 
 class SearchView extends StatelessWidget {
@@ -118,6 +117,193 @@ class SearchView extends StatelessWidget {
     );
   }
 
+  // ─── Section header widget ────────────────────────────────────────────────
+  Widget _sectionHeader(String title) {
+    return Container(
+      color: Colors.grey[100],
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      width: double.infinity,
+      child: Text(
+        title.toUpperCase(),
+        style: const TextStyle(
+          fontSize: 11,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 0.8,
+          color: Colors.black45,
+          fontFamily: "Nunito",
+        ),
+      ),
+    );
+  }
+
+  // ─── 2-liner list tile ────────────────────────────────────────────────────
+  Widget _twoLinerTile({
+    required String title,
+    required String subtitle,
+    required IconData icon,
+    required VoidCallback onTap,
+    int titleMaxLines = 1,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        child: Row(
+          children: [
+            Icon(icon, size: 20, color: Colors.black45),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black87,
+                      fontFamily: "Nunito",
+                    ),
+                    maxLines: titleMaxLines,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Text(
+                    subtitle,
+                    style: const TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.black45,
+                      fontFamily: "Nunito",
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+            const Icon(Icons.chevron_right, size: 18, color: Colors.black26),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ─── Build the unified results list ─────────────────────────────────────
+  List<Widget> _buildResultItems() {
+    final items = <Widget>[];
+
+    // ── Brands ──────────────────────────────────────────────────────────────
+    if (controller.brands.isNotEmpty) {
+      items.add(_sectionHeader('Brands'));
+      for (int i = 0; i < controller.brands.length; i++) {
+        final brand = controller.brands[i];
+        items.add(_twoLinerTile(
+          title: brand.brandName ?? 'Unknown Brand',
+          subtitle: 'Brand',
+          icon: Icons.label_outline,
+          onTap: () => controller.goToBrandProductListing(
+            brand.brandId ?? '',
+            brand.brandName ?? '',
+          ),
+        ));
+        if (i < controller.brands.length - 1) {
+          items.add(const Divider(height: 1, color: Colors.black12, indent: 48));
+        }
+      }
+    }
+
+    // ── Shops ───────────────────────────────────────────────────────────────
+    if (controller.shops.isNotEmpty) {
+      items.add(_sectionHeader('Shops'));
+      for (int i = 0; i < controller.shops.length; i++) {
+        final shop = controller.shops[i];
+        final city = shop.shopCity?.isNotEmpty == true ? shop.shopCity! : 'Shop';
+        items.add(_twoLinerTile(
+          title: shop.shopName ?? 'Unknown Shop',
+          subtitle: city,
+          icon: Icons.storefront_outlined,
+          onTap: () => controller.goToShopDetail(
+            shop.shopId ?? '',
+            shop.shopUserId ?? '',
+          ),
+        ));
+        if (i < controller.shops.length - 1) {
+          items.add(const Divider(height: 1, color: Colors.black12, indent: 48));
+        }
+      }
+    }
+
+    // ── Categories ──────────────────────────────────────────────────────────
+    if (controller.categories.isNotEmpty) {
+      items.add(_sectionHeader('Categories'));
+      for (int i = 0; i < controller.categories.length; i++) {
+        final cat = controller.categories[i];
+        items.add(_twoLinerTile(
+          title: cat.categoryName ?? 'Unknown Category',
+          subtitle: 'Category',
+          icon: Icons.grid_view_outlined,
+          onTap: () => controller.goToCategoryProductListing(
+            cat.categoryId ?? '',
+            cat.categoryName ?? '',
+          ),
+        ));
+        if (i < controller.categories.length - 1) {
+          items.add(const Divider(height: 1, color: Colors.black12, indent: 48));
+        }
+      }
+    }
+
+    // ── Products (tags take priority over raw products) ──────────────────────
+    final bool showTags = controller.productsTags.isNotEmpty;
+    final bool hasProducts = showTags
+        ? controller.productsTags.isNotEmpty
+        : controller.products.isNotEmpty;
+
+    if (hasProducts) {
+      items.add(_sectionHeader('Products'));
+
+      if (showTags) {
+        for (int i = 0; i < controller.productsTags.length; i++) {
+          final tag = controller.productsTags[i];
+          final tagName = tag.tagName ?? 'Unknown';
+          items.add(_twoLinerTile(
+            title: tagName,
+            subtitle: '${tag.prodCount ?? "0"} products',
+            icon: Icons.search,
+            titleMaxLines: 2,
+            onTap: () =>
+                controller.goToProductListing(tag.tagId ?? '', '', tagName),
+          ));
+          if (i < controller.productsTags.length - 1) {
+            items.add(const Divider(height: 1, color: Colors.black12, indent: 48));
+          }
+        }
+      } else {
+        for (int i = 0; i < controller.products.length; i++) {
+          final product = controller.products[i];
+          final title = product.selprodTitle ?? 'Unknown';
+          final subtitle = product.prodcatName ?? 'Product';
+          items.add(_twoLinerTile(
+            title: title,
+            subtitle: subtitle,
+            icon: Icons.inventory_2_outlined,
+            titleMaxLines: 2,
+            onTap: () => controller.goToProductDetailView(
+              product.selprodId ?? '',
+              title,
+            ),
+          ));
+          if (i < controller.products.length - 1) {
+            items.add(const Divider(height: 1, color: Colors.black12, indent: 48));
+          }
+        }
+      }
+    }
+
+    return items;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -184,39 +370,39 @@ class SearchView extends StatelessWidget {
                           ),
                         ),
 
-                        Container(
-                          width: 1,
-                          height: 24,
-                          color: Colors.black12,
-                          margin: const EdgeInsets.symmetric(horizontal: 6),
-                        ),
+                        // Container(
+                        //   width: 1,
+                        //   height: 24,
+                        //   color: Colors.black12,
+                        //   margin: const EdgeInsets.symmetric(horizontal: 6),
+                        // ),
 
                         // Image picker
-                        GestureDetector(
-                          onTap: () => _showImageSourceSheet(context),
-                          child: Obx(() {
-                            final XFile? picked = _pickedImage.value;
-                            if (picked != null) {
-                              return Padding(
-                                padding: const EdgeInsets.fromLTRB(6, 0, 6, 0),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(20),
-                                  child: Image.file(
-                                    File(picked.path),
-                                    width: 36,
-                                    height: 36,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              );
-                            }
-
-                            return const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 6.0),
-                              child: Icon(Icons.camera_alt, color: Colors.black54),
-                            );
-                          }),
-                        ),
+                        // GestureDetector(
+                        //   onTap: () => _showImageSourceSheet(context),
+                        //   child: Obx(() {
+                        //     final XFile? picked = _pickedImage.value;
+                        //     if (picked != null) {
+                        //       return Padding(
+                        //         padding: const EdgeInsets.fromLTRB(6, 0, 6, 0),
+                        //         child: ClipRRect(
+                        //           borderRadius: BorderRadius.circular(20),
+                        //           child: Image.file(
+                        //             File(picked.path),
+                        //             width: 36,
+                        //             height: 36,
+                        //             fit: BoxFit.cover,
+                        //           ),
+                        //         ),
+                        //       );
+                        //     }
+                        //
+                        //     return const Padding(
+                        //       padding: EdgeInsets.symmetric(horizontal: 6.0),
+                        //       child: Icon(Icons.camera_alt, color: Colors.black54),
+                        //     );
+                        //   }),
+                        // ),
                       ],
                     ),
                   ),
@@ -247,7 +433,7 @@ class SearchView extends StatelessWidget {
                 return const Center(child: CircularProgressIndicator(color: Colors.black));
               }
 
-              if (controller.products.isEmpty) {
+              if (!controller.hasAnyResults) {
                 return Center(
                   child: Text(
                     AppStrings.appNoDataFound.tr,
@@ -259,72 +445,13 @@ class SearchView extends StatelessWidget {
                   ),
                 );
               }
-              final bool showTags = controller.productsTags.isNotEmpty;
 
-              return ListView.separated(
-                itemCount: showTags
-                    ? controller.productsTags.length
-                    : controller.products.length,
-                separatorBuilder: (_, __) =>
-                const Divider(height: 1, color: Colors.black12),
-                itemBuilder: (context, index) {
-                  late final String id;
-                  late final String tagName;
-                  late final String title;
+              final resultItems = _buildResultItems();
 
-                  if (showTags) {
-                    final tag = controller.productsTags[index];
-                    tagName= tag.tagName ?? "Unknown";
-                    id = tag.tagId ?? "";
-                    title = "$tagName(${tag.prodCount})";
-                  } else {
-                    final product = controller.products[index];
-                    id = product.selprodId ?? "";
-                    title = product.selprodTitle ?? "Unknown";
-                  }
-
-                  return ListTile(
-                    onTap: () {
-                      showTags
-                          ? controller.goToProductListing(id, "",tagName)
-                          : controller.goToProductDetailView(id, title);
-                    },
-                    title: Row(
-                      children: [
-                        if (showTags) ...[
-                          Transform.rotate(
-                            angle: 90 * 3.141592653589793 / 180, // 90 degrees
-                            child: const Icon(
-                              Icons.chevron_right_sharp,
-                              size: 24,
-                              color: Colors.black54,
-                            ),
-                          )
-                          ,
-                          const SizedBox(width: 4),
-                        ],
-                        Expanded(
-                          child: Text(
-                            title,
-                            style: const TextStyle(
-                              color: Colors.black87,
-                              fontSize: 13,
-                              fontWeight: FontWeight.w500,
-                              fontFamily: "Nunito",
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 4,
-                    ),
-                  );
-                },
+              return ListView.builder(
+                itemCount: resultItems.length,
+                itemBuilder: (context, index) => resultItems[index],
               );
-
             }),
           ),
         ],
