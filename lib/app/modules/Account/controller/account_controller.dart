@@ -29,6 +29,7 @@ import '../../authentication/login/login_data.dart';
 import '../../authentication/splash/controller/splash_controller.dart';
 import '../../change_language/change_language_popover.dart';
 import '../../../../../utils/app_colors.dart';
+import '../../chatbot/controller/chatbot_controller.dart';
 import '../../navigation/bottom_navigation.dart';
 import '../../share_and_earn/share_and_earn.dart';
 import '../models/section.dart';
@@ -410,17 +411,18 @@ class AccountController extends GetxController with AccountApiClient, AppLoader,
         if (common.responseCode == "200") {
           if (common.status == AppConstants.SUCCESS) {
             pref.clearAll();
-            Get.deleteAll(force: true);     // delete everything
-            Get.put(SplashController());    // restore required
-            Get.put(BottomNavController());
-            Get.put(LocalizationService());
-            final splash = Get.find<SplashController>();
-
-            splash.allowNavigation.value = false;
             Future.delayed(const Duration(milliseconds: 30), () {
               Get.offAllNamed(AppRoutes.bottomNavigation);
               Future.microtask(() {
                 Get.toNamed(AppRoutes.login);
+                // Delete all controllers AFTER navigation is complete,
+                // so MyRootApp doesn't try to find them mid-rebuild.
+                Get.deleteAll(force: true);
+                Get.put(SplashController(), permanent: true);            // restore required
+                Get.put(BottomNavController(), permanent: true);
+                Get.put(LocalizationService(), permanent: true);
+                Get.put(ChatbotController(), permanent: true);           // must be re-registered – MyRootApp.build() calls Get.find<ChatbotController>()
+
               });
             });
           } else {

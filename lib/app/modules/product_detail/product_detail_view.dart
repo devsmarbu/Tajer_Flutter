@@ -654,13 +654,47 @@ class _ProductDetailViewState extends State<ProductDetailView> with SingleTicker
                       width: 30,
                       fit: BoxFit.contain,
                     ),
-                  Text(
-                    productDetail?.selprodPrice ?? "",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontFamily: "Nunito",
-                      fontWeight: FontWeight.w700,
-                    ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        productDetail?.theprice ?? "",
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontFamily: "Nunito",
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      if (productDetail?.specialPriceFound == "1")
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              productDetail?.selprodPrice ?? "",
+                              style: const TextStyle(
+                                fontSize: 13,
+                                fontFamily: "Nunito",
+                                fontWeight: FontWeight.w400,
+                                decoration: TextDecoration.lineThrough,
+                                color: Colors.grey,
+                              ),
+                            ),
+                            if ((productDetail?.discount ?? "").isNotEmpty) ...
+                            [
+                              const SizedBox(width: 6),
+                              Text(
+                                productDetail?.discount ?? "",
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  fontFamily: "Nunito",
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.green,
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                    ],
                   ),
                 ],
               ),
@@ -1087,7 +1121,7 @@ class _ProductDetailViewState extends State<ProductDetailView> with SingleTicker
                       crossAxisSpacing: 12,
                       mainAxisSpacing: 12,
                       // height > width
-                      childAspectRatio: isFolded ? 0.62:0.68,
+                      childAspectRatio: isFolded ? 0.62:0.64,
                     ),
                     itemCount: products.length,
                     itemBuilder: (context, index) {
@@ -1489,13 +1523,46 @@ class _ProductDetailViewState extends State<ProductDetailView> with SingleTicker
                                       ),
                                     ),
                                     const SizedBox(height: 2),
-                                    Text(
-                                      "${PrefStore().loadString(AppConstants.currencySymbol)}${item.selprodPrice ?? ""}",
-                                      style: const TextStyle(
-                                        fontFamily: "Nunito",
-                                        fontSize: 17,
-                                        fontWeight: FontWeight.w700,
-                                      ),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "${PrefStore().loadString(AppConstants.currencySymbol)}${item.theprice ?? ""}",
+                                          style: const TextStyle(
+                                            fontFamily: "Nunito",
+                                            fontSize: 17,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                        if (item.specialPriceFound == "1")
+                                          Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Text(
+                                                "${PrefStore().loadString(AppConstants.currencySymbol)}${item.selprodPrice ?? ""}",
+                                                style: const TextStyle(
+                                                  fontFamily: "Nunito",
+                                                  fontSize: 13,
+                                                  fontWeight: FontWeight.w400,
+                                                  decoration: TextDecoration.lineThrough,
+                                                  color: Colors.grey,
+                                                ),
+                                              ),
+                                              if ((item.boxDiscountPercentage ?? "").isNotEmpty) ...[
+                                                const SizedBox(width: 6),
+                                                Text(
+                                                  item.boxDiscountPercentage ?? "",
+                                                  style: const TextStyle(
+                                                    fontFamily: "Nunito",
+                                                    fontSize: 13,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: Colors.green,
+                                                  ),
+                                                ),
+                                              ],
+                                            ],
+                                          ),
+                                      ],
                                     ),
                                   ],
                                 ),

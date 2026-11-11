@@ -250,16 +250,54 @@ class _PerfumeCellViewState extends State<PerfumeCellView> {
                     const SizedBox(height: 2),
 
                     /// PRICE
-                    Text(
-                      key: ValueKey('perfume_price_${product.selprodId}'),
-                      product.selprodPrice ?? "",
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w900,
-                        fontSize: 10,
-                        fontFamily: "Nunito",
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          key: ValueKey('perfume_price_${product.selprodId}'),
+                          product.theprice ?? "",
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w900,
+                            fontSize: 10,
+                            fontFamily: "Nunito",
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        if (product.specialPriceFound == "1")
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                product.selprodPrice ?? "",
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 9,
+                                  fontFamily: "Nunito",
+                                  decoration: TextDecoration.lineThrough,
+                                  color: Colors.grey,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              if ((product.discount ?? "").isNotEmpty) ...
+                              [
+                                const SizedBox(width: 4),
+                                Text(
+                                  product.discount ?? "",
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 9,
+                                    fontFamily: "Nunito",
+                                    color: Colors.green,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
+                            ],
+                          ),
+                      ],
                     ),
                   ],
                 ),

@@ -159,18 +159,54 @@ class _BeautyProductCellViewState extends State<BeautyProductCellView> {
                                     'beauty_product_spacing_2'),),
                                 Semantics(
                                   label:
-                                  'beauty_product_price_${product.selprodPrice}_$index',
-                                  child: Text(
-                                    key: Key(
-                                        'beauty_product_price_$index'),
-                                    product.selprodPrice ?? "",
-                                    maxLines: 1,
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w700,
-                                      fontFamily: "Nunito",
-                                    ),
-                                    textAlign: TextAlign.center,
+                                  'beauty_product_price_${product.theprice}_$index',
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        key: Key(
+                                            'beauty_product_price_$index'),
+                                        product.theprice ?? "",
+                                        maxLines: 1,
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w700,
+                                          fontFamily: "Nunito",
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      if (product.specialPriceFound == "1")
+                                        Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              product.selprodPrice ?? "",
+                                              maxLines: 1,
+                                              style: const TextStyle(
+                                                fontSize: 10,
+                                                fontWeight: FontWeight.w500,
+                                                fontFamily: "Nunito",
+                                                decoration: TextDecoration.lineThrough,
+                                                color: Colors.grey,
+                                              ),
+                                            ),
+                                            if ((product.discount ?? "").isNotEmpty) ...
+                                            [
+                                              const SizedBox(width: 4),
+                                              Text(
+                                                product.discount ?? "",
+                                                maxLines: 1,
+                                                style: const TextStyle(
+                                                  fontSize: 10,
+                                                  fontWeight: FontWeight.w600,
+                                                  fontFamily: "Nunito",
+                                                  color: Colors.green,
+                                                ),
+                                              ),
+                                            ],
+                                          ],
+                                        ),
+                                    ],
                                   ),
                                 ),
                               ],

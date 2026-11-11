@@ -299,13 +299,47 @@ class _CartItemCardState extends State<CartItemCard> {
                       ),
                     ],
                   ),
-                  Text(
-                    "${item.selprodPrice}",
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontFamily: "Nunito",
-                      fontWeight: FontWeight.bold,
-                    ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        item.theprice ?? "",
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontFamily: "Nunito",
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      if (item.specialPriceFound == "1")
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              "${item.selprodPrice}",
+                              style: const TextStyle(
+                                fontSize: 11,
+                                fontFamily: "Nunito",
+                                fontWeight: FontWeight.w400,
+                                decoration: TextDecoration.lineThrough,
+                                color: Colors.grey,
+                              ),
+                            ),
+                            if ((item.discount ?? "").isNotEmpty) ...
+                            [
+                              const SizedBox(width: 4),
+                              Text(
+                                item.discount ?? "",
+                                style: const TextStyle(
+                                  fontSize: 11,
+                                  fontFamily: "Nunito",
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.green,
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                    ],
                   ),
                 ],
               ),

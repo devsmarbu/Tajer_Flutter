@@ -186,7 +186,7 @@ class _DualHorizontalProductViewState extends State<DualHorizontalProductView> {
           width: itemWidth,
           margin: isVertical
               ? EdgeInsets.zero
-              : const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+              : const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(13),
@@ -457,16 +457,54 @@ class _DualHorizontalProductViewState extends State<DualHorizontalProductView> {
                           const SizedBox(height: 2),
 
                           /// PRICE
-                          Text(
-                            key: ValueKey('price_${product.selprodId}'),
-                            product.selprodPrice ?? "",
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w900,
-                              fontSize: 13,
-                              fontFamily: "Nunito",
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                key: ValueKey('price_${product.selprodId}'),
+                                product.theprice ?? "",
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w900,
+                                  fontSize: 13,
+                                  fontFamily: "Nunito",
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              if (product.specialPriceFound == "1")
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      product.selprodPrice ?? "",
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 10,
+                                        fontFamily: "Nunito",
+                                        decoration: TextDecoration.lineThrough,
+                                        color: Colors.grey,
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    if ((product.discount ?? "").isNotEmpty) ...
+                                    [
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        product.discount ?? "",
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 11,
+                                          fontFamily: "Nunito",
+                                          color: Colors.green,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ],
+                                  ],
+                                ),
+                            ],
                           ),
                         ],
                       ),

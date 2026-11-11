@@ -520,13 +520,46 @@ class _ReelCellState extends State<ReelCell> {
                           ),
                         ),
                         const SizedBox(height: 4),
-                        Text(
-                          product.selprodPrice ?? "",
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 15,
-                            fontWeight: FontWeight.w700,
-                          ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              product.theprice ?? "",
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            if (product.specialPriceFound == "1")
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    product.selprodPrice ?? "",
+                                    style: TextStyle(
+                                      color: Colors.white.withOpacity(0.7),
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w400,
+                                      decoration: TextDecoration.lineThrough,
+                                      decorationColor: Colors.white.withOpacity(0.7),
+                                    ),
+                                  ),
+                                  if ((product.discount ?? "").isNotEmpty) ...
+                                  [
+                                    const SizedBox(width: 6),
+                                    Text(
+                                      product.discount ?? "",
+                                      style: const TextStyle(
+                                        color: Colors.greenAccent,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ],
+                              ),
+                          ],
                         ),
                         const SizedBox(height: 3),
                         Text(

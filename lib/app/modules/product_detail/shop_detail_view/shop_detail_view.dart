@@ -406,7 +406,7 @@ class _ShopDetailPageState extends State<ShopDetailPage>
             crossAxisSpacing: 12,
             mainAxisSpacing: 12,
             // height > width
-            childAspectRatio: isFolded ? 0.62 : 0.68,
+            childAspectRatio: isFolded ? 0.62 : 0.62,
           ),
           itemCount:
               controller.products.length + (controller.hasMore.value ? 1 : 0),
