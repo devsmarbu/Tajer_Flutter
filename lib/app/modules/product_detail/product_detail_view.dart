@@ -674,7 +674,7 @@ class _ProductDetailViewState extends State<ProductDetailView> with SingleTicker
                               style: const TextStyle(
                                 fontSize: 13,
                                 fontFamily: "Nunito",
-                                fontWeight: FontWeight.w400,
+                                fontWeight: FontWeight.w800,
                                 decoration: TextDecoration.lineThrough,
                                 color: Colors.grey,
                               ),
@@ -1543,7 +1543,7 @@ class _ProductDetailViewState extends State<ProductDetailView> with SingleTicker
                                                 style: const TextStyle(
                                                   fontFamily: "Nunito",
                                                   fontSize: 13,
-                                                  fontWeight: FontWeight.w400,
+                                                  fontWeight: FontWeight.w800,
                                                   decoration: TextDecoration.lineThrough,
                                                   color: Colors.grey,
                                                 ),

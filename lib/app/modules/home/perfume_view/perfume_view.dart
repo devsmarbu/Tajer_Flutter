@@ -271,7 +271,7 @@ class _PerfumeCellViewState extends State<PerfumeCellView> {
                               Text(
                                 product.selprodPrice ?? "",
                                 style: const TextStyle(
-                                  fontWeight: FontWeight.w500,
+                                  fontWeight: FontWeight.w800,
                                   fontSize: 9,
                                   fontFamily: "Nunito",
                                   decoration: TextDecoration.lineThrough,

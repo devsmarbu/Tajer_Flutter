@@ -478,7 +478,7 @@ class _DualHorizontalProductViewState extends State<DualHorizontalProductView> {
                                     Text(
                                       product.selprodPrice ?? "",
                                       style: const TextStyle(
-                                        fontWeight: FontWeight.w600,
+                                        fontWeight: FontWeight.w800,
                                         fontSize: 10,
                                         fontFamily: "Nunito",
                                         decoration: TextDecoration.lineThrough,
@@ -494,7 +494,7 @@ class _DualHorizontalProductViewState extends State<DualHorizontalProductView> {
                                         product.discount ?? "",
                                         style: const TextStyle(
                                           fontWeight: FontWeight.w600,
-                                          fontSize: 11,
+                                          fontSize: 10,
                                           fontFamily: "Nunito",
                                           color: Colors.green,
                                         ),

@@ -336,7 +336,7 @@ class ProductCard extends StatelessWidget {
                                     product.selprodPrice ?? "",
                                     style: const TextStyle(
                                       fontSize: 11,
-                                      fontWeight: FontWeight.w500,
+                                      fontWeight: FontWeight.w800,
                                       fontFamily: 'Nunito',
                                       decoration: TextDecoration.lineThrough,
                                       color: Colors.grey,

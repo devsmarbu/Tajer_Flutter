@@ -540,7 +540,7 @@ class _ReelCellState extends State<ReelCell> {
                                     style: TextStyle(
                                       color: Colors.white.withOpacity(0.7),
                                       fontSize: 12,
-                                      fontWeight: FontWeight.w400,
+                                      fontWeight: FontWeight.w800,
                                       decoration: TextDecoration.lineThrough,
                                       decorationColor: Colors.white.withOpacity(0.7),
                                     ),

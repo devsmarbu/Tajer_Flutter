@@ -150,7 +150,7 @@ class SaveForLaterView extends StatelessWidget {
                                       style: const TextStyle(
                                         fontSize: 11,
                                         fontFamily: "Nunito",
-                                        fontWeight: FontWeight.w400,
+                                        fontWeight: FontWeight.w800,
                                         decoration: TextDecoration.lineThrough,
                                         color: Colors.grey,
                                       ),
