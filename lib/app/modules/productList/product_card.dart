@@ -86,6 +86,31 @@ class ProductCard extends StatelessWidget {
                         ),
                       ),
 
+                      /// SAVE PERCENTAGE BADGE
+                      Positioned(
+                        top: 10,
+                        left: 10,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 5,
+                          ),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFDFFF00),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: const Text(
+                            'Save 24%',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 9,
+                              fontWeight: FontWeight.w700,
+                              fontFamily: 'Nunito',
+                            ),
+                          ),
+                        ),
+                      ),
+
                       /// ❤️ FAVORITE BUTTON
                       Positioned(
                         top: 10,
