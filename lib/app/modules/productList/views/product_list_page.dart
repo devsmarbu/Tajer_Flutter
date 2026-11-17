@@ -231,7 +231,7 @@ class _ProductListPageState extends State<ProductListPage> {
                         crossAxisCount: 2,
                         crossAxisSpacing: 12,
                         mainAxisSpacing: 12,
-                        childAspectRatio: isFolded ? 0.62 : 0.63,
+                        childAspectRatio: isFolded ? 0.62 : 0.65,
                       ),
                       itemCount:
                           controller.products.length,

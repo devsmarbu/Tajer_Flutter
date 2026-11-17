@@ -1119,9 +1119,9 @@ class _ProductDetailViewState extends State<ProductDetailView> with SingleTicker
                     SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                       crossAxisSpacing: 12,
-                      mainAxisSpacing: 12,
+                      mainAxisSpacing: 3,
                       // height > width
-                      childAspectRatio: isFolded ? 0.62:0.64,
+                      childAspectRatio: isFolded ? 0.62:0.66,
                     ),
                     itemCount: products.length,
                     itemBuilder: (context, index) {
