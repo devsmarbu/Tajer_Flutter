@@ -27,6 +27,7 @@ class DualHorizontalProductView extends StatefulWidget {
   final bool? isHideSeeAll;
   final String? prodCatId;
   final Collection collection;
+  final String? saveBgColor;
 
   // Now the constructor can be const (if images is provided as const)
   const DualHorizontalProductView({
@@ -42,6 +43,7 @@ class DualHorizontalProductView extends StatefulWidget {
     this.prodCatId,
     required this.collection,
     this.currencyCode,
+    this.saveBgColor,
   }); // Assign the parameter to the field
 
   @override
@@ -126,6 +128,26 @@ class _DualHorizontalProductViewState extends State<DualHorizontalProductView> {
     );
   }
 
+  Color _parseColor(String? colorString, {Color defaultColor = const Color(0xFFDFFF00)}) {
+    if (colorString == null || colorString.trim().isEmpty) {
+      return defaultColor;
+    }
+    try {
+      String hex = colorString.trim().replaceAll('#', '');
+      if (hex.startsWith('0x') || hex.startsWith('0X')) {
+        hex = hex.substring(2);
+      }
+      if (hex.length == 6) {
+        hex = 'FF$hex';
+      } else if (hex.length != 8) {
+        return defaultColor;
+      }
+      return Color(int.parse(hex, radix: 16));
+    } catch (_) {
+      return defaultColor;
+    }
+  }
+
   // Extracted method for the product item (avoids code duplication)
   Widget _buildProductItem(
     BuildContext context,
@@ -166,6 +188,59 @@ class _DualHorizontalProductViewState extends State<DualHorizontalProductView> {
     }
 
     final double itemWidth = isVertical ? (Get.width / 2) - 18 : 180;
+
+    final rawDiscount = product.discount?.trim() ?? "";
+    final bool hasDiscount = (rawDiscount.isNotEmpty &&
+            rawDiscount != "0" &&
+            rawDiscount != "0%" &&
+            rawDiscount.toLowerCase() != "0% off") ||
+        (product.specialPriceFound == "1") ||
+        (product.splpriceDisplayDisVal != null &&
+            product.splpriceDisplayDisVal!.trim().isNotEmpty &&
+            product.splpriceDisplayDisVal!.trim() != "0");
+
+    String saveBadgeText = 'Save 34%';
+    if (rawDiscount.isNotEmpty &&
+        rawDiscount != "0" &&
+        rawDiscount != "0%" &&
+        rawDiscount.toLowerCase() != "0% off") {
+      final clean = rawDiscount
+          .replaceAll(RegExp(r'off', caseSensitive: false), '')
+          .trim();
+      saveBadgeText = clean.toLowerCase().startsWith('save')
+          ? clean
+          : (clean.contains('%') ? 'Save $clean' : 'Save $clean%');
+    } else if (product.splpriceDisplayDisVal != null &&
+        product.splpriceDisplayDisVal!.trim().isNotEmpty &&
+        product.splpriceDisplayDisVal!.trim() != "0") {
+      final val = product.splpriceDisplayDisVal!.trim();
+      saveBadgeText = val.contains('%') ? 'Save $val' : 'Save $val%';
+    } else if (product.specialPriceFound == "1") {
+      try {
+        final original = double.tryParse(
+          product.selprodPrice?.replaceAll(RegExp(r'[^0-9.]'), '') ?? '',
+        );
+        final current = double.tryParse(
+          product.theprice?.replaceAll(RegExp(r'[^0-9.]'), '') ?? '',
+        );
+        if (original != null &&
+            current != null &&
+            original > current &&
+            original > 0) {
+          final pct = (((original - current) / original) * 100).round();
+          if (pct > 0) {
+            saveBadgeText = 'Save $pct%';
+          }
+        }
+      } catch (_) {}
+    }
+
+    final Color badgeBgColor = _parseColor(
+      product.saveBgColor ?? widget.saveBgColor ?? widget.collection.saveBgColor,
+      defaultColor: const Color(0xFFDFFF00),
+    );
+    final Color badgeTextColor =
+        badgeBgColor.computeLuminance() > 0.5 ? Colors.black : Colors.white;
 
     return Semantics(
       label: 'Product ${product.productName}',
@@ -246,6 +321,32 @@ class _DualHorizontalProductViewState extends State<DualHorizontalProductView> {
                         },
                       ),
                     ),
+
+                    /// SAVE PERCENTAGE BADGE
+                    if (hasDiscount)
+                      Positioned(
+                        top: 10,
+                        left: 10,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 5,
+                          ),
+                          decoration: BoxDecoration(
+                            color: badgeBgColor,
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: Text(
+                            saveBadgeText,
+                            style: TextStyle(
+                              color: badgeTextColor,
+                              fontSize: 9,
+                              fontWeight: FontWeight.w700,
+                              fontFamily: 'Nunito',
+                            ),
+                          ),
+                        ),
+                      ),
 
                     /// ❤️ FAVORITE BUTTON
                     Positioned(
