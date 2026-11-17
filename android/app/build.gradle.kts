@@ -1,3 +1,8 @@
+import com.android.build.api.dsl.ApplicationExtension
+import org.gradle.kotlin.dsl.configure
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
@@ -7,7 +12,7 @@ plugins {
 }
 
 // gardle
-android {
+extensions.configure<ApplicationExtension> {
     namespace = "com.tajershops.tajer"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = "28.2.13676358"
@@ -18,10 +23,6 @@ android {
 
         // REQUIRED for flutter_local_notifications
         isCoreLibraryDesugaringEnabled = true
-    }
-
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11.toString()
     }
 
     defaultConfig {
@@ -51,6 +52,12 @@ android {
                 "proguard-rules.pro"
             )
         }
+    }
+}
+
+extensions.configure<KotlinAndroidProjectExtension> {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_11)
     }
 }
 
