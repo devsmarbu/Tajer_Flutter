@@ -154,6 +154,7 @@ class Collection {
   final String? collectionUrlType;
   final String? homePageStripeSVGUrl;
   final String? collectionAppColorCode;
+  final String? saveBgColor;
 
   Collection({
     this.collectionDescription,
@@ -183,6 +184,7 @@ class Collection {
     this.brands,
     this.homePageStripeSVGUrl,
     this.collectionAppColorCode,
+    this.saveBgColor,
   });
 
   Color get appColor {
@@ -252,6 +254,7 @@ class Collection {
     collectionUrlType: json["collection_url_type"],
     homePageStripeSVGUrl: json["home_page_stripe_svg_url"],
     collectionAppColorCode: json["collection_app_color_code"],
+    saveBgColor: json["saveBgColor"] ?? json["save_bg_color"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -289,6 +292,7 @@ class Collection {
     "collection_url_type": collectionUrlType,
     "home_page_stripe_svg_url": homePageStripeSVGUrl,
     "collection_app_color_code": collectionAppColorCode,
+    "saveBgColor": saveBgColor,
   };
 }
 
@@ -505,6 +509,7 @@ class HomeProduct {
   final String? product_video_gif_url;
   final String? is_in_any_wishlist;
   final List<dynamic>? ribbons;
+  final String? saveBgColor;
 
   HomeProduct({
     this.prodcatName,
@@ -543,6 +548,7 @@ class HomeProduct {
     this.product_video_gif_url,
     this.ribbons,
     this.is_in_any_wishlist,
+    this.saveBgColor,
   });
 
   factory HomeProduct.fromJson(Map<String, dynamic> json) => HomeProduct(
@@ -587,6 +593,7 @@ class HomeProduct {
     productVideoUrl: json["product_video_url"],
     product_video_gif_url: json["product_video_gif_url"],
     is_in_any_wishlist: json["is_in_any_wishlist"],
+    saveBgColor: json["saveBgColor"] ?? json["save_bg_color"],
     ribbons: json["ribbons"] == null
         ? []
         : List<dynamic>.from(json["ribbons"]!.map((x) => x)),
@@ -630,6 +637,7 @@ class HomeProduct {
     "product_video_url": productVideoUrl,
     "product_video_gif_url": product_video_gif_url,
     "is_in_any_wishlist": is_in_any_wishlist,
+    "saveBgColor": saveBgColor,
     "ribbons": ribbons == null
         ? []
         : List<dynamic>.from(ribbons!.map((x) => x)),
@@ -867,6 +875,7 @@ class Product {
   final String? isComingsoon;
   final String? availableInLocation;
   final String? selprodId;
+  final String? saveBgColor;
 
   Product({
     this.splpriceDisplayListPrice,
@@ -898,6 +907,7 @@ class Product {
     this.isComingsoon,
     this.availableInLocation,
     this.selprodId,
+    this.saveBgColor,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) => Product(
@@ -936,6 +946,7 @@ class Product {
     isComingsoon: json["isComingsoon"],
     availableInLocation: json["availableInLocation"],
     selprodId: json["selprod_id"],
+    saveBgColor: json["saveBgColor"] ?? json["save_bg_color"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -972,6 +983,7 @@ class Product {
     "isComingsoon": isComingsoon,
     "availableInLocation": availableInLocation,
     "selprod_id": selprodId,
+    "saveBgColor": saveBgColor,
   };
 }
 
@@ -1249,6 +1261,7 @@ extension HomeProductCopy on HomeProduct {
       product_video_gif_url: product_video_gif_url,
       ribbons: ribbons,
       is_in_any_wishlist: is_in_any_wishlist ?? this.is_in_any_wishlist,
+      saveBgColor: saveBgColor,
     );
   }
 }

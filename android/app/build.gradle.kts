@@ -29,8 +29,8 @@ extensions.configure<ApplicationExtension> {
         applicationId = "com.tajershops.tajer"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
-        versionCode = 189
-        versionName = "7.9.1"
+        versionCode = 190
+        versionName = "7.9.2"
     }
 
     signingConfigs {

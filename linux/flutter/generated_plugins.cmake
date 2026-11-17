@@ -5,10 +5,10 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   file_selector_linux
   gtk
+  media_kit_video
   smart_auth
   url_launcher_linux
   volume_controller
-  media_kit_video
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST
