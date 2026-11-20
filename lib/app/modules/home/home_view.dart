@@ -7,7 +7,6 @@ import 'package:tajer/app/firebase/one_signal_notification.dart';
 import 'package:tajer/marque_label.dart';
 import 'package:tajer/utils/pref_store.dart';
 import '../../../main_extension.dart';
-import '../../../utils/app_colors.dart';
 import '../../../utils/app_loader.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/routes/app_routes.dart';
@@ -27,6 +26,7 @@ import 'home_model.dart';
 import 'new_small_brand_view/new_small_brand_view.dart';
 import 'parent_category_view/parent_category_view.dart';
 import 'perfume_view/perfume_view.dart';
+import 'white_friday_deals_view/white_friday_deals_view.dart';
 import 'package:get/get.dart';
 import '../notifications/alerts/view/notification_screen.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -92,6 +92,24 @@ class _HomeViewState extends State<HomeView> {
 
   Widget _buildSection(Collection collection, int index) {
     Widget sectionWidget;
+
+    // Check for collection id 154 (White Friday Deals)
+    if (collection.collectionId == "154") {
+      sectionWidget = WhiteFridayDealsView(collection: collection);
+      if (index == 0) {
+        return VisibilityDetector(
+          key: Key("top-banner-$index"),
+          onVisibilityChanged: (info) {
+            if (!mounted) return;
+            if (info.visibleFraction < 0.5 && appBarColor != Colors.white) {
+              setState(() => appBarColor = Colors.white);
+            }
+          },
+          child: sectionWidget,
+        );
+      }
+      return sectionWidget;
+    }
 
     switch (collection.layoutType) {
       case CollectionLayoutType.productLayout1:
