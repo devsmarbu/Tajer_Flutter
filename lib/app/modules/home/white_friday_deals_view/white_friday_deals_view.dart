@@ -113,7 +113,7 @@ class WhiteFridayDealsView extends StatelessWidget {
         // Prefix text (e.g. "White Friday")
         if (prefix.isNotEmpty) ...[
           Text(
-            "$prefix ",
+            prefix,
             style: const TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.w900,
@@ -123,6 +123,7 @@ class WhiteFridayDealsView extends StatelessWidget {
               letterSpacing: -0.5,
             ),
           ),
+          const SizedBox(width: 8),
         ],
 
         // Highlighted text inside slanted lime tag (e.g. "Deals")
@@ -131,7 +132,8 @@ class WhiteFridayDealsView extends StatelessWidget {
           children: [
             Positioned.fill(
               child: Transform(
-                transform: Matrix4.skewX(-0.22),
+                transform: Matrix4.skewX(-0.18),
+                alignment: Alignment.center,
                 child: Container(
                   decoration: BoxDecoration(
                     color: neonLimeColor,
@@ -141,7 +143,12 @@ class WhiteFridayDealsView extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+              padding: const EdgeInsets.only(
+                left: 4,
+                right: 8,
+                top: 3,
+                bottom: 3,
+              ),
               child: Text(
                 highlight,
                 style: const TextStyle(

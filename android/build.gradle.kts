@@ -24,8 +24,19 @@ subprojects {
     val newSubprojectBuildDir: Directory = newBuildDir.dir(project.name)
     project.layout.buildDirectory.value(newSubprojectBuildDir)
     project.evaluationDependsOn(":app")
+}
 
-
+subprojects {
+    if (project.name != "app") {
+        afterEvaluate {
+            (project.extensions.findByName("android") as? com.android.build.gradle.BaseExtension)?.apply {
+                val current = compileSdkVersion?.takeLastWhile { it.isDigit() }?.toIntOrNull() ?: 0
+                if (current in 1..33) {
+                    compileSdkVersion(34)
+                }
+            }
+        }
+    }
 }
 
 // ✅ Add a clean task
