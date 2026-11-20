@@ -128,7 +128,10 @@ class _DualHorizontalProductViewState extends State<DualHorizontalProductView> {
     );
   }
 
-  Color _parseColor(String? colorString, {Color defaultColor = const Color(0xFFDFFF00)}) {
+  Color _parseColor(
+    String? colorString, {
+    Color defaultColor = const Color(0xFFDFFF00),
+  }) {
     if (colorString == null || colorString.trim().isEmpty) {
       return defaultColor;
     }
@@ -190,7 +193,8 @@ class _DualHorizontalProductViewState extends State<DualHorizontalProductView> {
     final double itemWidth = isVertical ? (Get.width / 2) - 18 : 180;
 
     final rawDiscount = product.discount?.trim() ?? "";
-    final bool hasDiscount = (rawDiscount.isNotEmpty &&
+    final bool hasDiscount =
+        (rawDiscount.isNotEmpty &&
             rawDiscount != "0" &&
             rawDiscount != "0%" &&
             rawDiscount.toLowerCase() != "0% off") ||
@@ -236,11 +240,14 @@ class _DualHorizontalProductViewState extends State<DualHorizontalProductView> {
     }
 
     final Color badgeBgColor = _parseColor(
-      product.saveBgColor ?? widget.saveBgColor ?? widget.collection.saveBgColor,
+      product.saveBgColor ??
+          widget.saveBgColor ??
+          widget.collection.saveBgColor,
       defaultColor: const Color(0xFFDFFF00),
     );
-    final Color badgeTextColor =
-        badgeBgColor.computeLuminance() > 0.5 ? Colors.black : Colors.white;
+    final Color badgeTextColor = badgeBgColor.computeLuminance() > 0.5
+        ? Colors.black
+        : Colors.white;
 
     return Semantics(
       label: 'Product ${product.productName}',
@@ -518,178 +525,178 @@ class _DualHorizontalProductViewState extends State<DualHorizontalProductView> {
               /// DETAILS SECTION
               Padding(
                 padding: const EdgeInsets.fromLTRB(8, 12, 8, 12),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          /// BRAND
-                          Text(
-                            key: ValueKey('brand_${product.selprodId}'),
-                            (product.brandName ?? "").toUpperCase(),
-                            style: const TextStyle(
-                              fontSize: 7,
-                              fontWeight: FontWeight.w600,
-                              fontFamily: "Nunito",
-                              color: Colors.black54,
-                              letterSpacing: 0.5,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(height: 4),
-
-                          /// PRODUCT NAME
-                          Text(
-                            key: ValueKey('name_${product.selprodId}'),
-                            (product.productName ?? "").toUpperCase(),
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 9,
-                              fontFamily: "Nunito",
-                              height: 1.3,
-                            ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(height: 2),
-
-                          /// PRICE
-                          Column(
+                    /// TOP ROW: brand + name + cart button
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
                             children: [
+                              /// BRAND
                               Text(
-                                key: ValueKey('price_${product.selprodId}'),
-                                product.theprice ?? "",
+                                key: ValueKey('brand_${product.selprodId}'),
+                                (product.brandName ?? "").toUpperCase(),
                                 style: const TextStyle(
-                                  fontWeight: FontWeight.w900,
-                                  fontSize: 13,
+                                  fontSize: 7,
+                                  fontWeight: FontWeight.w600,
                                   fontFamily: "Nunito",
+                                  color: Colors.black54,
+                                  letterSpacing: 0.5,
                                 ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
-                              if (product.specialPriceFound == "1")
-                                Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      product.selprodPrice ?? "",
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.w800,
-                                        fontSize: 10,
-                                        fontFamily: "Nunito",
-                                        decoration: TextDecoration.lineThrough,
-                                        color: Colors.grey,
-                                      ),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    if ((product.discount ?? "").isNotEmpty) ...
-                                    [
-                                      const SizedBox(width: 4),
-                                      Text(
-                                        product.discount ?? "",
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 10,
-                                          fontFamily: "Nunito",
-                                          color: Colors.green,
-                                        ),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ],
-                                  ],
+                              const SizedBox(height: 4),
+
+                              /// PRODUCT NAME
+                              Text(
+                                key: ValueKey('name_${product.selprodId}'),
+                                (product.productName ?? "").toUpperCase(),
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 9,
+                                  fontFamily: "Nunito",
+                                  height: 1.3,
                                 ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ],
                           ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 2),
+                        ),
+                        const SizedBox(width: 6),
 
-                    /// CART BUTTON
-                    Semantics(
-                      label: 'Add ${product.productName} to cart',
-                      button: true,
-                      child: GestureDetector(
-                        key: ValueKey('add_to_cart_${product.selprodId}'),
-                        onTap: () {
-                          debugPrint("Add to cart tapped");
-                          final options = product.productOptions;
+                        /// CART BUTTON
+                        Semantics(
+                          label: 'Add ${product.productName} to cart',
+                          button: true,
+                          child: GestureDetector(
+                            key: ValueKey('add_to_cart_${product.selprodId}'),
+                            onTap: () {
+                              debugPrint("Add to cart tapped");
+                              final options = product.productOptions;
 
-                          if (options != null && options.isNotEmpty) {
-                            final firstOptionValues =
-                                options.first.values ?? [];
+                              if (options != null && options.isNotEmpty) {
+                                final firstOptionValues =
+                                    options.first.values ?? [];
 
-                            if (firstOptionValues.isNotEmpty) {
-                              showModalBottomSheet(
-                                context: context,
-                                isScrollControlled: true,
-                                backgroundColor: Colors.transparent,
-                                builder: (context) => SelectSizeView(
-                                  price: product.selprodPrice ?? "",
-                                  productId:
-                                      firstOptionValues.first.selprodId ?? "",
-                                  productOptions: options,
-                                  currencyCode:
-                                      product.selprodPrice?.replaceAll(
-                                        RegExp(r'[0-9.]'),
-                                        '',
-                                      ) ??
-                                      "\$",
-                                  productName: product.selprodTitle ?? '',
-                                  isSizeChartAvailable: '',
+                                if (firstOptionValues.isNotEmpty) {
+                                  showModalBottomSheet(
+                                    context: context,
+                                    isScrollControlled: true,
+                                    backgroundColor: Colors.transparent,
+                                    builder: (context) => SelectSizeView(
+                                      price: product.selprodPrice ?? "",
+                                      productId:
+                                          firstOptionValues.first.selprodId ??
+                                          "",
+                                      productOptions: options,
+                                      currencyCode:
+                                          product.selprodPrice?.replaceAll(
+                                            RegExp(r'[0-9.]'),
+                                            '',
+                                          ) ??
+                                          "\$",
+                                      productName: product.selprodTitle ?? '',
+                                      isSizeChartAvailable: '',
+                                    ),
+                                  );
+                                } else {
+                                  final sizeController = Get.put(
+                                    SelectSizeController(
+                                      product.selprodId ?? '',
+                                    ),
+                                  );
+                                  sizeController.addToCart(
+                                    product.selprodId ?? '',
+                                    product.selprodTitle ?? '',
+                                    product.selprodPrice ?? '',
+                                    directAddedToCart: '1',
+                                  );
+                                }
+                              } else {
+                                final sizeController = Get.put(
+                                  SelectSizeController(product.selprodId ?? ''),
+                                );
+                                sizeController.addToCart(
+                                  product.selprodId ?? '',
+                                  product.selprodTitle ?? '',
+                                  product.selprodPrice ?? '',
+                                  directAddedToCart: '1',
+                                );
+                              }
+                            },
+                            child: Container(
+                              width: 45,
+                              height: 45,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF1E1E1E),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Center(
+                                child: SvgPicture.asset(
+                                  "assets/icons/ic_cart_new.svg",
+                                  width: 16,
+                                  height: 16,
+                                  colorFilter: const ColorFilter.mode(
+                                    Colors.white,
+                                    BlendMode.srcIn,
+                                  ),
                                 ),
-                              );
-                            } else {
-                              final sizeController = Get.put(
-                                SelectSizeController(product.selprodId ?? ''),
-                              );
-                              sizeController.addToCart(
-                                product.selprodId ?? '',
-                                product.selprodTitle ?? '',
-                                product.selprodPrice ?? '',
-                                directAddedToCart: '1',
-                              );
-                            }
-                          } else {
-                            final sizeController = Get.put(
-                              SelectSizeController(product.selprodId ?? ''),
-                            );
-                            sizeController.addToCart(
-                              product.selprodId ?? '',
-                              product.selprodTitle ?? '',
-                              product.selprodPrice ?? '',
-                              directAddedToCart: '1',
-                            );
-                          }
-                        },
-                        child: Container(
-                          width: 45,
-                          height: 45,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF1E1E1E),
-                            // Dark charcoal/black
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Center(
-                            child: SvgPicture.asset(
-                              "assets/icons/ic_cart_new.svg",
-                              width: 16,
-                              height: 16,
-                              colorFilter: const ColorFilter.mode(
-                                Colors.white,
-                                BlendMode.srcIn,
                               ),
                             ),
                           ),
                         ),
-                      ),
+                      ],
+                    ),
+
+                    /// PRICE — full width below the top row
+                    const SizedBox(height: 5),
+                    Row(
+                      spacing: 4,
+                      children: [
+                        Text(
+                          key: ValueKey('price_${product.selprodId}'),
+                          product.theprice ?? "",
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w900,
+                            fontSize: 14,
+                            fontFamily: "Nunito",
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+
+                        /// STRIKETHROUGH + DISCOUNT — full width, one line below theprice
+                        if (product.specialPriceFound == "1")
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Flexible(
+                                child: Text(
+                                  product.selprodPrice ?? "",
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w700,
+                                    fontFamily: 'Nunito',
+                                    decoration: TextDecoration.lineThrough,
+                                    decorationColor: Colors.grey,
+                                    decorationThickness: 2,
+                                    color: Colors.grey,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
+                      ],
                     ),
                   ],
                 ),

@@ -32,7 +32,10 @@ class ProductCard extends StatelessWidget {
     this.saveBgColor,
   });
 
-  Color _parseColor(String? colorString, {Color defaultColor = const Color(0xFFDFFF00)}) {
+  Color _parseColor(
+    String? colorString, {
+    Color defaultColor = const Color(0xFFDFFF00),
+  }) {
     if (colorString == null || colorString.trim().isEmpty) {
       return defaultColor;
     }
@@ -61,7 +64,8 @@ class ProductCard extends StatelessWidget {
     final shopController = Get.put(ShopDetailController());
 
     final rawDiscount = product.discount?.trim() ?? "";
-    final bool hasDiscount = (rawDiscount.isNotEmpty &&
+    final bool hasDiscount =
+        (rawDiscount.isNotEmpty &&
             rawDiscount != "0" &&
             rawDiscount != "0%" &&
             rawDiscount.toLowerCase() != "0% off") ||
@@ -110,8 +114,9 @@ class ProductCard extends StatelessWidget {
       product.saveBgColor ?? saveBgColor,
       defaultColor: const Color(0xFFDFFF00),
     );
-    final Color badgeTextColor =
-        badgeBgColor.computeLuminance() > 0.5 ? Colors.black : Colors.white;
+    final Color badgeTextColor = badgeBgColor.computeLuminance() > 0.5
+        ? Colors.black
+        : Colors.white;
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -122,8 +127,8 @@ class ProductCard extends StatelessWidget {
               onTap ??
               () {
                 AppRoutes.goToProductDetailPage(
-                  product.selprodId ?? "", 
-                  product.productName ?? ""
+                  product.selprodId ?? "",
+                  product.productName ?? "",
                 );
               },
           highlightColor: Colors.transparent,
@@ -246,13 +251,17 @@ class ProductCard extends StatelessWidget {
                               );
                               if (result != null) {
                                 isInAnyWishlist.value = result.toString();
-                                if (Get.currentRoute.startsWith(AppRoutes.shopDetailView)) {
+                                if (Get.currentRoute.startsWith(
+                                  AppRoutes.shopDetailView,
+                                )) {
                                   shopController.updateFav(
                                     isInAnyWishlist.value,
                                     productIndex,
                                   );
                                 }
-                                if (Get.currentRoute.startsWith(AppRoutes.productListPage)) {
+                                if (Get.currentRoute.startsWith(
+                                  AppRoutes.productListPage,
+                                )) {
                                   controller.updateFav(
                                     isInAnyWishlist.value,
                                     productIndex,
@@ -275,15 +284,17 @@ class ProductCard extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            child: Obx(() => Icon(
-                              isInAnyWishlist.value == '0'
-                                  ? Icons.favorite_border
-                                  : Icons.favorite,
-                              size: 20,
-                              color: isInAnyWishlist.value == '0'
-                                  ? Colors.black
-                                  : Colors.red,
-                            )),
+                            child: Obx(
+                              () => Icon(
+                                isInAnyWishlist.value == '0'
+                                    ? Icons.favorite_border
+                                    : Icons.favorite,
+                                size: 20,
+                                color: isInAnyWishlist.value == '0'
+                                    ? Colors.black
+                                    : Colors.red,
+                              ),
+                            ),
                           ),
                         ),
                       ),
@@ -399,7 +410,8 @@ class ProductCard extends StatelessWidget {
                           style: const TextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.w500,
-                            fontFamily: 'Nunito',color: Colors.black54
+                            fontFamily: 'Nunito',
+                            color: Colors.black54,
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -410,57 +422,40 @@ class ProductCard extends StatelessWidget {
                           style: const TextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.w600,
-                            fontFamily: 'Nunito'
+                            fontFamily: 'Nunito',
                           ),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
                         const SizedBox(height: 5),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        Row(
+                          spacing: 4,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
                               product.theprice ?? "",
                               style: const TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
-                                fontFamily: 'Nunito'
+                                fontFamily: 'Nunito',
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
                             if (product.specialPriceFound == "1")
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    product.selprodPrice ?? "",
-                                    style: const TextStyle(
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.w800,
-                                      fontFamily: 'Nunito',
-                                      decoration: TextDecoration.lineThrough,
-                                      color: Colors.grey,
-                                    ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  if ((product.discount ?? "").isNotEmpty) ...
-                                  [
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      product.discount ?? "",
-                                      style: const TextStyle(
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.w600,
-                                        fontFamily: 'Nunito',
-                                        color: Colors.green,
-                                      ),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ],
-                                ],
+                              Text(
+                                product.selprodPrice ?? "",
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w700,
+                                  fontFamily: 'Nunito',
+                                  decoration: TextDecoration.lineThrough,
+                                  decorationColor: Colors.grey,
+                                  decorationThickness: 2,
+                                  color: Colors.grey,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               ),
                           ],
                         ),
